@@ -28,12 +28,6 @@
     <Filter Include="Header Files\rt_support\ray_support">
       <UniqueIdentifier>{e94cb7f8-c677-4b78-ba70-cf006c688789}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\vector_utils">
-      <UniqueIdentifier>{b86f81bb-782a-4502-9bdc-99170a275c70}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\vector_utils">
-      <UniqueIdentifier>{33ffc3db-5ce3-4e48-9bad-1849a6c041b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\rt_support\ray_support">
       <UniqueIdentifier>{9df88535-76dd-4868-aade-854c18e74c9b}</UniqueIdentifier>
     </Filter>
@@ -46,6 +40,12 @@
     <Filter Include="Source Files\rt_support\scene_resource_support">
       <UniqueIdentifier>{b681f2b2-40c7-45fd-bd87-b7b17aa606d0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\amp_utils">
+      <UniqueIdentifier>{b86f81bb-782a-4502-9bdc-99170a275c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\amp_utils">
+      <UniqueIdentifier>{33ffc3db-5ce3-4e48-9bad-1849a6c041b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rt_geometry.h">
@@ -55,7 +55,7 @@
       <Filter>Header Files\rt_support\ray_support</Filter>
     </ClInclude>
     <ClInclude Include="vector_amp.h">
-      <Filter>Header Files\vector_utils</Filter>
+      <Filter>Header Files\amp_utils</Filter>
     </ClInclude>
     <ClInclude Include="intersection_record.h">
       <Filter>Header Files\rt_support\ray_support</Filter>
@@ -66,22 +66,37 @@
     <ClInclude Include="indexed_resource.h">
       <Filter>Header Files\rt_support\scene_resource_support</Filter>
     </ClInclude>
+    <ClInclude Include="rt_rectangle.h">
+      <Filter>Header Files\rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix_amp.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="math_util.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="rt_geometries.cpp">
-      <Filter>Source Files\rt_support\geometries</Filter>
-    </ClCompile>
     <ClCompile Include="ray.cpp">
       <Filter>Source Files\rt_support\ray_support</Filter>
     </ClCompile>
     <ClCompile Include="vector_amp.cpp">
-      <Filter>Source Files\vector_utils</Filter>
+      <Filter>Source Files\amp_utils</Filter>
     </ClCompile>
     <ClCompile Include="intersection_record.cpp">
       <Filter>Source Files\rt_support\ray_support</Filter>
     </ClCompile>
     <ClCompile Include="indexed_resource.cpp">
       <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_geomety.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix_amp.cpp">
+      <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="math_util.cpp">
+      <Filter>Source Files\amp_utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

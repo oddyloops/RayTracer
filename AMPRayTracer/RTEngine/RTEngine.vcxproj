@@ -112,16 +112,21 @@
   <ItemGroup>
     <ClInclude Include="indexed_resource.h" />
     <ClInclude Include="intersection_record.h" />
+    <ClInclude Include="math_util.h" />
+    <ClInclude Include="matrix_amp.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="rt_core.h" />
     <ClInclude Include="rt_geometry.h" />
+    <ClInclude Include="rt_rectangle.h" />
     <ClInclude Include="vector_amp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
+    <ClCompile Include="math_util.cpp" />
+    <ClCompile Include="matrix_amp.cpp" />
     <ClCompile Include="ray.cpp" />
-    <ClCompile Include="rt_geometries.cpp" />
+    <ClCompile Include="rt_geomety.cpp" />
     <ClCompile Include="vector_amp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

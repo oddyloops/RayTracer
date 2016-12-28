@@ -49,7 +49,15 @@ namespace rt_support
 			/// <returns>True, if there is an interesection, False, if ray is parallel to the plane</returns>
 
 			bool ray_plane_intersection(ray& r, float_3 norm, float_3 d, float_3& dist) restrict(amp);
+
+			
 		public:
+			/// <summary>
+			/// Parse command line for <xform> </xform> that is embedeed inside 
+			/// Geometry.
+			/// </summary>
+			static array<float,2> parse_xform(float_3 translation, float rx, float ry, float rz, float_3 scale) restrict(cpu);
+
 			/// <summary>
 			/// Returns status of if Ray intersects with this Geom. If so, details of intersection
 			/// is returned in the IntersectionRecord.
@@ -92,6 +100,7 @@ namespace rt_support
 			int get_type() restrict(amp) restrict(cpu);
 
 			int get_material_index() restrict(amp) restrict(cpu);
+
 
 		};
 	}

@@ -2,6 +2,8 @@
 #include <cfloat>
 #include "rt_geometry.h"
 #include "vector_amp.h"
+#include "matrix_amp.h"
+#include "math_util.h"
 
 using namespace concurrency::fast_math;
 using namespace rt_support::geometries;
@@ -62,4 +64,19 @@ int rt_geometry::get_type() restrict(amp) restrict(cpu)
 int rt_geometry::get_material_index() restrict(amp) restrict(cpu)
 {
 	return this->m_material_index;
+}
+
+array<float,2> rt_geometry::parse_xform(float_3 translation, float rx, float ry, float rz, float_3 scale)restrict(cpu)
+{
+	
+	float init[] = { 0,0,0,0,0,0,0,0,0 };
+	array<float, 2> rotation(3, 3, init);
+	if(rx > FLT_EPSILON)
+		rotation = rotation * matrix_amp::create_rotation_x(math_util::deg_to_rad(rx));
+	if(ry > FLT_EPSILON)
+		rotation = rotation * matrix_amp::create_rotation_y(math_util::deg_to_rad(ry));
+	if (rz > FLT_EPSILON)
+		rotation = rotation * matrix_amp::create_rotation_z(math_util::deg_to_rad(rz));
+	return matrix_amp::create_scale_from_vector(scale) * rotation * matrix_amp::create_translation_from_vector(translation);
+
 }
