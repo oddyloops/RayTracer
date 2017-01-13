@@ -19,6 +19,8 @@ public:
 
 	static array<float, 2> create_translation_from_vector(float_3 translate);
 
+	static float_3 transform(float_3 vector, array<float, 2> matrix);
+
 };
 
 array<float,2> operator+(array<float,2> lhs, array<float,2> rhs);

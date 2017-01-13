@@ -31,9 +31,6 @@
     <Filter Include="Source Files\rt_support\ray_support">
       <UniqueIdentifier>{9df88535-76dd-4868-aade-854c18e74c9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\rt_core">
-      <UniqueIdentifier>{71f135c8-9bfb-45d4-b91b-f1dd03ebcf2a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\rt_support\scene_resource_support">
       <UniqueIdentifier>{85a657cd-4731-41a9-829a-5258d7aad181}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,9 @@
     </Filter>
     <Filter Include="Source Files\amp_utils">
       <UniqueIdentifier>{33ffc3db-5ce3-4e48-9bad-1849a6c041b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\rt">
+      <UniqueIdentifier>{71f135c8-9bfb-45d4-b91b-f1dd03ebcf2a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +61,7 @@
       <Filter>Header Files\rt_support\ray_support</Filter>
     </ClInclude>
     <ClInclude Include="rt_core.h">
-      <Filter>Header Files\rt_core</Filter>
+      <Filter>Header Files\rt</Filter>
     </ClInclude>
     <ClInclude Include="indexed_resource.h">
       <Filter>Header Files\rt_support\scene_resource_support</Filter>
@@ -73,6 +73,30 @@
       <Filter>Header Files\amp_utils</Filter>
     </ClInclude>
     <ClInclude Include="math_util.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_sphere.h">
+      <Filter>Header Files\rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="image_spec.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="pixel_data.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_camera.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="orthonormal_basis.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_camera_near_plane.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_material.h">
+      <Filter>Header Files\rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="amp_lcg_rand.h">
       <Filter>Header Files\amp_utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -96,6 +120,36 @@
       <Filter>Source Files\amp_utils</Filter>
     </ClCompile>
     <ClCompile Include="math_util.cpp">
+      <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_rectangle.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_sphere.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="image_spec.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_data.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="orthonormal_basis.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_camera_near_plane.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_material.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_camera.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_core.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="amp_lcg_rand.cpp">
       <Filter>Source Files\amp_utils</Filter>
     </ClCompile>
   </ItemGroup>

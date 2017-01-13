@@ -64,8 +64,6 @@ namespace rt_support
 
 			int get_material_index() restrict(amp);
 
-			int get_geom_index() restrict(amp);
-
 			float_3 get_intersection_position() restrict(amp);
 
 			float_3 get_normal_at_intersect() restrict(amp);

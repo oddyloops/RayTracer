@@ -6,51 +6,16 @@ namespace rt_support
 {
 	namespace geometries
 	{
-		/// <summary>
-		/// A Rectangle
-		/// </summary>
-
-		class rt_rectangle : public rt_geometry
+		class rt_sphere : public rt_geometry
 		{
 		private:
-			float_3 m_vertices[4];    // always 4 vertices
-			int m_u_axis_index, m_v_axis_index; // 0 is X, 1 is Y, and 2 is Z
-			float md;   // AX + BY + CZ + D = 0, this is the D
-			float_3 m_normal; // normal to the polygon
+			float_3 m_center;
+			float m_radius;
+			float m_radius_squared;
 
-									 // for texture mapping
-			float_3 m_u_vec, m_v_vec; // Normalized vector in the U and V direction
-			float m_u_size, m_v_size; // entire object size in the U and V direction
-									
-			/// <summary>
-			/// Initialize internal data structures for intersection and texture support
-			/// </summary>
-			void initialize_rectangle() restrict(amp,cpu);
-
-			/// <summary>
-			/// Returns if the given pt is inside(true) or outside(false) of the polygon.
-			/// </summary>
-			/// <param name="pt"></param>
-			/// <returns></returns>
-			int inside_polygon(float_3 pt) restrict(amp);
-
-			
-
-
-
-									
+		
 		public:
-			/// <summary>
-			/// Constructs from parameters and then intialize for intersection computation.
-			/// </summary>
-
-			rt_rectangle(float_3 vertices[], int material_index,array<float,2> xform,int has_transform);
-
-			/// <summary>
-			/// Construting a rectange from given vertices.
-			/// </summary>
-			/// <param name="v"></param>
-			rt_rectangle(float_3 v[]);
+			rt_sphere(float_3 center, float radius);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
@@ -59,7 +24,7 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
-			int intersect(ray& ray,intersection_record& record) restrict(amp);
+			int intersect(ray& ray, intersection_record& record) restrict(amp);
 
 			/// <summary>
 			/// pt is a position on in the rectangle, returns the normalized U/V value (between 0 to 1)
@@ -84,22 +49,11 @@ namespace rt_support
 			/// </summary>
 			/// <returns></returns>
 			float_3 get_center() restrict(amp);
-
-			/// <summary>
-			/// Accessing functions:
-			/// </summary>
-			float get_u_size() restrict(amp);
-			float get_v_size() restrict(amp);
-			float_3 get_normal() restrict(amp);
+			float get_radius() restrict(amp);
 
 			float_3 get_max() restrict(amp);
 			float_3 get_min() restrict(amp);
 
-
-
-
-
 		};
 	}
 }
-
