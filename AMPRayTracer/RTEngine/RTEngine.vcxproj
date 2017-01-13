@@ -122,6 +122,7 @@
     <ClInclude Include="rt_camera.h" />
     <ClInclude Include="rt_camera_near_plane.h" />
     <ClInclude Include="rt_core.h" />
+    <ClInclude Include="rt_gateway.h" />
     <ClInclude Include="rt_geometry.h" />
     <ClInclude Include="rt_material.h" />
     <ClInclude Include="rt_rectangle.h" />
@@ -141,6 +142,7 @@
     <ClCompile Include="rt_camera.cpp" />
     <ClCompile Include="rt_camera_near_plane.cpp" />
     <ClCompile Include="rt_core.cpp" />
+    <ClCompile Include="rt_gateway.cpp" />
     <ClCompile Include="rt_geomety.cpp" />
     <ClCompile Include="rt_material.cpp" />
     <ClCompile Include="rt_rectangle.cpp" />

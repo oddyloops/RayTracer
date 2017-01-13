@@ -46,6 +46,9 @@
     <Filter Include="Header Files\rt">
       <UniqueIdentifier>{71f135c8-9bfb-45d4-b91b-f1dd03ebcf2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\rt">
+      <UniqueIdentifier>{88701c32-9f51-4819-88cc-398c7a0fcaa4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rt_geometry.h">
@@ -99,6 +102,9 @@
     <ClInclude Include="amp_lcg_rand.h">
       <Filter>Header Files\amp_utils</Filter>
     </ClInclude>
+    <ClInclude Include="rt_gateway.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray.cpp">
@@ -146,11 +152,14 @@
     <ClCompile Include="rt_camera.cpp">
       <Filter>Source Files\rt_support</Filter>
     </ClCompile>
-    <ClCompile Include="rt_core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="amp_lcg_rand.cpp">
       <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_core.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_gateway.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

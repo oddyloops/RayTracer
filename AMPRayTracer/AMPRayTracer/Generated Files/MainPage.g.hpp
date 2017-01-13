@@ -25,8 +25,14 @@ void ::AMPRayTracer::MainPage::InitializeComponent()
 
 void ::AMPRayTracer::MainPage::Connect(int __connectionId, ::Platform::Object^ __target)
 {
-    __connectionId;         // unreferenced 
-    __target;               // unreferenced
+    switch (__connectionId)
+    {
+        case 1:
+            {
+                this->button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
+            }
+            break;
+    }
     _contentLoaded = true;
 }
 
