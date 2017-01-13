@@ -2,7 +2,7 @@
 
 using namespace rt_support;
 
-image_spec::image_spec()
+image_spec::image_spec() restrict(amp,cpu)
 {
 	m_x_resolution = 64;
 	m_y_resolution = 64;
