@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AMPRayTracer", "AMPRayTrace
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTEngine", "RTEngine\RTEngine.vcxproj", "{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestBed", "TestBed\TestBed.vcxproj", "{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -47,16 +45,6 @@ Global
 		{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}.Release|x64.Build.0 = Release|x64
 		{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}.Release|x86.ActiveCfg = Release|Win32
 		{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}.Release|x86.Build.0 = Release|Win32
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Debug|ARM.ActiveCfg = Debug|Win32
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Debug|x64.ActiveCfg = Debug|x64
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Debug|x64.Build.0 = Debug|x64
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Debug|x86.ActiveCfg = Debug|Win32
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Debug|x86.Build.0 = Debug|Win32
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Release|ARM.ActiveCfg = Release|Win32
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Release|x64.ActiveCfg = Release|x64
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Release|x64.Build.0 = Release|x64
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Release|x86.ActiveCfg = Release|Win32
-		{B85F6AF0-E58F-4CDD-9157-009F7BE0EDC0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

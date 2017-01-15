@@ -17,15 +17,14 @@ using namespace rt;
 using namespace rt_support;
 using namespace rt_support::geometries;
 
+typedef vector<vector<float_3>> scene_results;
 
 class rt_gateway
 {
 public:
-	static vector<float_3> m_image;
-	static vector<float_3> m_coverage_mask;
-	static vector<float_3> m_depth_map;
+	
 
-	static void ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, vector<rt_material> materials, rt_camera camera,int samples_per_pixel);
+	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, vector<rt_material> materials, rt_camera camera,image_spec spec);
 
 };
 

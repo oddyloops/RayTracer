@@ -7,15 +7,6 @@
 //------------------------------------------------------------------------------
 
 
-namespace Windows {
-    namespace UI {
-        namespace Xaml {
-            namespace Controls {
-                ref class Button;
-            }
-        }
-    }
-}
 
 namespace AMPRayTracer
 {
@@ -32,7 +23,6 @@ namespace AMPRayTracer
     private:
         bool _contentLoaded;
     
-        private: ::Windows::UI::Xaml::Controls::Button^ button;
     };
 }
 

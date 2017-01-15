@@ -56,7 +56,7 @@ namespace rt_support
 			/// Parse command line for <xform> </xform> that is embedeed inside 
 			/// Geometry.
 			/// </summary>
-			static array<float,2> parse_xform(float_3 translation, float rx, float ry, float rz, float_3 scale) restrict(cpu);
+			static concurrency::array<float,2> parse_xform(float_3 translation, float rx, float ry, float rz, float_3 scale) restrict(cpu);
 
 			/// <summary>
 			/// Returns status of if Ray intersects with this Geom. If so, details of intersection
