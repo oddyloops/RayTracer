@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{1ce3ac9f-debc-46cf-8c11-d6332891d8bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{f52c81e1-570f-450b-acb2-93111bd7bae7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt_support">
+      <UniqueIdentifier>{e725cff0-5304-4e5e-8f1a-7b7a671e29fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt_support\geometries">
+      <UniqueIdentifier>{4e073206-0414-4e6e-89e3-9422359f929c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support">
+      <UniqueIdentifier>{3c40313d-6b26-4553-8ca3-02b869459767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\geometries">
+      <UniqueIdentifier>{9254aec3-44e5-4e31-85ff-ee9aca3fe0f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt_support\ray_support">
+      <UniqueIdentifier>{7ccb7f31-b199-47ab-8084-8cd16d8be870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\ray_support">
+      <UniqueIdentifier>{32a692a8-138b-4eef-9e42-eec4e7f4e600}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\scene_resource_support">
+      <UniqueIdentifier>{07868332-0f91-44df-9e6b-2effec28cabe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt_support\scene_resource_support">
+      <UniqueIdentifier>{37811a20-f847-41f8-bdad-db462f5e38e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rt">
+      <UniqueIdentifier>{a09f731f-00e8-4afd-acc5-d31e0e96a739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt">
+      <UniqueIdentifier>{27926f6e-7d8b-4f9b-913a-288834669a38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="math_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vector_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_rectangle.h">
+      <Filter>rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_geometry.h">
+      <Filter>rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="ray.h">
+      <Filter>rt_support\ray_support</Filter>
+    </ClInclude>
+    <ClInclude Include="intersection_record.h">
+      <Filter>rt_support\ray_support</Filter>
+    </ClInclude>
+    <ClInclude Include="indexed_resource.h">
+      <Filter>rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_sphere.h">
+      <Filter>rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="image_spec.h">
+      <Filter>rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="orthonormal_basis.h">
+      <Filter>rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="pixel_data.h">
+      <Filter>rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_camera_near_plane.h">
+      <Filter>rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_camera.h">
+      <Filter>rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_core.h">
+      <Filter>rt</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_visibility.h">
+      <Filter>rt</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_shader.h">
+      <Filter>rt</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="math_util.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="vector_util.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_rectangle.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_geometry.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="ray.cpp">
+      <Filter>Source Files\rt_support\ray_support</Filter>
+    </ClCompile>
+    <ClCompile Include="intersection_record.cpp">
+      <Filter>Source Files\rt_support\ray_support</Filter>
+    </ClCompile>
+    <ClCompile Include="indexed_resource.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_sphere.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="image_spec.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="orthonormal_basis.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_data.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_camera.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_camera_near_plane.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_core.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_visibility.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_shader.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -35,7 +35,7 @@ void intersection_record::update_record(float dist, float_3 intersection_pt, flo
 	m_hit_distance = dist;
 	m_point = intersection_pt;
 	m_normal = normal;
-	vector_amp::normalize(m_normal);
+	m_normal = vector_amp::normalize(m_normal);
 	m_material_index = mat_index;
 	m_geom_index = geom_index;
 	m_ray_dir = ray.get_direction();

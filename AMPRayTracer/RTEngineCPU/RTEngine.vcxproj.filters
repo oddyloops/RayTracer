@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\rt_support">
+      <UniqueIdentifier>{06b4dfcf-8e27-4e3a-bc24-09efa10b8284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\rt_support\geometries">
+      <UniqueIdentifier>{6d45a8b5-a2e9-4532-9aff-9f7abf39fb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support">
+      <UniqueIdentifier>{f75fa11c-5a2c-447d-957c-7b0169f171ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\geometries">
+      <UniqueIdentifier>{d681e183-8b96-422f-8caf-5979196863c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\rt_support\ray_support">
+      <UniqueIdentifier>{e94cb7f8-c677-4b78-ba70-cf006c688789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\ray_support">
+      <UniqueIdentifier>{9df88535-76dd-4868-aade-854c18e74c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\rt_support\scene_resource_support">
+      <UniqueIdentifier>{85a657cd-4731-41a9-829a-5258d7aad181}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\scene_resource_support">
+      <UniqueIdentifier>{b681f2b2-40c7-45fd-bd87-b7b17aa606d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\amp_utils">
+      <UniqueIdentifier>{b86f81bb-782a-4502-9bdc-99170a275c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\amp_utils">
+      <UniqueIdentifier>{33ffc3db-5ce3-4e48-9bad-1849a6c041b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\rt">
+      <UniqueIdentifier>{71f135c8-9bfb-45d4-b91b-f1dd03ebcf2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt">
+      <UniqueIdentifier>{88701c32-9f51-4819-88cc-398c7a0fcaa4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rt_geometry.h">
+      <Filter>Header Files\rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="ray.h">
+      <Filter>Header Files\rt_support\ray_support</Filter>
+    </ClInclude>
+    <ClInclude Include="vector_amp.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="intersection_record.h">
+      <Filter>Header Files\rt_support\ray_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_core.h">
+      <Filter>Header Files\rt</Filter>
+    </ClInclude>
+    <ClInclude Include="indexed_resource.h">
+      <Filter>Header Files\rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_rectangle.h">
+      <Filter>Header Files\rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix_amp.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="math_util.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_sphere.h">
+      <Filter>Header Files\rt_support\geometries</Filter>
+    </ClInclude>
+    <ClInclude Include="image_spec.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="pixel_data.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_camera.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="orthonormal_basis.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_camera_near_plane.h">
+      <Filter>Header Files\rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_material.h">
+      <Filter>Header Files\rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="amp_lcg_rand.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_gateway.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ray.cpp">
+      <Filter>Source Files\rt_support\ray_support</Filter>
+    </ClCompile>
+    <ClCompile Include="vector_amp.cpp">
+      <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="intersection_record.cpp">
+      <Filter>Source Files\rt_support\ray_support</Filter>
+    </ClCompile>
+    <ClCompile Include="indexed_resource.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_geomety.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix_amp.cpp">
+      <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="math_util.cpp">
+      <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_rectangle.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_sphere.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="image_spec.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_data.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="orthonormal_basis.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_camera_near_plane.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_material.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_camera.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="amp_lcg_rand.cpp">
+      <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_core.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_gateway.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
