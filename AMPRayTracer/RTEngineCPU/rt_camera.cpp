@@ -18,7 +18,7 @@ rt_camera::rt_camera(vector<float> eye, vector<float> at, vector<float> up, floa
 	m_focus = focus;
 
 	compute_orthonormal_basis();
-	compute_near_plane();
+
 	
 }
 

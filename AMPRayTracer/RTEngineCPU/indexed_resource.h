@@ -1,4 +1,6 @@
 #pragma once
+
+
 namespace rt_support
 {
 	namespace scene_resource_support
@@ -6,6 +8,7 @@ namespace rt_support
 		/// <summary>
 		/// Base class for all resources of the RT scene database. All resoruces has an index.
 		/// </summary>
+
 		class indexed_resource
 		{
 		private:

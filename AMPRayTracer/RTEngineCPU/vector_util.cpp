@@ -79,7 +79,7 @@ vector<float> operator+(vector<float>& lhs, vector<float>& rhs)
 
 	vector<float> result;
 
-	for (int i = 0; i < lhs.size; i++)
+	for (int i = 0; i < lhs.size(); i++)
 	{
 		result.push_back(lhs[i] + rhs[i]);
 	}
@@ -97,7 +97,7 @@ vector<float> operator-(vector<float>& lhs, vector<float>& rhs)
 
 	vector<float> result;
 
-	for (int i = 0; i < lhs.size; i++)
+	for (int i = 0; i < lhs.size(); i++)
 	{
 		result.push_back(lhs[i] - rhs[i]);
 	}

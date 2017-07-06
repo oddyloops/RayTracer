@@ -9,7 +9,7 @@ namespace rt_support
 	class pixel_data
 	{
 	private:
-		vector<float> m_default_color = { 0.8,0.5,0.5 };
+		vector<float> m_default_color = { 0.8f,0.5f,0.5f };
 		vector<float> m_pixel_position; // pixel position
 		vector<float> m_pixel_color; // pixel color 
 		float m_pixel_coverage; // pixel mask value

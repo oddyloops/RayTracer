@@ -23,14 +23,14 @@ public:
 
 };
 
-static vector<float> operator+(vector<float>& lhs, vector<float>& rhs);
+vector<float> operator+(vector<float>& lhs, vector<float>& rhs);
 
-static vector<float> operator-(vector<float>& lhs, vector<float>& rhs);
+vector<float> operator-(vector<float>& lhs, vector<float>& rhs);
 
-static vector<float> operator*(float lhs, vector<float> rhs);
+vector<float> operator*(float lhs, vector<float> rhs);
 
-static vector<float> operator*(vector<float> lhs, float rhs);
+vector<float> operator*(vector<float> lhs, float rhs);
 
-static vector<float> operator/(vector<float>& lhs, float& rhs);
+vector<float> operator/(vector<float>& lhs, float& rhs);
 
-static vector<float> operator/(vector<float> lhs, int rhs);
+vector<float> operator/(vector<float> lhs, int rhs);

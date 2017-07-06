@@ -1,6 +1,5 @@
 #include "rt_core.h"
 #include "rt_geometry.h"
-#include <time.h>
 #include "vector_util.h"
 
 
@@ -10,8 +9,8 @@ using namespace rt;
 
 rt_core::rt_core(rt_camera camera, int seed, int num_of_samples)
 {
-	m_camera = rt_camera(camera.get_eye(),camera.get_at(),camera.get_up(),camera.get_fov(),camera.get_focus());
-	srand(time(0));
+	m_camera = camera;
+	srand(seed);
 	m_num_of_samples = num_of_samples;
 	
 }
@@ -76,7 +75,7 @@ pixel_data rt_core::compute_sample_pixel_data(vector<float> sample_position, vec
 	//compute mask
 	float coverage_mask = (rec.get_geom_index() == INVALID_INDEX) ? 0 : 1;
 	//compute depth_map
-	float depth_map = 1.0 - (rec.get_hit_distance() / FAR_PLANE_DIST);
+	float depth_map = 1.0f - (rec.get_hit_distance() / FAR_PLANE_DIST);
 	return pixel_data(sample_position, color, coverage_mask, depth_map, rec.get_hit_distance());
 
 }

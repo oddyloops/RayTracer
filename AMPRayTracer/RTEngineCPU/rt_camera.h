@@ -42,9 +42,7 @@ namespace rt_support
 		// for the camera
 		void compute_orthonormal_basis();
 
-		// calculate the near plane values
-		// for the camera
-		void compute_near_plane();
+		
 	public:
 		rt_camera();
 
@@ -61,12 +59,14 @@ namespace rt_support
 		// sets the projection mode for camera
 		void set_ortho_mode_on(bool ortho_mode_on);
 
-	
+		// calculate the near plane values
+		// for the camera
+		void compute_near_plane();
 		
 		vector<float> get_eye() const;
 		vector<float> get_at() const ;
 		vector<float> get_up() const;
-		float get_fov() const);
+		float get_fov() const;
 		float get_focus() const;
 		orthonormal_basis get_orthonormal_basis() const;
 		rt_camera_near_plane get_rt_camera_near_plane() const;

@@ -1,5 +1,4 @@
 
-
 #include "rt_sphere.h"
 #include "vector_util.h"
 

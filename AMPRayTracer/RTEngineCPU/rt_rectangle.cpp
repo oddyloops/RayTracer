@@ -96,7 +96,7 @@ int rt_rectangle::inside_polygon(vector<float> pt)
 	float trans_vector[3];
 	int NC = 0; /*number of crossings*/
 	int NSH, SH; /*sign holder*/
-	int i, b;
+	int b;
 	float u_intersect;
 	trans_vector[0] = -pt[0];
 	trans_vector[1] = -pt[1];
@@ -161,9 +161,9 @@ int rt_rectangle::inside_polygon(vector<float> pt)
 			va[2] = vb[2];
 
 		}
-		return NC % 2 != 0;
+		
 	}
-
+	return NC % 2 != 0;
 }
 
 bool rt_rectangle::intersect(ray& ray, intersection_record& record)

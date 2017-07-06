@@ -18,7 +18,7 @@ rt_camera_near_plane::rt_camera_near_plane(vector<float> eye, float focus, float
 	m_pixel_width = m_width / spec.get_x_resolution();
 	m_pixel_height = m_height / spec.get_y_resolution();
 
-	m_vertices[LL] = m_center - (0.5f * m_width *  basis.get_side_vector()) - (0.5 * m_height * basis.get_up_vector());
+	m_vertices[LL] = m_center - (0.5f * m_width *  basis.get_side_vector()) - (0.5f * m_height * basis.get_up_vector());
 	m_vertices[LR] = m_vertices[LL] + m_width * basis.get_side_vector();
 	m_vertices[UR] = m_vertices[LR] + m_height * basis.get_up_vector();
 	m_vertices[UL] = m_vertices[UR] - m_width * basis.get_side_vector();
