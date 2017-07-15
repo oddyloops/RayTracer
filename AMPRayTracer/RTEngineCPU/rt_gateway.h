@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "matrix.h"
-#include "pixel_data.h"
 #include "rt_camera.h"
 #include "rt_sphere.h"
 #include "rt_rectangle.h"

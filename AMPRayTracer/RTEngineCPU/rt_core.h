@@ -23,25 +23,18 @@ namespace rt
 		rt_visibility m_visibility;
 
 		
-		// computes pixel data given the top-left corner position of the current pixel
-		// also takes number of samples to take as a parameter (uses random average super-sampling)
-		pixel_data compute_pixel_data_with_samples(vector<float> position, vector<rt_sphere> spheres, vector<rt_rectangle> rectangles);
-
-
-		// compute the pixel data of the with given position
-		pixel_data compute_sample_pixel_data(vector<float> sample_position, vector<rt_sphere> spheres, vector<rt_rectangle> rectangles);
-
+		
 		
 	public:
 		
 		
 
 		//seed used for random number generation
-		rt_core(rt_camera camera,int seed, int no_of_samples);
+		rt_core(rt_camera camera,image_spec spec,int seed, int no_of_samples);
 		
 		// computes pixel data given its x and y offsets from top left pixel
 		// also takes number of samples to take as a parameter
-		pixel_data compute_pixel_data(int current_x, int current_y,vector<rt_sphere> spheres, vector<rt_rectangle> rectangles);
+		void compute_pixel_data(int current_x, int current_y,vector<float>& color, float coverage,float depth);
 
 		
 	};

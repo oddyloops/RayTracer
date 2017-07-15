@@ -25,17 +25,16 @@ void intersection_record::initialize_record()
 	m_geom_index = INVALID_INDEX;
 	m_hit_distance = FLT_MAX;
 	m_material_index = INVALID_INDEX;
-	m_normal = { 0, 0, 0 };
+	m_normal = { 0, 1.0f, 0 };
 	m_point = { 0, 0, 0 };
-	m_ray_dir = { 0, 0, 0 };
+	m_ray_dir = { 0, 0, 1.0f };
 }
 
 void intersection_record::update_record(float dist, vector<float> intersection_pt, vector<float> normal, ray ray, int mat_index, int geom_index)
 {
 	m_hit_distance = dist;
 	m_point = intersection_pt;
-	m_normal = normal;
-	m_normal = vector_util::normalize(m_normal);
+	m_normal = vector_util::normalize(normal);
 	m_material_index = mat_index;
 	m_geom_index = geom_index;
 	m_ray_dir = ray.get_direction();

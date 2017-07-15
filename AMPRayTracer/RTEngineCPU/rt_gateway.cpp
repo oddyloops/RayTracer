@@ -1,10 +1,12 @@
 #include "rt_gateway.h"
+#include "scene_database.h"
 #include <chrono>
+
+using namespace rt_support;
 
 scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec)
 {
-	camera.set_image_spec(spec);
-	camera.compute_near_plane();
+	
 	int no_of_pixels = camera.get_image_spec().get_x_resolution() * camera.get_image_spec().get_y_resolution();
 	scene_results results;
 	
@@ -18,8 +20,9 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	
 
 
-	rt_core ray_tracer = rt_core(camera, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
+	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
 
+	const float farPlane = 20;
 	for (int i = 0; i < spec.get_x_resolution(); i++)
 	{
 		for (int j = 0; j < spec.get_y_resolution(); j++)

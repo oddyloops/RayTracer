@@ -1,17 +1,12 @@
 #pragma once
-#include <amp.h>
-#include <amp_graphics.h>
+
 #include <vector>
-#include "rt_geometry.h"
-#include "rt_material.h"
+#include "rt_sphere.h"
+#include "rt_rectangle.h"
 
-
-
-using namespace concurrency;
-using namespace concurrency::graphics;
 
 using namespace rt_support::geometries;
-using namespace rt_support::scene_resource_support;
+
 
 namespace rt_support
 {
@@ -54,35 +49,27 @@ namespace rt_support
 	class scene_database
 	{
 	private:
-		array_view<rt_geometry, 1> m_geometries;
-		array_view<rt_material, 1> m_materials;
-
+		vector<rt_sphere> m_spheres;
+		vector<rt_rectangle> m_rects;
+	
 
 	public:
-		scene_database(std::vector<rt_geometry> _geometries, std::vector<rt_material> _materials);
+		scene_database(std::vector<rt_sphere> _spheres, std::vector<rt_rectangle> _rects);
 
-		/// <summary>
-		/// Geometry: Can be access as an array, the collection is a simple array
-		/// </summary>
-		void add_geom(rt_geometry g);
+		void add_sphere(rt_sphere s);
+		void add_rect(rt_rectangle r);
 
-		rt_geometry get_geom(int index) restrict(amp, cpu);
+		rt_sphere get_sphere(int index);
+		rt_rectangle get_rectangle(int index);
+		
+		vector<rt_sphere> get_all_spheres() const;
+		vector<rt_rectangle> get_all_rectangles() const;
 
-		array_view<rt_geometry, 1> get_all_geom() restrict(amp, cpu);
-
-		int get_num_geom() restrict(amp, cpu);
+		int get_num_spheres();
+		int get_num_rects();
+		
 		
 
-		/// <summary>
-		/// Material: can only be access given an index (the collection may be a sparse array!)
-		/// </summary>
-		/// <param name="m"></param>
-		void add_material(rt_material rm);
-
-		rt_material get_material(int index) restrict(amp, cpu);
-
-		array_view<rt_material, 1> get_all_material() restrict(amp, cpu);
-
-		int get_num_material() restrict(amp, cpu);
+		
 	};
 }

@@ -1,9 +1,6 @@
 #pragma once
 
 #include "image_spec.h"
-#include "pixel_data.h"
-#include "orthonormal_basis.h"
-#include "rt_camera_near_plane.h"
 
 
 namespace rt_support
@@ -30,18 +27,16 @@ namespace rt_support
 		vector<float> m_eye;                   // the eye position
 		vector<float> m_at;                    // the look at position
 		vector<float> m_up;                    // upvector
+		vector<float> m_view_direction;
+		vector<float> m_side;
 		float m_fov;                     // in degree!!
 		float m_focus;                   // place to form the image plane
-		orthonormal_basis m_basis;        // orthonormal basis
 		image_spec m_image_spec;           // image spec
-		rt_camera_near_plane m_near_plane;   // near plane details
 		int m_generation;                // generation value
 		bool m_ortho_mode_on;              // flags whether orthographic mode is on 
-
-		// create new orthonormal basis 
-		// for the camera
-		void compute_orthonormal_basis();
-
+	
+		vector<float> m_pixel_dx,m_pixel_dy;
+		vector<float> m_pixel_origin;
 		
 	public:
 		rt_camera();
@@ -59,21 +54,21 @@ namespace rt_support
 		// sets the projection mode for camera
 		void set_ortho_mode_on(bool ortho_mode_on);
 
-		// calculate the near plane values
-		// for the camera
-		void compute_near_plane();
+		void initialize_image(image_spec& spec);
+	
 		
 		vector<float> get_eye() const;
 		vector<float> get_at() const ;
 		vector<float> get_up() const;
+		vector<float> get_view_dir() const;
+		vector<float> get_side() const;
+
 		float get_fov() const;
 		float get_focus() const;
-		orthonormal_basis get_orthonormal_basis() const;
-		rt_camera_near_plane get_rt_camera_near_plane() const;
 		image_spec get_image_spec() const;
 		int get_generation() const;
 		bool get_ortho_mode_on() const;
-
+		vector<float> get_pixel_position(float x, float y);
 
 	};
 }

@@ -84,15 +84,6 @@
     <ClInclude Include="image_spec.h">
       <Filter>rt_support</Filter>
     </ClInclude>
-    <ClInclude Include="orthonormal_basis.h">
-      <Filter>rt_support</Filter>
-    </ClInclude>
-    <ClInclude Include="pixel_data.h">
-      <Filter>rt_support</Filter>
-    </ClInclude>
-    <ClInclude Include="rt_camera_near_plane.h">
-      <Filter>rt_support</Filter>
-    </ClInclude>
     <ClInclude Include="rt_camera.h">
       <Filter>rt_support</Filter>
     </ClInclude>
@@ -119,6 +110,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_DataStructures.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_database.h">
+      <Filter>rt_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_image_frame_support.h">
+      <Filter>rt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -152,16 +149,7 @@
     <ClCompile Include="image_spec.cpp">
       <Filter>Source Files\rt_support</Filter>
     </ClCompile>
-    <ClCompile Include="orthonormal_basis.cpp">
-      <Filter>Source Files\rt_support</Filter>
-    </ClCompile>
-    <ClCompile Include="pixel_data.cpp">
-      <Filter>Source Files\rt_support</Filter>
-    </ClCompile>
     <ClCompile Include="rt_camera.cpp">
-      <Filter>Source Files\rt_support</Filter>
-    </ClCompile>
-    <ClCompile Include="rt_camera_near_plane.cpp">
       <Filter>Source Files\rt_support</Filter>
     </ClCompile>
     <ClCompile Include="rt_core.cpp">
@@ -181,6 +169,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Downloads\EasyBMP.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="scene_database.cpp">
+      <Filter>Source Files\rt_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_image_frame_support.cpp">
+      <Filter>Source Files\rt</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

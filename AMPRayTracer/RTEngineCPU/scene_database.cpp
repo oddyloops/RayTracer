@@ -2,13 +2,49 @@
 
 using namespace rt_support;
 
-scene_database::scene_database(std::vector<rt_geometry> _geometries, std::vector<rt_material> _materials)
+scene_database::scene_database(std::vector<rt_sphere> _spheres, std::vector<rt_rectangle> _rects)
 {
-	array_view<rt_geometry,1> a_geometries(static_cast<int>(_geometries.size()), _geometries);
+	m_spheres = _spheres;
+	m_rects = _rects;
+}
+
+void scene_database::add_sphere(rt_sphere s)
+{
+	m_spheres.push_back(s);
 }
 
 
-
-rt_geometry scene_database::get_geom(int index) restrict(amp, cpu)
+void scene_database::add_rect(rt_rectangle r)
 {
- }
+	m_rects.push_back(r);
+}
+
+rt_sphere scene_database::get_sphere(int index)
+{
+	return m_spheres[index];
+}
+
+rt_rectangle scene_database::get_rectangle(int index)
+{
+	return m_rects[index];
+}
+
+vector<rt_sphere> scene_database::get_all_spheres() const
+{
+	return m_spheres;
+}
+
+vector<rt_rectangle> scene_database::get_all_rectangles() const
+{
+	return m_rects;
+}
+
+int scene_database::get_num_spheres()
+{
+	return static_cast<int>(m_spheres.size());
+}
+
+int scene_database::get_num_rects()
+{
+	return static_cast<int>(m_rects.size());
+}
