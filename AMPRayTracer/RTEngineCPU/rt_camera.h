@@ -1,7 +1,11 @@
 #pragma once
 
+#include <vector>
+
 #include "image_spec.h"
 
+
+using namespace std;
 
 namespace rt_support
 {

@@ -54,6 +54,7 @@ namespace rt_support
 	
 
 	public:
+		scene_database();
 		scene_database(std::vector<rt_sphere> _spheres, std::vector<rt_rectangle> _rects);
 
 		void add_sphere(rt_sphere s);
@@ -62,8 +63,8 @@ namespace rt_support
 		rt_sphere get_sphere(int index);
 		rt_rectangle get_rectangle(int index);
 		
-		vector<rt_sphere> get_all_spheres() const;
-		vector<rt_rectangle> get_all_rectangles() const;
+		vector<rt_sphere>& get_all_spheres();
+		vector<rt_rectangle>& get_all_rectangles();
 
 		int get_num_spheres();
 		int get_num_rects();

@@ -39,6 +39,8 @@ rt_camera& rt_camera::operator=(const rt_camera& cam)
 	m_generation = cam.get_generation();
 	m_ortho_mode_on = cam.get_ortho_mode_on();
 	m_image_spec = cam.get_image_spec();
+	m_side = cam.get_side();
+	m_view_direction = cam.get_view_dir();
 
 	return *this;
 }

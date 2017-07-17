@@ -7,6 +7,11 @@ rt_shader::rt_shader()
 
 }
 
+rt_shader::rt_shader(scene_database* db)
+{
+	m_db = db;
+}
+
 vector<float> rt_shader::compute_shade(intersection_record rec, int generation)
 {
 

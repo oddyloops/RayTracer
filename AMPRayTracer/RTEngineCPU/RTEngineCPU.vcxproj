@@ -154,6 +154,7 @@
     <ClInclude Include="intersection_record.h" />
     <ClInclude Include="math_util.h" />
     <ClInclude Include="matrix.h" />
+    <ClInclude Include="pixel_data.h" />
     <ClInclude Include="ray.h" />
     <ClInclude Include="rt_camera.h" />
     <ClInclude Include="rt_core.h" />
@@ -168,12 +169,13 @@
     <ClInclude Include="vector_util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Downloads\EasyBMP.cpp" />
+    <ClCompile Include="EasyBMP.cpp" />
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
     <ClCompile Include="math_util.cpp" />
     <ClCompile Include="matrix.cpp" />
+    <ClCompile Include="pixel_data.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="rt_camera.cpp" />
     <ClCompile Include="rt_core.cpp" />

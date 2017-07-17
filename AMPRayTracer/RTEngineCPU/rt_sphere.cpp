@@ -8,6 +8,7 @@ rt_sphere::rt_sphere(vector<float> center, float radius)
 {
 	m_center = center;
 	m_radius = radius;
+	m_radius_squared = radius * radius;
 }
 
 bool rt_sphere::intersect(ray& ray, intersection_record& record)

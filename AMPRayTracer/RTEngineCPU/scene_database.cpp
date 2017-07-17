@@ -2,6 +2,12 @@
 
 using namespace rt_support;
 
+scene_database::scene_database()
+{
+
+}
+
+
 scene_database::scene_database(std::vector<rt_sphere> _spheres, std::vector<rt_rectangle> _rects)
 {
 	m_spheres = _spheres;
@@ -29,12 +35,12 @@ rt_rectangle scene_database::get_rectangle(int index)
 	return m_rects[index];
 }
 
-vector<rt_sphere> scene_database::get_all_spheres() const
+vector<rt_sphere>& scene_database::get_all_spheres()
 {
 	return m_spheres;
 }
 
-vector<rt_rectangle> scene_database::get_all_rectangles() const
+vector<rt_rectangle>& scene_database::get_all_rectangles()
 {
 	return m_rects;
 }

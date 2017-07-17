@@ -2,27 +2,31 @@
 
 using namespace rt;
 
-
-rt_visibility::rt_visibility()
+rt_visibility::rt_visibility() 
 {
 
 }
 
-void rt_visibility::compute_visibility(ray r, int except_geom_index, intersection_record& rec, vector<rt_sphere> spheres, vector<rt_rectangle> rectangles)
+rt_visibility::rt_visibility(scene_database* db)
 {
-	for (int i = 0; i < spheres.size(); i++)
+	m_db = db;
+}
+
+void rt_visibility::compute_visibility(ray r, int except_geom_index, intersection_record& rec)
+{
+	for (int i = 0; i < m_db->get_all_spheres().size(); i++)
 	{
 		if (i != except_geom_index)
 		{	
-			spheres[i].intersect(r, rec);
+			m_db->get_sphere(i).intersect(r, rec);
 		}
 	}
 
-	for (int i = 0; i < rectangles.size(); i++)
+	for (int i = 0; i <  m_db->get_all_rectangles().size(); i++)
 	{
 		if (i != except_geom_index)
 		{
-			rectangles[i].intersect(r, rec);
+			m_db->get_rectangle(i).intersect(r, rec);
 		}
 	}
 }

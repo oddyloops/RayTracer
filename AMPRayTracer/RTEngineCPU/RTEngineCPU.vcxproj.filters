@@ -117,6 +117,9 @@
     <ClInclude Include="rt_image_frame_support.h">
       <Filter>rt</Filter>
     </ClInclude>
+    <ClInclude Include="pixel_data.h">
+      <Filter>rt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
@@ -167,14 +170,17 @@
     <ClCompile Include="test_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\EasyBMP.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="scene_database.cpp">
       <Filter>Source Files\rt_support</Filter>
     </ClCompile>
     <ClCompile Include="rt_image_frame_support.cpp">
       <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_data.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="EasyBMP.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

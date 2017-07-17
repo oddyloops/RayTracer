@@ -12,6 +12,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	
 	auto now = std::chrono::system_clock::now();
 
+	scene_database db = scene_database(spheres, rectangles);
 	
 	
 	vector<vector<float>> image_view(no_of_pixels);
@@ -20,17 +21,17 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	
 
 
-	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
+	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel(),db);
 
 	const float farPlane = 20;
 	for (int i = 0; i < spec.get_x_resolution(); i++)
 	{
 		for (int j = 0; j < spec.get_y_resolution(); j++)
 		{
-			pixel_data data = ray_tracer.compute_pixel_data(i, j, spheres, rectangles);
-			image_view[i * j] = data.get_pixel_color();
-			coverage_mask_view[i*j] = { data.get_pixel_coverage() };
-			depth_map_view[i*j] = { data.get_pixel_depth() };
+			pixel_data data = ray_tracer.compute_pixel_data(i, j);
+			image_view[i * j] = data.get_color();
+			coverage_mask_view[i*j] = { data.get_coverage() };
+			depth_map_view[i*j] = { data.get_depth() };
 		}
 	}
 
