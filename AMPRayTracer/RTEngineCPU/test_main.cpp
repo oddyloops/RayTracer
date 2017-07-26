@@ -1,12 +1,17 @@
 
 #include "rt_gateway.h"
 #include "EasyBMP.h"
+#include "vector_util.h"
 #include <string>
 
 using namespace rt_support::geometries;
 
 int main()
 {
+	vector<float> v1 = { 2,3,5 };
+	vector<float> v2 = {-1,0,3};
+	vector<float> v3 = vector_util::cross(v1, v2);
+
 	rt_sphere sph1 = rt_sphere({ -4, 0, 2 }, 1);
 	rt_sphere sph2 = rt_sphere({ -1, 1.5, 0 }, 1.5);
 	rt_sphere sph3 = rt_sphere({ 1, 1, 1 }, 2);
@@ -15,7 +20,7 @@ int main()
 	sph2.set_resource_index(1);
 	sph3.set_resource_index(2);
 	sph4.set_resource_index(3);
-	vector<rt_sphere> spheres = {sph1,sph2,sph3,sph4};
+	vector<rt_sphere> spheres = { sph1 };
 
 	vector<float> vtx1[] = { {0,1,-2}, {2,1,-2},{2,1,2},{0,1,2} };
 	rt_rectangle rect1 = rt_rectangle(vtx1);
@@ -26,7 +31,7 @@ int main()
 	rect1.set_resource_index(4);
 	rect2.set_resource_index(5);
 	rect3.set_resource_index(6);
-	vector<rt_rectangle> rectangles = { rect1,rect2,rect3 };
+	vector<rt_rectangle> rectangles;
 
 	const int X_RES = 64;
 	const int Y_RES = 64;
@@ -48,9 +53,9 @@ int main()
 				if (image[x*y].size() > 1)
 				{
 					input(x, y)->Alpha = 255;
-					input(x, y)->Red = image[x*y][0] * 255;
-					input(x, y)->Green = image[x*y][1] * 255;
-					input(x, y)->Blue = image[x*y][2] * 255;
+					input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(image[x*y][0] * 255));
+					input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(image[x*y][1] * 255));
+					input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(image[x*y][2] * 255));
 				}
 				else
 				{

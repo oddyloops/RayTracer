@@ -51,7 +51,7 @@ vector<float> vector_util::cross(vector<float> lhs, vector<float> rhs)
 	vector<float> result;
 	result.push_back( (lhs[1] * rhs[2]) - (lhs[2] * rhs[1]));
 	result.push_back(-((lhs[0] * rhs[2]) - (lhs[2] * rhs[0])));
-	result.push_back((lhs[0] * rhs[1]) + (lhs[1] * rhs[0]));
+	result.push_back((lhs[0] * rhs[1]) - (lhs[1] * rhs[0]));
 	return result;
 }
 

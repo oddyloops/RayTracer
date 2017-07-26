@@ -44,126 +44,44 @@ rt_rectangle::rt_rectangle(vector<float> vertices[])
 
 void rt_rectangle::initialize_rectangle()
 {
-	vector<float> v1, v2;
-	m_u_vec = v1 = m_vertices[1] - m_vertices[0]; //horizontal lower corner - origin
-	m_v_vec = v2 = m_vertices[3] - m_vertices[0];
+	
+	m_u_vec = m_vertices[1] - m_vertices[0];
+	m_v_vec = m_vertices[3] - m_vertices[0];
 	m_u_size = vector_util::magnitude(m_u_vec);
 	m_v_size = vector_util::magnitude(m_v_vec);
-	m_u_vec = vector_util::normalize(m_u_vec);
-	m_v_vec = vector_util::normalize(m_v_vec);
+	m_normal = vector_util::normalize(vector_util::cross(m_u_vec, m_v_vec));
 
-	m_normal = vector_util::cross(v1, v2);
-	m_normal = vector_util::normalize(m_normal);
-	md = -vector_util::dot(m_normal, m_vertices[0]);
+	//compute D for the plane equation using crammer's rule for the simultaneous equation
+	ma = (m_vertices[0][1] * (m_vertices[1][2] - m_vertices[2][2]))
+		+ (m_vertices[1][1] * (m_vertices[2][2] - m_vertices[0][2]))
+		+ (m_vertices[2][1] * (m_vertices[0][2] - m_vertices[1][2]));
+	mb = (m_vertices[0][2] * (m_vertices[1][0] - m_vertices[2][0]))
+		+ (m_vertices[1][2] * (m_vertices[2][0] - m_vertices[0][0]))
+		+ (m_vertices[2][2] * (m_vertices[0][0] - m_vertices[1][0]));
+	mc = (m_vertices[0][0] * (m_vertices[1][1] - m_vertices[2][1]))
+		+ (m_vertices[1][0] * (m_vertices[2][1] - m_vertices[0][1]))
+		+ (m_vertices[2][0] * (m_vertices[0][1] - m_vertices[1][1]));
 
-	if (math_util::abs(m_normal[0]) > math_util::abs(m_normal[1]))
-	{
-		/*normal x > normal y*/
-		if (math_util::abs(m_normal[0]) > math_util::abs(m_normal[2]))
-		{
-			/*normal x > both y and z*/
-			m_u_axis_index = 1;
-			m_v_axis_index = 2;
-		}
-		else {
-			/* y < x < z */
-			m_u_axis_index = 0;
-			m_v_axis_index = 1;
-		}
-	}
-	else
-	{
-		/* y > x*/
-		if (math_util::abs(m_normal[1]) > math_util::abs(m_normal[2]))
-		{
-			/* y  > x and z*/
-			m_u_axis_index = 0;
-			m_v_axis_index = 2;
-		}
-		else {
-			/* x < y <z*/
-			m_u_axis_index = 0;
-			m_v_axis_index = 1;
-		}
-	}
+	md = (-m_vertices[0][0] * (m_vertices[1][1] * m_vertices[2][2] - m_vertices[2][1] * m_vertices[1][2]))
+		- (m_vertices[1][0] * (m_vertices[2][1] * m_vertices[0][2] - m_vertices[0][1] * m_vertices[2][2]))
+		- (m_vertices[2][0] * (m_vertices[0][1] * m_vertices[1][2] - m_vertices[1][1] * m_vertices[0][2]));
 	
 }
 
-int rt_rectangle::inside_polygon(vector<float> pt)
+bool rt_rectangle::inside_polygon(vector<float> pt)
 {
-	float va[3];
-	float vb[3];
-	float trans_vector[3];
-	int NC = 0; /*number of crossings*/
-	int NSH, SH; /*sign holder*/
-	int b;
-	float u_intersect;
-	trans_vector[0] = -pt[0];
-	trans_vector[1] = -pt[1];
-	trans_vector[2] = -pt[2];
-
-	va[0] = m_vertices[0][0] + trans_vector[0];
-	va[1] = m_vertices[0][1] + trans_vector[1];
-	va[2] = m_vertices[0][2] + trans_vector[2];
-
-	if (va[m_v_axis_index] < 0)
-	{
-		SH = -1;
-	}
-	else
-	{
-		SH = 1;
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		b = (i + 4) % 4;
-		vb[0] = m_vertices[b][0] + trans_vector[0];
-		vb[1] = m_vertices[b][1] + trans_vector[0];
-		vb[2] = m_vertices[b][2] + trans_vector[0];
-
-		if (vb[m_v_axis_index] < 0)
-		{
-			NSH = -1;
-		}
-		else 
-		{
-			NSH = 1;
-		}
+	vector<float> v3 = m_vertices[3] - m_vertices[2];
+	vector<float> v4 = pt - m_vertices[0];
+	vector<float> v5 = m_vertices[2] - pt;
+	vector<float> v1 = m_u_vec / m_u_size;
+	v3 = vector_util::normalize(v3);
+	v4 = vector_util::normalize(v4);
+	v5 = vector_util::normalize(v5);
+	float v1v4 = vector_util::dot(v1, v4);
+	float v3v5 = vector_util::dot(v3, v5);
+	return v1v4 > 0 && v3v5 > 0;
 		
-		if (SH != NSH)
-		{
-			if ((va[m_u_axis_index] > 0) && (vb[m_u_axis_index] > 0))
-			{
-				/*
-				* Line crossed +U
-				*/
-				NC++;
-			}
-			else
-			{
-				if ((va[m_u_axis_index] > 0) || (vb[m_u_axis_index] > 0))
-				{
-					//line might cross +U, so compute U intersectoin
-					u_intersect = va[m_u_axis_index] - (va[m_v_axis_index] *
-						(vb[m_u_axis_index] - va[m_u_axis_index]) /
-						(vb[m_v_axis_index] - va[m_v_axis_index]));
-					if (u_intersect > 0)
-					{
-						// Line crossed +U
-						NC++;
-					}
-				}
-			}
-			SH = NSH;
-			va[0] = vb[0];
-			va[1] = vb[1];
-			va[2] = vb[2];
 
-		}
-		
-	}
-	return NC % 2 != 0;
 }
 
 bool rt_rectangle::intersect(ray& ray, intersection_record& record)
@@ -172,14 +90,10 @@ bool rt_rectangle::intersect(ray& ray, intersection_record& record)
 	vector<float> hitPt, n;
 
 	n = m_normal;    // because ray/plane intersection may flip the normal!
-	if (!ray_plane_intersection(ray, n, md, dist))
+	if (!ray_plane_intersection(ray, n, ma,mb,mc,md, &dist))
 		return false;
 
-	/*
-	* rectangle behind the ray or there are other closer intersections
-	*/
-	if ((dist < 0) || (dist > record.get_hit_distance()))
-		return false;
+
 
 	hitPt = ray.get_origin() + (ray.get_direction() * dist);
 

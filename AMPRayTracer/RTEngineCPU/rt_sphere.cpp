@@ -13,44 +13,21 @@ rt_sphere::rt_sphere(vector<float> center, float radius)
 
 bool rt_sphere::intersect(ray& ray, intersection_record& record)
 {
-	vector<float> v1 = ray.get_origin() - m_center;
-	float b = 2 * vector_util::dot(v1, ray.get_direction());
-	float c = vector_util::magnitude_sqr(v1) - m_radius_squared;
-	float root = b * b - 4 * c;
-
-	if (root < 0)
+	vector<float> l = m_center - ray.get_origin();
+	float l_size = vector_util::magnitude(l);
+	//project l on the ray direction
+	float ca = vector_util::dot(l, ray.get_direction());
+	if (ca < 0)
+		return false;
+	float d = sqrtf(l_size * l_size - ca * ca);
+	if (d < 0 || d < m_radius)
 		return false;
 
-	root = sqrtf(root);
-	float t0 = 0.5f * (-b - root);
-	float t1 = 0.5f * (-b + root);
-
-	if ((t0 < 0) && (t1 < 0))
-		return false;
-
-	float dist;
-	if (t0 < t1)
-	{
-		if (t0 > 0)
-			dist = t0;
-		else
-			dist = t1;
-	}
-	else
-	{
-		if (t1 > 0)
-			dist = t1;
-		else
-			dist = t0;
-	}
-
-	if (dist > record.get_hit_distance())
-		return false;
-
-	// intersection found
-	vector<float> pt = ray.get_origin() + dist * ray.get_direction();
-	vector<float> n = pt - m_center;
-	record.update_record(dist, pt, n, ray, m_material_index, get_resource_index());
+	//compute ray entry point
+	float hc = sqrtf(m_radius * m_radius - d * d);
+	vector<float> pt = ray.get_origin() + (ca - hc)*ray.get_direction(); //adding ca and hc will give exit intersection
+	vector<float> n = vector_util::normalize(pt - m_center); //normal at entry intersection
+	record.update_record(ca-hc, pt, n, ray, m_material_index, get_resource_index());
 
 	return true;
 

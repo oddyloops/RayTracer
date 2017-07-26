@@ -34,23 +34,8 @@ namespace rt_support
 			int m_material_index;
 
 
-			/// <summary>
-			/// Dot(norm, P) + d = 0 is the plane equation
-			/// Intersects the ray with the plane returns T/F
-			/// if T 
-			///     dist is the distance between the ray and the plane (may be negative)
-			/// if F
-			///     dist is undefined. Ray and Plane is parallel
-			///  
-			/// **WARNING**: this function flips the norm vector if the plane is facing
-			///              away from the ray directoin!!
-			/// </summary>
-			/// <param name="r">Ray to intersect the plane</param>
-			/// <param name="norm">Normal (normalized) vector of the plane</param>
-			/// <param name="d">Dot(norm, P) + d = 0.</param>
-			/// <param name="dist">Returned: Distance between the ray to the plane if the ray is not paralle with the plane</param>
-			/// <returns>True, if there is an interesection, False, if ray is parallel to the plane</returns>
-			int ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist);
+		
+			bool ray_plane_intersection(ray& r, vector<float> norm, float a,float b, float c, float d, float* dist);
 		public:
 			
 

@@ -20,8 +20,8 @@ rt_camera::rt_camera(vector<float> eye, vector<float> at, vector<float> up, floa
 	m_focus = focus;
 	m_view_direction = at - eye;
 
-	m_side = vector_util::cross(m_up, m_view_direction);
-	m_up = vector_util::cross(m_view_direction, m_side);
+	m_side = vector_util::cross(m_view_direction, m_up);
+	m_up = vector_util::cross(m_side, m_view_direction);
 	m_side = vector_util::normalize(m_side);
 	m_view_direction = vector_util::normalize(m_view_direction);
 	m_up = vector_util::normalize(m_up);
@@ -120,11 +120,11 @@ bool rt_camera::get_ortho_mode_on() const
 void rt_camera::initialize_image(image_spec& spec)
 {
 	m_image_spec = spec;
-	float halfImgHeight = m_focus * tanf(0.5f*math_util::deg_to_rad(m_fov));
+	float halfImgHeight = m_focus * tanf(math_util::deg_to_rad(0.5f * m_fov));
 	float halfImgWidth = halfImgHeight * spec.get_aspect_ratio();
 	vector<float> atOnImgPlane = m_eye + (m_focus * m_view_direction);
-	m_pixel_origin = atOnImgPlane + (halfImgHeight * m_up) + (halfImgWidth * m_side);
-	m_pixel_dx = -(halfImgWidth * 2 / (float)spec.get_x_resolution()) * m_side;
+	m_pixel_origin = atOnImgPlane + (halfImgHeight * m_up) - (halfImgWidth * m_side);
+	m_pixel_dx = (halfImgWidth * 2 / (float)spec.get_x_resolution()) * m_side;
 	m_pixel_dy = -(halfImgHeight * 2 / (float)spec.get_y_resolution()) * m_up;
 }
 

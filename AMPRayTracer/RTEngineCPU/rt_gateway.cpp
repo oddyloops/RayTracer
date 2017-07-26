@@ -23,7 +23,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 
 	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel(),db);
 
-	const float farPlane = 20;
+
 	for (int i = 0; i < spec.get_x_resolution(); i++)
 	{
 		for (int j = 0; j < spec.get_y_resolution(); j++)
