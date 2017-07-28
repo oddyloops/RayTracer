@@ -13,6 +13,7 @@ rt_sphere::rt_sphere(vector<float> center, float radius)
 
 bool rt_sphere::intersect(ray& ray, intersection_record& record)
 {
+
 	vector<float> l = m_center - ray.get_origin();
 	float l_size = vector_util::magnitude(l);
 	//project l on the ray direction
@@ -20,7 +21,7 @@ bool rt_sphere::intersect(ray& ray, intersection_record& record)
 	if (ca < 0)
 		return false;
 	float d = sqrtf(l_size * l_size - ca * ca);
-	if (d < 0 || d < m_radius)
+	if (d < 0 || d > m_radius)
 		return false;
 
 	//compute ray entry point

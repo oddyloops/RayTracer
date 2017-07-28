@@ -7,8 +7,9 @@
 using namespace concurrency::fast_math;
 using namespace rt_support::geometries;
 
-bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float a, float b, float c, float d,float* dist)
+bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist, vector<float> plane_point)
 {
+
 	float denomenator = vector_util::dot(norm, r.get_direction());
 
 	/*
@@ -17,13 +18,14 @@ bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float a, fl
 	if (fabs(denomenator) < FLT_EPSILON)
 		return false;
 
-	*dist = -(a * r.get_origin()[0] + b * r.get_origin()[1] + c * r.get_origin()[2] + d) / (a * r.get_direction()[0] + b * r.get_direction()[1]
-		+ c * r.get_direction()[2]);
+	float numerator = vector_util::dot(norm, (plane_point - r.get_origin()));
+	dist = numerator / denomenator;
 
-	if (*dist < 0)
-		return false;
+	if (denomenator > 0)
+		norm = -1 * norm;
 
 	return true;
+
 
 }
 

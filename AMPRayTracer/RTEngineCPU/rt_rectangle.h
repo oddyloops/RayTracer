@@ -37,7 +37,7 @@ namespace rt_support
 			bool inside_polygon(vector<float> pt);
 
 			
-
+			float clock_wise_angle(vector<float> v1, vector<float> v2, vector<float> normal);
 
 
 									

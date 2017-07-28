@@ -35,7 +35,7 @@ namespace rt_support
 
 
 		
-			bool ray_plane_intersection(ray& r, vector<float> norm, float a,float b, float c, float d, float* dist);
+			bool ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist,vector<float> plane_point);
 		public:
 			
 

@@ -44,7 +44,7 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y)
 	//compute mask
 	float coverage_mask = (rec.get_geom_index() == INVALID_INDEX) ? 0 : 1;
 	//compute depth_map
-	float depth_map = 1.0f - max(1.0f,rec.get_hit_distance() / FAR_PLANE_DIST);
+	float depth_map = 1.0f - min(1.0f,rec.get_hit_distance() / FAR_PLANE_DIST);
 	return pixel_data( color, coverage_mask, depth_map);
 
 }

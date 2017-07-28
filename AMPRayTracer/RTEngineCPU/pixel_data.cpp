@@ -7,6 +7,14 @@ pixel_data::pixel_data()
 
 }
 
+pixel_data& pixel_data::operator=(const pixel_data& rhs) 
+{
+	this->m_color = rhs.get_color();
+	this->m_coverage = rhs.get_coverage();
+	this->m_depth = rhs.get_depth();
+	return *this;
+}
+
 pixel_data::pixel_data(vector<float> color, float coverage, float depth)
 {
 	m_color = color;

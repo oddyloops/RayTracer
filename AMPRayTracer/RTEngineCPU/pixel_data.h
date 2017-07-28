@@ -15,6 +15,7 @@ namespace rt
 
 	public:
 		pixel_data();
+		pixel_data& operator=(const pixel_data& cam);
 		pixel_data(vector<float> color,float coverage, float depth);
 		void set_color(vector<float> color);
 		void set_coverage(float coverage);
