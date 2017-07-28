@@ -132,3 +132,13 @@ vector<float> rt_camera::get_pixel_position(float x, float y)
 {
 	return m_pixel_origin + (x * m_pixel_dx) + (y * m_pixel_dy);
 }
+
+vector<float> rt_camera::get_pixel_dx() const
+{
+	return m_pixel_dx;
+}
+
+vector<float> rt_camera::get_pixel_dy() const
+{
+	return m_pixel_dy;
+}

@@ -10,4 +10,6 @@ public:
 	static float rad_to_degree(float rad);
 
 	static float abs(float x);
+
+	static float rnd0to1();
 };

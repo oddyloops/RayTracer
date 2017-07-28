@@ -73,6 +73,8 @@ namespace rt_support
 		int get_generation() const;
 		bool get_ortho_mode_on() const;
 		vector<float> get_pixel_position(float x, float y);
+		vector<float> get_pixel_dx() const;
+		vector<float> get_pixel_dy() const;
 
 	};
 }
