@@ -10,10 +10,9 @@
 #include "rt_rectangle.h"
 
 #define INVALID_INDEX -1
-#define FAR_PLANE_DIST 40
+#define FAR_PLANE_DIST 20
 
-using namespace concurrency;
-using namespace concurrency::graphics;
+
 using namespace rt_support;
 using namespace rt_support::geometries;
 using namespace rt_support::ray_support;

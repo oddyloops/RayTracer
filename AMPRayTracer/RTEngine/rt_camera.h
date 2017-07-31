@@ -1,13 +1,9 @@
 #pragma once
-#include <amp.h>
-#include <amp_graphics.h>
+
 #include "image_spec.h"
 #include "pixel_data.h"
-#include "orthonormal_basis.h"
-#include "rt_camera_near_plane.h"
-
-using namespace concurrency;
-using namespace concurrency::graphics;
+#include "vector_amp.h"
+#include "math_util.h"
 
 namespace rt_support
 {
@@ -35,19 +31,16 @@ namespace rt_support
 		float_3 m_up;                    // upvector
 		float m_fov;                     // in degree!!
 		float m_focus;                   // place to form the image plane
-		orthonormal_basis m_basis;        // orthonormal basis
+		float_3 m_view_direction;
+		float_3 m_side;
+
 		image_spec m_image_spec;           // image spec
-		rt_camera_near_plane m_near_plane;   // near plane details
 		int m_generation;                // generation value
 		int m_ortho_mode_on;              // flags whether orthographic mode is on 
 
-		// create new orthonormal basis 
-		// for the camera
-		void compute_orthonormal_basis() restrict(amp, cpu);
-
-		// calculate the near plane values
-		// for the camera
-		void compute_near_plane() restrict(amp, cpu);
+		float_3 m_pixel_dx, m_pixel_dy;
+		float_3 m_pixel_origin;
+		
 	public:
 		rt_camera() restrict(amp, cpu) {/*default constructor*/}
 
@@ -55,6 +48,7 @@ namespace rt_support
 
 		rt_camera& operator=(const rt_camera& cam) restrict(amp, cpu);
 
+	
 		// sets the image spec object of camera
 		void set_image_spec(image_spec spec) restrict(amp,cpu);
 
@@ -64,18 +58,25 @@ namespace rt_support
 		// sets the projection mode for camera
 		void set_ortho_mode_on(int ortho_mode_on) restrict(amp, cpu);
 
+		void initialize_image(image_spec& spec) restrict(amp, cpu);
+
 	
 		
 		float_3 get_eye() const restrict(amp, cpu);
 		float_3 get_at() const restrict(amp, cpu);
 		float_3 get_up() const restrict(amp, cpu);
+
+		float_3 get_view_dir() const restrict(amp, cpu);
+		float_3 get_side() const restrict(amp, cpu);
 		float get_fov() const restrict(amp, cpu);
 		float get_focus() const restrict(amp, cpu);
-		orthonormal_basis get_orthonormal_basis() const restrict(amp, cpu);
-		rt_camera_near_plane get_rt_camera_near_plane() const restrict(amp, cpu);
 		image_spec get_image_spec() const restrict(amp, cpu);
 		int get_generation() const restrict(amp, cpu);
 		int get_ortho_mode_on() const restrict(amp, cpu);
+
+		float_3 get_pixel_position(float x, float y) restrict(amp);
+		float_3 get_pixel_dx() const  restrict(amp);
+		float_3 get_pixel_dy() const  restrict(amp);
 
 
 	};

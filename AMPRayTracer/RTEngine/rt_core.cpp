@@ -7,12 +7,12 @@
 using namespace rt;
 
 
-rt_core::rt_core(rt_camera camera, int seed, int num_of_samples) restrict(amp,cpu)
+rt_core::rt_core(rt_camera camera, int seed, int num_of_samples) restrict(amp, cpu)
 {
-	m_camera = rt_camera(camera.get_eye(),camera.get_at(),camera.get_up(),camera.get_fov(),camera.get_focus());
+	m_camera = rt_camera(camera.get_eye(), camera.get_at(), camera.get_up(), camera.get_fov(), camera.get_focus());
 	m_rand = amp_lcg_rand(seed);
 	m_num_of_samples = num_of_samples;
-	
+
 }
 
 pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp)
@@ -22,24 +22,25 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<
 		(current_y * m_camera.get_rt_camera_near_plane().get_pixel_height() * m_camera.get_orthonormal_basis().get_up_vector());
 
 	// compute pixel data
-	return compute_pixel_data_with_samples(pixel_3d_position,spheres,rectangles);
+	return compute_pixel_data_with_samples(pixel_3d_position, spheres, rectangles);
 }
 
 
-pixel_data rt_core::compute_pixel_data_with_samples(float_3 position,  array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp)
+pixel_data rt_core::compute_pixel_data_with_samples(float_3 position, array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp)
 {
 	//pixel upper left
-	pixel_data initial_pixel = compute_sample_pixel_data(position,spheres,rectangles);
-	float_3 cumulative_color(0,0,0); //used to compute average color from super sampling
+	pixel_data initial_pixel = compute_sample_pixel_data(position, spheres, rectangles);
+	float_3 cumulative_color(0, 0, 0); //used to compute average color from super sampling
 	float cumulative_coverage = 0; //used to compute average coverage mask
 	float cumulative_depth = 0; //used to compute average depth map
+	m_num_of_samples = 1;
 	for (int i = 0; i < m_num_of_samples; i++)
 	{
-		float_3 new_position = initial_pixel.get_pixel_position() + (m_rand.rand_f() * m_camera.get_rt_camera_near_plane().get_pixel_width() * m_camera.get_orthonormal_basis().get_side_vector())
-			- (m_rand.rand_f() * m_camera.get_rt_camera_near_plane().get_height() * m_camera.get_orthonormal_basis().get_up_vector());
-		
-		pixel_data new_pixel = compute_sample_pixel_data(new_position,spheres,rectangles);
-		
+		float_3 new_position = initial_pixel.get_pixel_position();// +(m_rand.rand_f() * m_camera.get_rt_camera_near_plane().get_pixel_width() * m_camera.get_orthonormal_basis().get_side_vector())
+			//- (m_rand.rand_f() * m_camera.get_rt_camera_near_plane().get_height() * m_camera.get_orthonormal_basis().get_up_vector());
+
+		pixel_data new_pixel = compute_sample_pixel_data(new_position, spheres, rectangles);
+
 		cumulative_color += new_pixel.get_pixel_color();
 		cumulative_coverage += new_pixel.get_pixel_coverage();
 		cumulative_depth += new_pixel.get_pixel_depth();
@@ -65,11 +66,11 @@ pixel_data rt_core::compute_sample_pixel_data(float_3 sample_position, array_vie
 		//perspective projection
 		r = ray(m_camera.get_eye(), sample_position);
 	}
-	
+
 	intersection_record rec;
 	//compute visibility
-	compute_visibility(r, INVALID_INDEX, rec,spheres,rectangles);
-	
+	compute_visibility(r, INVALID_INDEX, rec, spheres, rectangles);
+
 	//compute color
 	float_3 color = compute_shade(rec, m_camera.get_generation());
 	//compute mask
@@ -81,26 +82,29 @@ pixel_data rt_core::compute_sample_pixel_data(float_3 sample_position, array_vie
 }
 
 
-void rt_core::compute_visibility(ray r, int except_geom_index, intersection_record& rec,array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp)
+void rt_core::compute_visibility(ray r, int except_geom_index, intersection_record& rec, array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp)
 {
+	int x = 0;
+	int total = spheres.extent.size() + rectangles.extent.size();
 	for (int i = 0; i < spheres.extent.size(); i++)
 	{
-		if (i != except_geom_index)
+
+		index<1> idx(i);
+		if (spheres[idx].get_resource_index() != except_geom_index)
 		{
-			index<1> idx(i);
 			spheres[idx].intersect(r, rec);
 		}
 	}
 
-	for (int i = 0; i < rectangles.extent.size(); i++)
-	{
-		if (i != except_geom_index)
+		for (int i = 0; i < rectangles.extent.size(); i++)
 		{
 			index<1> idx(i);
-			rectangles[idx].intersect(r, rec);
+			if (rectangles[idx].get_resource_index() != except_geom_index)
+			{
+				rectangles[idx].intersect(r, rec);
+			}
 		}
-	}
-	
+
 }
 
 

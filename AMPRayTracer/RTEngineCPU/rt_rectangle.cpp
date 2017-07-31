@@ -60,20 +60,7 @@ void rt_rectangle::initialize_rectangle()
 	mc = m_normal[2];
 
 	md = -vector_util::dot(m_normal, m_vertices[0]);
-	//compute D for the plane equation using crammer's rule for the simultaneous equation
-	/*ma = (m_vertices[0][1] * (m_vertices[1][2] - m_vertices[2][2]))
-		+ (m_vertices[1][1] * (m_vertices[2][2] - m_vertices[0][2]))
-		+ (m_vertices[2][1] * (m_vertices[0][2] - m_vertices[1][2]));
-	mb = (m_vertices[0][2] * (m_vertices[1][0] - m_vertices[2][0]))
-		+ (m_vertices[1][2] * (m_vertices[2][0] - m_vertices[0][0]))
-		+ (m_vertices[2][2] * (m_vertices[0][0] - m_vertices[1][0]));
-	mc = (m_vertices[0][0] * (m_vertices[1][1] - m_vertices[2][1]))
-		+ (m_vertices[1][0] * (m_vertices[2][1] - m_vertices[0][1]))
-		+ (m_vertices[2][0] * (m_vertices[0][1] - m_vertices[1][1]));
-
-	md = (-m_vertices[0][0] * (m_vertices[1][1] * m_vertices[2][2] - m_vertices[2][1] * m_vertices[1][2]))
-		- (m_vertices[1][0] * (m_vertices[2][1] * m_vertices[0][2] - m_vertices[0][1] * m_vertices[2][2]))
-		- (m_vertices[2][0] * (m_vertices[0][1] * m_vertices[1][2] - m_vertices[1][1] * m_vertices[0][2]));*/
+	
 	if (math_util::abs(m_normal[0]) > math_util::abs(m_normal[1]))
 	{
 		/*normal x > normal y*/

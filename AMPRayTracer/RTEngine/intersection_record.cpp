@@ -32,14 +32,16 @@ void intersection_record::initialize_record() restrict(amp)
 
 void intersection_record::update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index) restrict(amp)
 {
-	m_hit_distance = dist;
-	m_point = intersection_pt;
-	m_normal = normal;
-	m_normal = vector_amp::normalize(m_normal);
-	m_material_index = mat_index;
-	m_geom_index = geom_index;
-	m_ray_dir = ray.get_direction();
-
+	if (dist < m_hit_distance)
+	{
+		m_hit_distance = dist;
+		m_point = intersection_pt;
+		m_normal = normal;
+		m_normal = vector_amp::normalize(m_normal);
+		m_material_index = mat_index;
+		m_geom_index = geom_index;
+		m_ray_dir = ray.get_direction();
+	}
 }
 
 void intersection_record::update_bc(float u, float v, float w) restrict(amp)

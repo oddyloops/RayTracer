@@ -54,6 +54,10 @@ void rt_rectangle::initialize_rectangle() restrict(amp,cpu)
 
 	m_normal = vector_amp::cross(v1, v2);
 	m_normal = vector_amp::normalize(m_normal);
+	ma = m_normal.x;
+	mb = m_normal.y;
+	mc = m_normal.z;
+
 	md = -vector_amp::dot(m_normal, m_vertices[0]);
 
 	if (math_util::abs(m_normal.x) > math_util::abs(m_normal.y))
@@ -91,79 +95,18 @@ void rt_rectangle::initialize_rectangle() restrict(amp,cpu)
 
 int rt_rectangle::inside_polygon(float_3 pt) restrict(amp)
 {
-	float va[3];
-	float vb[3];
-	float trans_vector[3];
-	int NC = 0; /*number of crossings*/
-	int NSH, SH; /*sign holder*/
-	int i, b;
-	float u_intersect;
-	trans_vector[0] = -pt.x;
-	trans_vector[1] = -pt.y;
-	trans_vector[2] = -pt.z;
+	float_3 v3 = m_vertices[3] - m_vertices[2];
+	float_3 v4 = pt - m_vertices[0];
+	float_3 v5 = pt - m_vertices[2];
+	float_3 v1 = m_u_vec;
+	v3 = vector_amp::normalize(v3);
+	v4 = vector_amp::normalize(v4);
+	v5 = vector_amp::normalize(v5);
 
-	va[0] = m_vertices[0].x + trans_vector[0];
-	va[1] = m_vertices[0].y + trans_vector[1];
-	va[2] = m_vertices[0].z + trans_vector[2];
-
-	if (va[m_v_axis_index] < 0)
-	{
-		SH = -1;
-	}
-	else
-	{
-		SH = 1;
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		b = (i + 4) % 4;
-		vb[0] = m_vertices[b].x + trans_vector[0];
-		vb[1] = m_vertices[b].y + trans_vector[0];
-		vb[2] = m_vertices[b].z + trans_vector[0];
-
-		if (vb[m_v_axis_index] < 0)
-		{
-			NSH = -1;
-		}
-		else 
-		{
-			NSH = 1;
-		}
-		
-		if (SH != NSH)
-		{
-			if ((va[m_u_axis_index] > 0) && (vb[m_u_axis_index] > 0))
-			{
-				/*
-				* Line crossed +U
-				*/
-				NC++;
-			}
-			else
-			{
-				if ((va[m_u_axis_index] > 0) || (vb[m_u_axis_index] > 0))
-				{
-					//line might cross +U, so compute U intersectoin
-					u_intersect = va[m_u_axis_index] - (va[m_v_axis_index] *
-						(vb[m_u_axis_index] - va[m_u_axis_index]) /
-						(vb[m_v_axis_index] - va[m_v_axis_index]));
-					if (u_intersect > 0)
-					{
-						// Line crossed +U
-						NC++;
-					}
-				}
-			}
-			SH = NSH;
-			va[0] = vb[0];
-			va[1] = vb[1];
-			va[2] = vb[2];
-
-		}
-		return NC % 2 != 0;
-	}
-
+	float v1v4 = math_util::clock_wise_angle(v1, v4, m_normal);
+	float v3v5 = math_util::clock_wise_angle(v3, v5, m_normal);
+	float angle90 = 0.5f * PI;
+	return (v1v4 < angle90 && v1v4 > 0) && (v3v5 < angle90 && v3v5 > 0);
 }
 
 int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)

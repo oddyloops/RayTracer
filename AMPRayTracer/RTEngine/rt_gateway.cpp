@@ -4,13 +4,15 @@
 scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, vector<rt_material> materials, rt_camera camera,image_spec spec)
 {
 	camera.set_image_spec(spec);
+	camera.compute_near_plane();
 	int no_of_pixels = camera.get_image_spec().get_x_resolution() * camera.get_image_spec().get_y_resolution();
 	scene_results results = { vector<float_3>(no_of_pixels),vector<float_3>(no_of_pixels) ,vector<float_3>(no_of_pixels) };
 	
 	auto now = std::chrono::system_clock::now();
 
-	array_view<rt_sphere, 1> sphere_view(spheres);
 	array_view<rt_rectangle, 1> rectangle_view(rectangles);
+	array_view<rt_sphere, 1> sphere_view(spheres);
+	
 	array_view<float_3, 2> image_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results[0]);
 	array_view<float_3, 2> coverage_mask_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results[1]);
 	array_view<float_3, 2> depth_map_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results[2]);

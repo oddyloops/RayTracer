@@ -6,7 +6,7 @@ using namespace rt_support;
 rt_camera_near_plane::rt_camera_near_plane(float_3 eye, float focus, float fov, orthonormal_basis basis, image_spec spec) restrict(amp, cpu)
 {
 	m_center = eye + focus * basis.get_view_direction();
-	m_height = 2 * focus * tanf(0.5 * math_util::deg_to_rad(fov * 0.5));
+	m_height = 2 * focus * tanf(0.5f * math_util::deg_to_rad(fov));
 	m_width = spec.get_aspect_ratio() * m_height;
 	m_pixel_width = m_width / spec.get_x_resolution();
 	m_pixel_height = m_height / spec.get_y_resolution();
@@ -24,7 +24,7 @@ rt_camera_near_plane& rt_camera_near_plane::operator = (const rt_camera_near_pla
 	m_center = cam.get_center();
 	m_height = cam.get_height();
 	m_width = cam.get_width();
-	m_pixel_height = cam.get_pixel_width();
+	m_pixel_width = cam.get_pixel_width();
 	m_pixel_height = cam.get_pixel_height();
 	m_vertices[UL] = cam.get_upper_left();
 	m_vertices[UR] = cam.get_upper_right();

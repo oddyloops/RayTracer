@@ -51,6 +51,6 @@ float_3 vector_amp::cross(float_3 lhs, float_3 rhs) restrict(amp, cpu)
 	float_3 result;
 	result.x = (lhs.y * rhs.z) - (lhs.z * rhs.y);
 	result.y = -((lhs.x * rhs.z) - (lhs.z * rhs.x));
-	result.z = (lhs.x * rhs.y) + (lhs.y * rhs.x);
+	result.z = (lhs.x * rhs.y) - (lhs.y * rhs.x);
 	return result;
 }
