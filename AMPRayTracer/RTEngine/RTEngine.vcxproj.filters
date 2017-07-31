@@ -123,9 +123,6 @@
     <ClInclude Include="rt_shader.h">
       <Filter>Header Files\rt</Filter>
     </ClInclude>
-    <ClInclude Include="scene_database.h">
-      <Filter>Header Files\rt_support\scene_resource_support</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray.cpp">
@@ -185,8 +182,11 @@
     <ClCompile Include="scene_resource.cpp">
       <Filter>Source Files\rt_support\scene_resource_support</Filter>
     </ClCompile>
-    <ClCompile Include="scene_database.cpp">
-      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    <ClCompile Include="rt_visibility.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_shader.cpp">
+      <Filter>Source Files\rt</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

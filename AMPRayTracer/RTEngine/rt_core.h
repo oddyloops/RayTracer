@@ -8,6 +8,8 @@
 #include "intersection_record.h"
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
+#include "rt_shader.h"
+#include "rt_visibility.h"
 
 #define INVALID_INDEX -1
 #define FAR_PLANE_DIST 20
@@ -25,25 +27,16 @@ namespace rt
 		rt_camera m_camera;
 		amp_lcg_rand m_rand;
 		int m_num_of_samples;
+		rt_shader m_shader;
+		rt_visibility m_visibility;
 		
-		// computes pixel data given the top-left corner position of the current pixel
-		// also takes number of samples to take as a parameter (uses random average super-sampling)
-		pixel_data compute_pixel_data_with_samples(float_3 position, array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp);
-
-
-		// compute the pixel data of the with given position
-		pixel_data compute_sample_pixel_data(float_3 sample_position, array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp);
-
-		//no virtual inheritance so we have to separate all geometries to call their appropriate intersect methods
-		void compute_visibility(ray r, int except_geom_index, intersection_record& rec, array_view<rt_sphere, 1> spheres, array_view<rt_rectangle, 1> rectangles) restrict(amp);
-
-		float_3 compute_shade(intersection_record rec, int generation) restrict(amp);
+		
 	public:
 		
 		
 
 		//seed used for random number generation
-		rt_core(rt_camera camera,int seed, int no_of_samples) restrict(amp,cpu);
+		rt_core(rt_camera camera, image_spec spec, int seed, int no_of_samples) restrict(amp,cpu);
 		
 		// computes pixel data given its x and y offsets from top left pixel
 		// also takes number of samples to take as a parameter

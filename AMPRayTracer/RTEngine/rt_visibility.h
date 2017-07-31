@@ -6,7 +6,6 @@
 #include "intersection_record.h"
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
-#include "scene_database.h"
 
 using namespace std;
 
@@ -20,12 +19,10 @@ namespace rt
 
 	class rt_visibility
 	{
-	private:
-		scene_database* m_db;
+	
 	public:
-		rt_visibility() restrict(amp,cpu);
-		rt_visibility(scene_database* db) restrict(amp, cpu);
+		rt_visibility() restrict(amp, cpu);
 
-		void compute_visibility(ray r, int except_geom_index, intersection_record& rec) restrict(amp);
+		void compute_visibility(ray r, int except_geom_index, intersection_record& rec, array_view<rt_sphere,1>& spheres, array_view<rt_rectangle,1>& rects) restrict(amp);
 	};
 }

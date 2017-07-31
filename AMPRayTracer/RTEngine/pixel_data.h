@@ -11,7 +11,7 @@ namespace rt_support
 	class pixel_data
 	{
 	private:
-		float_3 m_default_color = float_3(0.8,0.5,0.5);
+		float_3 m_default_color = float_3(0.8f,0.5f,0.5f);
 		float_3 m_pixel_position; // pixel position
 		float_3 m_pixel_color; // pixel color 
 		float m_pixel_coverage; // pixel mask value
@@ -23,7 +23,7 @@ namespace rt_support
 	public:
 		pixel_data() restrict(amp,cpu);
 
-		pixel_data(float_3 position,float hit_distance) restrict(amp,cpu);
+		pixel_data(float_3 color, float coverage, float depth) restrict(amp,cpu);
 
 		pixel_data(float_3 position, float_3 color, float coverage, float depth, float hitDistance) restrict(amp,cpu);
 

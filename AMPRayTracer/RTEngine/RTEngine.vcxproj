@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}</ProjectGuid>
     <RootNamespace>RTEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.10240.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -132,7 +132,6 @@
     <ClInclude Include="rt_shader.h" />
     <ClInclude Include="rt_sphere.h" />
     <ClInclude Include="rt_visibility.h" />
-    <ClInclude Include="scene_database.h" />
     <ClInclude Include="vector_amp.h" />
   </ItemGroup>
   <ItemGroup>
@@ -141,7 +140,8 @@
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
-    <ClCompile Include="scene_database.cpp" />
+    <ClCompile Include="rt_shader.cpp" />
+    <ClCompile Include="rt_visibility.cpp" />
     <ClCompile Include="scene_resource.cpp" />
     <ClCompile Include="test_main.cpp" />
     <ClCompile Include="math_util.cpp" />

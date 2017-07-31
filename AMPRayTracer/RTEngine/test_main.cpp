@@ -35,14 +35,14 @@ int main()
 	int samples = 5;
 	image_spec spec = image_spec(X_RES,Y_RES, samples);
 
-	auto results = rt_gateway::ray_trace(spheres, rectangles, vector<rt_material>(), cam, spec);
+	auto results = rt_gateway::ray_trace(spheres, rectangles, cam, spec);
 	BMP image;
 	BMP coverage;
 	BMP depth;
 	
 	render_image(image, results[0], X_RES, Y_RES,"img.bmp");
-	render_image(coverage, results[1], X_RES, Y_RES,"cvg.bmp");
-	render_image(depth, results[2], X_RES, Y_RES, "dpt.bmp");
+	render_others(coverage, results[1], X_RES, Y_RES,"cvg.bmp");
+	render_others(depth, results[2], X_RES, Y_RES, "dpt.bmp");
 	system("PAUSE");
 }
 
@@ -55,10 +55,30 @@ void render_image(BMP& image, vector<float_3>& pixels, int x_res,int y_res, cons
 		for (int y = 0; y < y_res; y++)
 		{
 			auto dest_pixel = image(x, y);
-			auto src_pixel = pixels[x*y];
-			dest_pixel->Red = src_pixel.r * 255;
-			dest_pixel->Green = src_pixel.g * 255;
-			dest_pixel->Blue = src_pixel.b * 255;
+			auto src_pixel = pixels[x*x_res + y];
+			dest_pixel->Red = static_cast<unsigned char>(src_pixel.r * 255);
+			dest_pixel->Green = static_cast<unsigned char>(src_pixel.g * 255);
+			dest_pixel->Blue = static_cast<unsigned char>(src_pixel.b * 255);
+			dest_pixel->Alpha = 255;
+		}
+	}
+	image.WriteToFile(file_name);
+
+}
+
+void render_others(BMP& image, vector<float>& pixels, int x_res, int y_res, const char* file_name)
+{
+	image.SetBitDepth(24);
+	image.SetSize(x_res, y_res);
+	for (int x = 0; x < x_res; x++)
+	{
+		for (int y = 0; y < y_res; y++)
+		{
+			auto dest_pixel = image(x, y);
+			auto src_pixel = pixels[x*x_res + y];
+			dest_pixel->Red = static_cast<unsigned char>(src_pixel * 255);
+			dest_pixel->Green = static_cast<unsigned char>(src_pixel * 255);
+			dest_pixel->Blue = static_cast<unsigned char>(src_pixel * 255);
 			dest_pixel->Alpha = 255;
 		}
 	}

@@ -45,7 +45,7 @@ namespace rt_support
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>
 
-			rt_rectangle(float_3 vertices[], int material_index,array<float,2> xform,int has_transform);
+			rt_rectangle(float_3 vertices[], int material_index,concurrency::array<float,2> xform,int has_transform);
 
 			/// <summary>
 			/// Construting a rectange from given vertices.

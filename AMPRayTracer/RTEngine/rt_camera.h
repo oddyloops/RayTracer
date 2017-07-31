@@ -42,7 +42,7 @@ namespace rt_support
 		float_3 m_pixel_origin;
 		
 	public:
-		rt_camera() restrict(amp, cpu) {/*default constructor*/}
+		rt_camera() restrict(amp, cpu);
 
 		rt_camera(float_3 eye, float_3 at,float_3 up,float fov,float focus) restrict(amp,cpu);
 

@@ -7,7 +7,7 @@
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
 #include "rt_core.h"
-#include "rt_material.h"
+
 
 using namespace concurrency;
 using namespace concurrency::graphics;
@@ -24,7 +24,7 @@ class rt_gateway
 public:
 	
 
-	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, vector<rt_material> materials, rt_camera camera,image_spec spec);
+	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec);
 
 };
 

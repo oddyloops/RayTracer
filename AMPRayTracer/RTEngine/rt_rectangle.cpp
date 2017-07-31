@@ -115,7 +115,7 @@ int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)
 	float_3 hitPt, n;
 
 	n = m_normal;    // because ray/plane intersection may flip the normal!
-	if (!ray_plane_intersection(ray, n, md, dist))
+	if (!ray_plane_intersection(ray, n, md, dist,m_vertices[0]))
 		return false;
 
 	/*

@@ -11,7 +11,7 @@ using namespace rt;
 
 rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int num_of_samples, scene_database db)
 {
-	srand(time(NULL));
+
 	m_camera = camera;
 	m_camera.initialize_image(spec);
 	srand(seed);

@@ -8,7 +8,6 @@
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
 #include "pixel_data.h"
-#include "scene_database.h"
 
 
 using namespace std;
@@ -24,11 +23,8 @@ namespace rt
 {
 	class rt_shader
 	{
-		scene_database* m_db;
 	public:
-		rt_shader() restrict(amp,cpu);
-		rt_shader(scene_database* db) restrict(amp,cpu);
-
+		rt_shader() restrict(amp, cpu);
 		float_3 compute_shade(intersection_record rec, int generation) restrict(amp);
 	};
 }

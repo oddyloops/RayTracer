@@ -15,9 +15,11 @@ pixel_data::pixel_data() restrict(amp, cpu)
 	set_pixel_data(float_3(0, 0, 0), m_default_color, 0, 0, 0);
 }
 
-pixel_data::pixel_data(float_3 position, float hit_distance) restrict(amp, cpu)
+pixel_data::pixel_data(float_3 color, float coverage, float depth) restrict(amp, cpu)
 {
-	set_pixel_data(position, m_default_color, 0, 0, hit_distance);
+	m_pixel_color = color;
+	m_pixel_coverage = coverage;
+	m_pixel_depth = depth;
 }
 
 pixel_data::pixel_data(float_3 position, float_3 color, float coverage, float depth, float hitDistance) restrict(amp, cpu)
