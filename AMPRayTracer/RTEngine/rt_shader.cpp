@@ -11,7 +11,7 @@ float_3 rt_shader::compute_shade(intersection_record rec, int generation) restri
 {
 	if (rec.get_geom_index() != -1)
 	{
-		float c = rec.get_geom_index() / 10.0;
+		float c = rec.get_geom_index() / 10.0f;
 		return float_3(c,c,c);
 	}
 	else {

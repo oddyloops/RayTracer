@@ -1,22 +1,28 @@
 #include "rt_gateway.h"
 #include <chrono>
 
+
+
 scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, rt_camera camera,image_spec spec)
 {
 	
 	int no_of_pixels = camera.get_image_spec().get_x_resolution() * camera.get_image_spec().get_y_resolution();
-	scene_results results = { vector<float_3>(no_of_pixels),vector<float_3>(no_of_pixels) ,vector<float_3>(no_of_pixels) };
+	scene_results results;
+	results.color = vector<float_3>(no_of_pixels);
+	results.coverage = vector<float>(no_of_pixels);
+	results.depth = vector<float>(no_of_pixels);
+
 	
 //	auto now = std::chrono::system_clock::now();
 
 	array_view<rt_rectangle, 1> rectangle_view(rectangles);
 	array_view<rt_sphere, 1> sphere_view(spheres);
 	
-	array_view<float_3, 2> image_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results[0]);
-	array_view<float, 2> coverage_mask_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results[1]);
-	array_view<float, 2> depth_map_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results[2]);
+	array_view<float_3, 2> image_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results.color);
+	array_view<float, 2> coverage_mask_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results.coverage);
+	array_view<float, 2> depth_map_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results.depth);
 
-
+	
 	rt_core ray_tracer = rt_core(camera,spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
 
 	parallel_for_each(image_view.extent, [=](index<2> idx) mutable restrict(amp)  {

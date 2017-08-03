@@ -2,7 +2,6 @@
 #include <amp.h>
 #include <amp_graphics.h>
 #include <vector>
-#include "pixel_data.h"
 #include "rt_camera.h"
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
@@ -17,7 +16,12 @@ using namespace rt;
 using namespace rt_support;
 using namespace rt_support::geometries;
 
-typedef vector<vector<float_3>> scene_results;
+struct scene_results
+{
+	vector<float_3> color;
+	vector<float> coverage;
+	vector<float> depth;
+};
 
 class rt_gateway
 {

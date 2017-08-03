@@ -19,7 +19,7 @@ namespace rt
 
 	class rt_visibility
 	{
-	
+		int dummy;
 	public:
 		rt_visibility() restrict(amp, cpu);
 

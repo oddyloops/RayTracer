@@ -74,7 +74,7 @@ namespace rt_support
 		int get_generation() const restrict(amp, cpu);
 		int get_ortho_mode_on() const restrict(amp, cpu);
 
-		float_3 get_pixel_position(float x, float y) restrict(amp);
+		float_3 get_pixel_position(int x, int y) restrict(amp);
 		float_3 get_pixel_dx() const  restrict(amp);
 		float_3 get_pixel_dy() const  restrict(amp);
 

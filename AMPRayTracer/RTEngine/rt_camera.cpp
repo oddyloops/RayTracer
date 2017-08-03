@@ -122,7 +122,7 @@ int rt_camera::get_ortho_mode_on() const restrict(amp, cpu)
 	return m_ortho_mode_on;
 }
 
-float_3 rt_camera::get_pixel_position(float x, float y) restrict(amp)
+float_3 rt_camera::get_pixel_position(int x, int y) restrict(amp)
 {
 	return m_pixel_origin + (x * m_pixel_dx) + (y * m_pixel_dy);
 }

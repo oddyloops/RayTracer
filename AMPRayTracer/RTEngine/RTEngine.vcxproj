@@ -142,7 +142,6 @@
     <ClCompile Include="intersection_record.cpp" />
     <ClCompile Include="rt_shader.cpp" />
     <ClCompile Include="rt_visibility.cpp" />
-    <ClCompile Include="scene_resource.cpp" />
     <ClCompile Include="test_main.cpp" />
     <ClCompile Include="math_util.cpp" />
     <ClCompile Include="matrix_amp.cpp" />

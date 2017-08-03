@@ -23,6 +23,7 @@ namespace rt
 {
 	class rt_shader
 	{
+		int dummy;
 	public:
 		rt_shader() restrict(amp, cpu);
 		float_3 compute_shade(intersection_record rec, int generation) restrict(amp);

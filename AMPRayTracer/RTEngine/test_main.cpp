@@ -4,6 +4,7 @@
 using namespace rt_support::geometries;
 
 void render_image(BMP& image, vector<float_3>& pixels, int x_res, int y_res, const char* file_name);
+void render_others(BMP& image, vector<float>& pixels, int x_res, int y_res, const char* file_name);
 
 
 int main()
@@ -40,9 +41,9 @@ int main()
 	BMP coverage;
 	BMP depth;
 	
-	render_image(image, results[0], X_RES, Y_RES,"img.bmp");
-	render_others(coverage, results[1], X_RES, Y_RES,"cvg.bmp");
-	render_others(depth, results[2], X_RES, Y_RES, "dpt.bmp");
+	render_image(image, results.color, X_RES, Y_RES,"img.bmp");
+	render_others(coverage, results.coverage, X_RES, Y_RES,"cvg.bmp");
+	render_others(depth, results.depth, X_RES, Y_RES, "dpt.bmp");
 	system("PAUSE");
 }
 

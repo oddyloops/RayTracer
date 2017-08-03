@@ -34,7 +34,7 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<
 	float depth_map = 0;
 
 
-	for (int i = 0; i < m_camera.get_image_spec().get_samples_per_pixel(); i++)
+	for (int i = 0; i < m_num_of_samples; i++)
 	{
 
 		float rndX = m_rand.rand_f();
@@ -61,9 +61,9 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<
 		depth_map = depth_map + (1.0f - fminf(1.0f, rec.get_hit_distance() / FAR_PLANE_DIST));
 	}
 
-	color = color / m_camera.get_image_spec().get_samples_per_pixel();
-	coverage_mask = coverage_mask / m_camera.get_image_spec().get_samples_per_pixel();
-	depth_map = depth_map / m_camera.get_image_spec().get_samples_per_pixel();
+	color = color / m_num_of_samples;
+	coverage_mask = coverage_mask / m_num_of_samples;
+	depth_map = depth_map / m_num_of_samples;
 
 	return pixel_data(color, coverage_mask, depth_map);
 }

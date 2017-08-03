@@ -78,9 +78,6 @@
     <ClInclude Include="rt_rectangle.h">
       <Filter>Header Files\rt_support\geometries</Filter>
     </ClInclude>
-    <ClInclude Include="matrix_amp.h">
-      <Filter>Header Files\amp_utils</Filter>
-    </ClInclude>
     <ClInclude Include="math_util.h">
       <Filter>Header Files\amp_utils</Filter>
     </ClInclude>
@@ -123,6 +120,9 @@
     <ClInclude Include="rt_shader.h">
       <Filter>Header Files\rt</Filter>
     </ClInclude>
+    <ClInclude Include="matrix_amp.h">
+      <Filter>Header Files\amp_utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray.cpp">
@@ -136,9 +136,6 @@
     </ClCompile>
     <ClCompile Include="indexed_resource.cpp">
       <Filter>Source Files\rt_support\scene_resource_support</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix_amp.cpp">
-      <Filter>Source Files\amp_utils</Filter>
     </ClCompile>
     <ClCompile Include="math_util.cpp">
       <Filter>Source Files\amp_utils</Filter>
@@ -179,14 +176,14 @@
     <ClCompile Include="rt_geometry.cpp">
       <Filter>Source Files\rt_support\geometries</Filter>
     </ClCompile>
-    <ClCompile Include="scene_resource.cpp">
-      <Filter>Source Files\rt_support\scene_resource_support</Filter>
-    </ClCompile>
     <ClCompile Include="rt_visibility.cpp">
       <Filter>Source Files\rt</Filter>
     </ClCompile>
     <ClCompile Include="rt_shader.cpp">
       <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix_amp.cpp">
+      <Filter>Source Files\amp_utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
