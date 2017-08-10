@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AMPRayTracer", "AMPRayTracer\AMPRayTracer.vcxproj", "{7600CBDF-F034-46FE-96E8-8C4F285BE84B}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTEngine", "RTEngine\RTEngine.vcxproj", "{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTEngineCPU", "RTEngineCPU\RTEngineCPU.vcxproj", "{144171B6-2013-4EAB-8FE3-9B7B891045E5}"
@@ -19,24 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|ARM.ActiveCfg = Debug|ARM
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|ARM.Build.0 = Debug|ARM
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|ARM.Deploy.0 = Debug|ARM
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|x64.ActiveCfg = Debug|x64
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|x64.Build.0 = Debug|x64
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|x64.Deploy.0 = Debug|x64
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|x86.ActiveCfg = Debug|Win32
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|x86.Build.0 = Debug|Win32
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Debug|x86.Deploy.0 = Debug|Win32
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|ARM.ActiveCfg = Release|ARM
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|ARM.Build.0 = Release|ARM
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|ARM.Deploy.0 = Release|ARM
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|x64.ActiveCfg = Release|x64
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|x64.Build.0 = Release|x64
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|x64.Deploy.0 = Release|x64
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|x86.ActiveCfg = Release|Win32
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|x86.Build.0 = Release|Win32
-		{7600CBDF-F034-46FE-96E8-8C4F285BE84B}.Release|x86.Deploy.0 = Release|Win32
 		{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}.Debug|ARM.ActiveCfg = Debug|Win32
 		{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}.Debug|x64.ActiveCfg = Debug|x64
 		{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}.Debug|x64.Build.0 = Debug|x64

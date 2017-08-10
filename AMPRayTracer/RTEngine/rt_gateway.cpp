@@ -24,14 +24,29 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 
 	
 	rt_core ray_tracer = rt_core(camera,spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
+	bool tile = true;
+	if (tile)
+	{
+		const int tile_x = 16;
+		const int tile_y = 16;
+		parallel_for_each(image_view.extent.tile<tile_x, tile_y>(), [=](tiled_index<tile_x, tile_y> t_idx) mutable restrict(amp) {
+			
+					pixel_data data = ray_tracer.compute_pixel_data(t_idx.global[0], t_idx.global[1], sphere_view, rectangle_view);
+					image_view[t_idx] = data.get_pixel_color();
+					coverage_mask_view[t_idx] = data.get_pixel_coverage();
+					depth_map_view[t_idx] = data.get_pixel_depth();
+				
+		});
+	}
+	else {
+		parallel_for_each(image_view.extent, [=](index<2> idx) mutable restrict(amp) {
+			pixel_data data = ray_tracer.compute_pixel_data(idx[0], idx[1], sphere_view, rectangle_view);
+			image_view[idx] = data.get_pixel_color();
+			coverage_mask_view[idx] = data.get_pixel_coverage();
+			depth_map_view[idx] = data.get_pixel_depth();
 
-	parallel_for_each(image_view.extent, [=](index<2> idx) mutable restrict(amp)  {
-		pixel_data data = ray_tracer.compute_pixel_data(idx[0], idx[1], sphere_view, rectangle_view);
-		image_view[idx] = data.get_pixel_color();
-		coverage_mask_view[idx] = data.get_pixel_coverage();
-		depth_map_view[idx] = data.get_pixel_depth();
-	
-	});
+		});
+	}
 
 	image_view.synchronize();
 	coverage_mask_view.synchronize();
