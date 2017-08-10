@@ -31,16 +31,19 @@ rt_camera::rt_camera(vector<float> eye, vector<float> at, vector<float> up, floa
 
 rt_camera& rt_camera::operator=(const rt_camera& cam)
 {
-	m_eye = cam.get_eye();
-	m_at = cam.get_at();
-	m_up = cam.get_up();
-	m_fov = cam.get_fov();
-	m_focus = cam.get_focus();
-	m_generation = cam.get_generation();
-	m_ortho_mode_on = cam.get_ortho_mode_on();
-	m_image_spec = cam.get_image_spec();
-	m_side = cam.get_side();
-	m_view_direction = cam.get_view_dir();
+	m_eye = cam.m_eye;
+	m_at = cam.m_at;
+	m_up = cam.m_up;
+	m_fov = cam.m_fov;
+	m_focus = cam.m_focus;
+	m_generation = cam.m_generation;
+	m_ortho_mode_on = cam.m_ortho_mode_on;
+	m_image_spec = cam.m_image_spec;
+	m_side = cam.m_side;
+	m_view_direction = cam.m_view_direction;
+	m_pixel_origin = cam.m_pixel_origin;
+	m_pixel_dx = cam.m_pixel_dx;
+	m_pixel_dy = cam.m_pixel_dy;
 
 	return *this;
 }
@@ -127,6 +130,7 @@ void rt_camera::initialize_image(image_spec& spec)
 	m_pixel_dx = (halfImgWidth * 2 / (float)spec.get_x_resolution()) * m_side;
 	m_pixel_dy = -(halfImgHeight * 2 / (float)spec.get_y_resolution()) * m_up;
 }
+
 
 vector<float> rt_camera::get_pixel_position(float x, float y)
 {

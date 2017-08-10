@@ -9,8 +9,7 @@ using namespace rt;
 
 rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int no_of_samples) restrict(amp, cpu)
 {
-	m_camera = rt_camera(camera.get_eye(), camera.get_at(), camera.get_up(), camera.get_fov(), camera.get_focus());
-	m_camera.initialize_image(spec);
+	m_camera = camera;
 	m_rand = amp_lcg_rand(seed);
 	m_num_of_samples = no_of_samples;
 

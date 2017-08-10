@@ -37,6 +37,9 @@ rt_camera& rt_camera::operator=(const rt_camera& cam) restrict(amp, cpu)
 	m_generation = cam.get_generation();
 	m_ortho_mode_on = cam.get_ortho_mode_on();
 	m_image_spec = cam.get_image_spec();
+	m_pixel_origin = cam.m_pixel_origin;
+	m_pixel_dx = cam.m_pixel_dx;
+	m_pixel_dy = cam.m_pixel_dy;
 
 	return *this;
 }

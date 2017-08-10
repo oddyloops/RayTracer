@@ -30,8 +30,8 @@ int main()
 	rect3.set_resource_index(6);
 	vector<rt_rectangle> rectangles = { rect1,rect2,rect3 };
 
-	const int X_RES = 128;
-	const int Y_RES = 128;
+	const int X_RES = 1240;
+	const int Y_RES = 780;
 
 	rt_camera cam = rt_camera({ -8, 5, -8 }, { 0, 0, 0 }, { 0, 1, 0 }, 45, 2);
 	image_spec spec = image_spec(X_RES, Y_RES, 5);

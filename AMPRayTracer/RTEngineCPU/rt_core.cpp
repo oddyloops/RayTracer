@@ -13,7 +13,6 @@ rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int num_of_samples
 {
 
 	m_camera = camera;
-	m_camera.initialize_image(spec);
 	srand(seed);
 	m_num_of_samples = num_of_samples;
 	m_db = db;

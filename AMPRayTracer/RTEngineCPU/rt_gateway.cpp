@@ -6,7 +6,7 @@ using namespace rt_support;
 
 scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec)
 {
-	camera.set_image_spec(spec);
+	camera.initialize_image(spec);
 	int no_of_pixels = camera.get_image_spec().get_x_resolution() * camera.get_image_spec().get_y_resolution();
 	scene_results results;
 	
@@ -30,7 +30,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 		{
 			
 			pixel_data data = ray_tracer.compute_pixel_data(i, j);
-			int index = i * spec.get_x_resolution() + j;
+			int index = i * spec.get_y_resolution() + j;
 			image_view[index] = data.get_color();
 			coverage_mask_view[index] = { data.get_coverage() };
 			depth_map_view[index] = { data.get_depth() };
