@@ -27,7 +27,7 @@ class rt_gateway
 {
 public:
 	
-
+	//initializes the required parameters and initiates the ray tracing process
 	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec);
 
 };

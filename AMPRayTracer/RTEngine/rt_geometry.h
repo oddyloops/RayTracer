@@ -21,6 +21,9 @@ namespace rt_support
 			static const int triangle = 3;
 		};
 
+		///<summary>
+		///Parent class containing basic specifications for a geometry
+		///</summary>
 		class rt_geometry  : public indexed_resource
 		{
 		private:

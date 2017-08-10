@@ -24,11 +24,11 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 
 	
 	rt_core ray_tracer = rt_core(camera,spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
-	bool tile = true;
+	bool tile = false;
 	if (tile)
 	{
-		const int tile_x = 16;
-		const int tile_y = 16;
+		const int tile_x = 8;
+		const int tile_y = 8;
 		parallel_for_each(image_view.extent.tile<tile_x, tile_y>(), [=](tiled_index<tile_x, tile_y> t_idx) mutable restrict(amp) {
 			
 					pixel_data data = ray_tracer.compute_pixel_data(t_idx.global[0], t_idx.global[1], sphere_view, rectangle_view);

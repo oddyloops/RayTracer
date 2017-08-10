@@ -18,7 +18,7 @@ int rt_geometry::ray_plane_intersection(ray& r, float_3 norm, float d, float& di
 	if (fabs(denomenator) < FLT_EPSILON)
 		return false;
 
-	float numerator = vector_amp::dot(norm, (plane_point - r.get_origin()));
+	float numerator = vector_amp::dot(norm, (plane_point - r.get_origin())); 
 	dist = numerator / denomenator;
 
 	if (denomenator > 0)

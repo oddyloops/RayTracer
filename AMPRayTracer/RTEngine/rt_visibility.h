@@ -16,10 +16,12 @@ using namespace rt_support::scene_resource_support;
 
 namespace rt
 {
-
+	///<summary>
+	///Handles all ray-geometry intersection computations
+	///</summary>
 	class rt_visibility
 	{
-		int dummy;
+		int dummy; //used to force object to be a multiple of 32 -bit (Requirement in the GPU kernel code)
 	public:
 		rt_visibility() restrict(amp, cpu);
 

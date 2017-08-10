@@ -21,6 +21,9 @@ using namespace rt_support::ray_support;
 namespace rt
 {
 
+	///<summary>
+	///The core of the ray-tracer that initiates computation per pixel
+	///</summary>
 	class rt_core
 	{
 	private:

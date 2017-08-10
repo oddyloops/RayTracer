@@ -103,10 +103,11 @@ int rt_rectangle::inside_polygon(float_3 pt) restrict(amp)
 	v4 = vector_amp::normalize(v4);
 	v5 = vector_amp::normalize(v5);
 
-	float v1v4 = math_util::clock_wise_angle(v1, v4, m_normal);
+	float v1v4 = math_util::clock_wise_angle(v1, v4, m_normal); 
 	float v3v5 = math_util::clock_wise_angle(v3, v5, m_normal);
 	float angle90 = 0.5f * PI;
-	return (v1v4 < angle90 && v1v4 > 0) && (v3v5 < angle90 && v3v5 > 0);
+	return (v1v4 < angle90 && v1v4 > 0) && (v3v5 < angle90 && v3v5 > 0); //clockwise angle between v1 and v4, AND between v3 and v5 must be within 0-90deg
+
 }
 
 int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)

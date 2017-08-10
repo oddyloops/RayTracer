@@ -6,6 +6,9 @@
 using namespace concurrency;
 using namespace concurrency::graphics;
 
+///<summary>
+///Contains matrix manipulation helper functions
+///</summary>
 class matrix_amp
 {
 public:

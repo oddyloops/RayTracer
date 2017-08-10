@@ -4,6 +4,9 @@
 using namespace concurrency;
 using namespace concurrency::graphics;
 
+///<summary>
+///Contains all the vector manipulation helper functions not present in the amp_graphics header
+///</summary>
 class vector_amp
 {
 public:

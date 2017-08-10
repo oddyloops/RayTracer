@@ -2,6 +2,9 @@
 #include <amp.h>
 using namespace concurrency;
 
+///<summary>
+///Pseudo RNG for random super sampling in the GPU code
+///</summary>
 class amp_lcg_rand
 {
 private:
