@@ -49,6 +49,12 @@
     <Filter Include="Source Files\rt">
       <UniqueIdentifier>{27926f6e-7d8b-4f9b-913a-288834669a38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="rt_support\lights">
+      <UniqueIdentifier>{0d22c2d1-4cbf-4af0-86cf-7c5996ebd140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\lights">
+      <UniqueIdentifier>{7f522660-043a-4b85-8cea-76de7100c611}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,6 +126,12 @@
     <ClInclude Include="pixel_data.h">
       <Filter>rt</Filter>
     </ClInclude>
+    <ClInclude Include="rt_material.h">
+      <Filter>rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_light.h">
+      <Filter>rt_support\lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
@@ -181,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="EasyBMP.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_material.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
