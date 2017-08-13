@@ -24,7 +24,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 
 	
 	rt_core ray_tracer = rt_core(camera,spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel());
-	bool tile = false;
+	bool tile = true;
 	if (tile)
 	{
 		const int tile_x = 8;

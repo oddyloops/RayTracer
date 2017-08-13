@@ -132,6 +132,15 @@
     <ClInclude Include="rt_light.h">
       <Filter>rt_support\lights</Filter>
     </ClInclude>
+    <ClInclude Include="rt_directional_light.h">
+      <Filter>rt_support\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_point_light.h">
+      <Filter>rt_support\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_spot_light.h">
+      <Filter>rt_support\lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
@@ -196,6 +205,18 @@
     </ClCompile>
     <ClCompile Include="rt_material.cpp">
       <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_directional_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_point_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_spot_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

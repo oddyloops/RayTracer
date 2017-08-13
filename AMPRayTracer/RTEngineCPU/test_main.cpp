@@ -6,8 +6,22 @@
 
 using namespace rt_support::geometries;
 
+struct res
+{
+	int x;
+	int y;
+
+	res(int x, int y)
+	{
+		this->x = x;
+		this-> y = y;
+	}
+};
+
 int main()
 {
+	vector<res> r = { res(64,64),res(256,144), res(320,240), res(640,360),res(640,480),res(1280,720),res(1920,1080)};
+
 	
 	rt_sphere sph1 = rt_sphere({ -4, 0, 2 }, 1);
 	rt_sphere sph2 = rt_sphere({ -1, 1.5, 0 }, 1.5);
@@ -30,23 +44,29 @@ int main()
 	rect3.set_resource_index(6);
 	vector<rt_rectangle> rectangles = { rect1,rect2,rect3 };
 
-	const int X_RES = 1920;
-	const int Y_RES = 1080;
+	const int X_RES = 256;
+	const int Y_RES = 144;
 
-	rt_camera cam = rt_camera({ -8, 5, -8 }, { 0, 0, 0 }, { 0, 1, 0 }, 45, 2);
-	image_spec spec = image_spec(X_RES, Y_RES, 1);
+	
 	
 	scene_results results;
-	for (int i = 0; i < 3; i++) {
-		results = rt_gateway::ray_trace(spheres, rectangles, cam, spec);
+
+	for (res& rs : r)
+	{
+		printf("Resolution: %d x %d\n\n", rs.x, rs.y);
+		rt_camera cam = rt_camera({ -8, 5, -8 }, { 0, 0, 0 }, { 0, 1, 0 }, 45, 2);
+		image_spec spec = image_spec(rs.x, rs.y, 1);
+		for (int i = 0; i < 3; i++) {
+			results = rt_gateway::ray_trace(spheres, rectangles, cam, spec);
+		}
+		printf("\n\n______________________________________\n");
 	}
-	
 
 	int img_count = 1;
 	for (auto& image : results)
 	{
 		BMP input;
-		input.SetSize(X_RES, Y_RES);
+		input.SetSize(r.back().x, r.back().y);
 		for (int x = 0; x < X_RES; x++)
 		{
 			for (int y = 0; y < Y_RES; y++)
