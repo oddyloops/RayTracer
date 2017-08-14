@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <climits>
 
+
 float math_util::deg_to_rad(float deg)
 {
 	return deg * PI / 180;
@@ -23,3 +24,4 @@ float math_util::rnd0to1()
 {
 	return (float)rand() / INT_MIN;
 }
+

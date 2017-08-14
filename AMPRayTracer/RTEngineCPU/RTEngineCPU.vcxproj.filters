@@ -141,6 +141,9 @@
     <ClInclude Include="rt_spot_light.h">
       <Filter>rt_support\lights</Filter>
     </ClInclude>
+    <ClInclude Include="rt_area_light.h">
+      <Filter>rt_support\lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
@@ -216,6 +219,9 @@
       <Filter>Source Files\rt_support\lights</Filter>
     </ClCompile>
     <ClCompile Include="rt_spot_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_area_light.cpp">
       <Filter>Source Files\rt_support\lights</Filter>
     </ClCompile>
   </ItemGroup>

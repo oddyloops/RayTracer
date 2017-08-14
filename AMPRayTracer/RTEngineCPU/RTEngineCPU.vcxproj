@@ -156,6 +156,7 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="pixel_data.h" />
     <ClInclude Include="ray.h" />
+    <ClInclude Include="rt_area_light.h" />
     <ClInclude Include="rt_camera.h" />
     <ClInclude Include="rt_core.h" />
     <ClInclude Include="rt_directional_light.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="matrix.cpp" />
     <ClCompile Include="pixel_data.cpp" />
     <ClCompile Include="ray.cpp" />
+    <ClCompile Include="rt_area_light.cpp" />
     <ClCompile Include="rt_camera.cpp" />
     <ClCompile Include="rt_core.cpp" />
     <ClCompile Include="rt_directional_light.cpp" />

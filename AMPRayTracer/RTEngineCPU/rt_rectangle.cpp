@@ -7,6 +7,11 @@
 
 using namespace rt_support::geometries;
 
+rt_rectangle::rt_rectangle()
+{
+
+}
+
 rt_rectangle::rt_rectangle(vector<float> vertices[], int material_index, matrix xform, int has_transform)
 {
 	m_type = rt_geometry_type::rectangle;
@@ -109,78 +114,7 @@ bool rt_rectangle::inside_polygon(vector<float> pt)
 	float v3v5 = clock_wise_angle(v3, v5, m_normal);
 	float angle90 = 0.5f * PI;
 	return (v1v4 < angle90 && v1v4 > 0 ) && (v3v5 < angle90 && v3v5 > 0);
-	/*float va[3];
-	float vb[3];
-	float trans_vector[3];
-	int NC = 0; 
-	int NSH, SH;
-	int i, b;
-	float u_intersect;
-	trans_vector[0] = -pt[0];
-	trans_vector[1] = -pt[1];
-	trans_vector[2] = -pt[2];
-
-	va[0] = m_vertices[0][0] + trans_vector[0];
-	va[1] = m_vertices[0][1] + trans_vector[1];
-	va[2] = m_vertices[0][2] + trans_vector[2];
-
-	if (va[m_v_axis_index] < 0)
-	{
-		SH = -1;
-	}
-	else
-	{
-		SH = 1;
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		b = (i + 4) % 4;
-		vb[0] = m_vertices[b][0] + trans_vector[0];
-		vb[1] = m_vertices[b][1] + trans_vector[0];
-		vb[2] = m_vertices[b][2] + trans_vector[0];
-
-		if (vb[m_v_axis_index] < 0)
-		{
-			NSH = -1;
-		}
-		else
-		{
-			NSH = 1;
-		}
-
-		if (SH != NSH)
-		{
-			if ((va[m_u_axis_index] > 0) && (vb[m_u_axis_index] > 0))
-			{
-				
-				NC++;
-			}
-			else
-			{
-				if ((va[m_u_axis_index] > 0) || (vb[m_u_axis_index] > 0))
-				{
-					//line might cross +U, so compute U intersectoin
-					u_intersect = va[m_u_axis_index] - (va[m_v_axis_index] *
-						(vb[m_u_axis_index] - va[m_u_axis_index]) /
-						(vb[m_v_axis_index] - va[m_v_axis_index]));
-					if (u_intersect > 0)
-					{
-						// Line crossed +U
-						NC++;
-					}
-				}
-			}
-			SH = NSH;
-			va[0] = vb[0];
-			va[1] = vb[1];
-			va[2] = vb[2];
-
-		}
-		return NC % 2 != 0;
-	}
-		
-	*/
+	
 }
 
 float rt_rectangle::clock_wise_angle(vector<float> v1, vector<float> v2, vector<float> normal)
@@ -266,4 +200,10 @@ vector<float> rt_rectangle::get_min()
 {
 	//stub
 	return vector<float>();
+}
+
+
+vector<float> rt_rectangle::get_vertex(int i)
+{
+	return m_vertices[i];
 }

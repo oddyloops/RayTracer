@@ -154,3 +154,14 @@ vector<float> operator/(vector<float> lhs, int rhs)
 
 	return result;
 }
+
+float vector_util::point_line_distance(vector<float> pt, vector<float> ln_start, vector<float> ln_end)
+{
+	float t = -(dot(ln_start - pt, ln_end - ln_start)) / magnitude_sqr(ln_end - ln_start);
+
+	float dist = powf((ln_start[0] - pt[0]) + (t * (ln_end[0] - ln_start[0])), 2)
+		+ powf((ln_start[1] - pt[1]) + (t * (ln_end[1] - ln_start[1])), 2)
+		+ powf((ln_start[2] - pt[2]) + (t * (ln_end[2] - ln_start[2])), 2);
+
+	return sqrtf(dist);
+}

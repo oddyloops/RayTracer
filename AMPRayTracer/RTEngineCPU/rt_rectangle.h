@@ -29,19 +29,22 @@ namespace rt_support
 			/// </summary>
 			void initialize_rectangle();
 
+			
 			/// <summary>
 			/// Returns if the given pt is inside(true) or outside(false) of the polygon.
 			/// </summary>
 			/// <param name="pt"></param>
 			/// <returns></returns>
 			bool inside_polygon(vector<float> pt);
-
 			
 			float clock_wise_angle(vector<float> v1, vector<float> v2, vector<float> normal);
 
 
 									
 		public:
+
+
+			rt_rectangle();
 			/// <summary>
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>
@@ -53,6 +56,8 @@ namespace rt_support
 			/// </summary>
 			/// <param name="v"></param>
 			rt_rectangle(vector<float> v[]);
+
+			
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
@@ -97,6 +102,7 @@ namespace rt_support
 			vector<float> get_max();
 			vector<float> get_min();
 
+			vector<float> get_vertex(int i);
 
 
 
