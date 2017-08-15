@@ -55,6 +55,9 @@ namespace rt_support
 		public:
 			
 
+			void set_material_index(int index);
+
+
 			/// <summary>
 			/// Parse command line for <xform> </xform> that is embedeed inside 
 			/// Geometry.

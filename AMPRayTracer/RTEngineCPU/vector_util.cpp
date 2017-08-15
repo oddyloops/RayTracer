@@ -106,6 +106,23 @@ vector<float> operator-(vector<float>& lhs, vector<float>& rhs)
 }
 
 
+vector<float> operator*(vector<float>& lhs, vector<float>& rhs)
+{
+	if (lhs.size() != rhs.size())
+	{
+		throw exception("Vectors are of different dimensions");
+	}
+
+	vector<float> result;
+
+	for (int i = 0; i < lhs.size(); i++)
+	{
+		result.push_back(lhs[i] * rhs[i]);
+	}
+
+	return result;
+}
+
 vector<float> operator*(float lhs, vector<float> rhs)
 {
 	vector<float> result;

@@ -130,7 +130,7 @@ float rt_area_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 			//compute area light penumbra attenuation with cosine interpolation
 			//determine if intersection happens within vertical or horizontal penumbra
 			vector<float> hitPt = light_rec.get_intersection_position();
-			float verDist = vector_util::point_line_distance(hitPt, m_penumbra.get_vertex(0), m_penumbra.get_vertex(3));
+			float verDist = vector_util::point_line_distance(hitPt, m_lit_area.get_vertex(0), m_lit_area.get_vertex(3));
 			float horDist = 0.0f;
 			if (verDist <= m_padding)
 			{
@@ -139,7 +139,7 @@ float rt_area_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 			}
 			else
 			{
-				horDist = vector_util::point_line_distance(hitPt, m_penumbra.get_vertex(0), m_penumbra.get_vertex(1));
+				horDist = vector_util::point_line_distance(hitPt, m_lit_area.get_vertex(0), m_lit_area.get_vertex(1));
 				//compute using vertical padding
 				percent *= powf(cosf((horDist / m_padding) * 0.5f * PI), m_drop_constant);
 			}

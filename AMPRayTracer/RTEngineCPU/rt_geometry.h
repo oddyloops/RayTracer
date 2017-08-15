@@ -38,7 +38,7 @@ namespace rt_support
 			bool ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist,vector<float> plane_point);
 		public:
 			
-
+			void set_material_index(int index);
 			/// <summary>
 			/// Parse command line for <xform> </xform> that is embedeed inside 
 			/// Geometry.

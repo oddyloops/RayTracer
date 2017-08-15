@@ -7,6 +7,12 @@
 using namespace concurrency::fast_math;
 using namespace rt_support::geometries;
 
+
+void rt_geometry::set_material_index(int index)
+{
+	m_material_index = index;
+}
+
 bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist, vector<float> plane_point)
 {
 

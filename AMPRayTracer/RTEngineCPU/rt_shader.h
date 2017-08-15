@@ -26,10 +26,21 @@ namespace rt
 	class rt_shader
 	{
 		scene_database* m_db;
+		vector<float> m_ambient_light;
+		float m_ambient_intensity;
+
+		vector<float> compute_ambience(rt_material& mat);
+
+		vector<float> compute_diffuse(intersection_record& rec, rt_material& mat);
+
+		vector<float> compute_specular(intersection_record& rec, rt_material& mat);
 	public:
 		rt_shader();
-		rt_shader(scene_database* db);
 
-		vector<float> compute_shade(intersection_record rec, int generation);
+		rt_shader(scene_database* db,vector<float> ambient_light,float ambient_intensity);
+
+		vector<float> compute_shade(intersection_record& rec, int generation);
+
+		
 	};
 }

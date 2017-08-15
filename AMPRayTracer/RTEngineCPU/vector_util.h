@@ -32,6 +32,8 @@ vector<float> operator+(vector<float>& lhs, vector<float>& rhs);
 
 vector<float> operator-(vector<float>& lhs, vector<float>& rhs);
 
+vector<float> operator*(vector<float>& lhs, vector<float>& rhs);
+
 vector<float> operator*(float lhs, vector<float> rhs);
 
 vector<float> operator*(vector<float> lhs, float rhs);
