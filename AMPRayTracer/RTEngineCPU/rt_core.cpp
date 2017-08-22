@@ -9,7 +9,7 @@
 using namespace rt;
 
 
-rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int num_of_samples, scene_database db)
+rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int num_of_samples, scene_database db, vector<float> ambient_light, float ambient_intensity)
 {
 
 	m_camera = camera;
@@ -17,7 +17,7 @@ rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int num_of_samples
 	m_num_of_samples = num_of_samples;
 	m_db = db;
 	m_visibility = rt_visibility(&m_db);
-	m_shader = rt_shader(&m_db);
+	m_shader = rt_shader(&m_db,ambient_light,ambient_intensity,camera.get_view_dir());
 
 }
 
@@ -28,8 +28,7 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y)
 	ray r;
 	vector<float> sample_position = m_camera.get_pixel_position(current_x, current_y);
 
-
-
+	
 	//compute color
 	vector<float> color = { 0,0,0, };
 
@@ -40,7 +39,7 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y)
 	//compute depth_map
 	float depth_map = 0;
 
-
+	
 	for (int i = 0; i < m_camera.get_image_spec().get_samples_per_pixel(); i++)
 	{
 

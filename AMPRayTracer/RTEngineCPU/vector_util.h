@@ -21,6 +21,8 @@ public:
 
 	static vector<float> negate(vector<float> input);
 
+	static vector<float> clip_color(vector<float> input);
+
 	///<summary>
 	///computes distance between a point and a line assuming they are on the same plane
 	///</summary>

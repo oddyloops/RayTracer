@@ -12,6 +12,8 @@ using namespace std;
 
 using namespace rt;
 using namespace rt_support;
+using namespace rt_support::scene_resource_support;
+using namespace rt_support::lights;
 using namespace rt_support::geometries;
 
 typedef vector<vector<vector<float>>> scene_results;
@@ -21,7 +23,11 @@ class rt_gateway
 public:
 	
 
-	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec);
+	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, 
+		vector<rt_material> materials,vector<rt_directional_light> d_lights,
+		vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
+		vector<rt_area_light> a_lights,vector<float> ambience_color,float ambience_intensity,
+		rt_camera camera,image_spec spec);
 
 };
 

@@ -171,6 +171,7 @@
     <ClInclude Include="rt_sphere.h" />
     <ClInclude Include="rt_spot_light.h" />
     <ClInclude Include="rt_visibility.h" />
+    <ClInclude Include="rt_wave_props.h" />
     <ClInclude Include="scene_database.h" />
     <ClInclude Include="vector_util.h" />
   </ItemGroup>
@@ -198,6 +199,7 @@
     <ClCompile Include="rt_sphere.cpp" />
     <ClCompile Include="rt_spot_light.cpp" />
     <ClCompile Include="rt_visibility.cpp" />
+    <ClCompile Include="rt_wave_props.cpp" />
     <ClCompile Include="scene_database.cpp" />
     <ClCompile Include="test_main.cpp" />
     <ClCompile Include="vector_util.cpp" />

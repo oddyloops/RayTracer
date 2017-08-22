@@ -12,6 +12,27 @@ rt_rectangle::rt_rectangle()
 
 }
 
+
+rt_rectangle& rt_rectangle::operator=(const rt_rectangle& r)
+{
+	m_material_index = r.m_material_index;
+	m_normal = r.m_normal;
+	m_type = r.m_type;
+	m_u_axis_index = r.m_u_axis_index;
+	m_u_size = r.m_u_size;
+	m_u_vec = r.m_u_vec;
+	int i = 0;
+	for (vector<float> v : r.m_vertices) {
+		m_vertices[i++] = v;
+	}
+	m_v_axis_index = r.m_v_axis_index;
+	m_v_size = r.m_v_size;
+	m_v_vec = r.m_v_vec;
+
+	return *this;
+
+}
+
 rt_rectangle::rt_rectangle(vector<float> vertices[], int material_index, matrix xform, int has_transform)
 {
 	m_type = rt_geometry_type::rectangle;

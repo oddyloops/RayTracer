@@ -19,14 +19,14 @@ namespace rt_support
 			vector<float> m_hor_direction; //the direction along the width of the light area
 			vector<float> m_ver_direction;  //the direction along the height of the light area
 
-			void intiliaze_rectangles(float vertical_tilt,float focus, float lit_width, float lit_height);
+			void initialize_penumbra();
 
 		public:
-			rt_area_light(vector<float> origin, vector<float> direction,float vertical_tilt, float focus, float lit_width,float lit_height, float padding,  float drop_constant);
+			rt_area_light(vector<float> direction, rt_rectangle lit_area , float padding, float drop_constant);
 
-			rt_area_light(vector<float> origin, vector<float> direction, float vertical_tilt, float focus, float lit_width, float lit_height, float padding, float drop_constant, vector<float> color);
+			rt_area_light( vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color);
 
-			rt_area_light(vector<float> origin, vector<float> direction, float vertical_tilt, float focus, float lit_width, float lit_height, float padding, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att);
+			rt_area_light(vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att);
 
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray

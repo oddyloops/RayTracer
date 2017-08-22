@@ -32,7 +32,7 @@ namespace rt
 		
 
 		//seed used for random number generation
-		rt_core(rt_camera camera,image_spec spec,int seed, int no_of_samples,scene_database db);
+		rt_core(rt_camera camera,image_spec spec,int seed, int no_of_samples,scene_database db,vector<float> ambient_light,float ambient_intensity);
 		
 		// computes pixel data given its x and y offsets from top left pixel
 		// also takes number of samples to take as a parameter

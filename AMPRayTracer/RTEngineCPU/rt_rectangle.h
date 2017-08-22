@@ -45,6 +45,8 @@ namespace rt_support
 
 
 			rt_rectangle();
+
+			rt_rectangle& operator=(const rt_rectangle& r);
 			/// <summary>
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>

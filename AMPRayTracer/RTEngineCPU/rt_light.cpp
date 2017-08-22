@@ -23,7 +23,7 @@ void rt_light::set_direction(vector<float> direction)
 }
 void rt_light::set_origin(vector<float> origin)
 {
-	if (m_type == light_type::DIRECTIONAL)
+	if (m_type == light_type::DIRECTIONAL || m_type == light_type::AREA)
 	{
 		throw exception("Directional lights do not have origins");
 	}

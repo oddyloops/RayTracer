@@ -4,7 +4,10 @@
 
 using namespace rt_support;
 
-scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec)
+scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, 
+	vector<rt_material> materials, vector<rt_directional_light> d_lights,
+	vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
+	vector<rt_area_light> a_lights, vector<float> ambience_color, float ambience_intensity, rt_camera camera,image_spec spec)
 {
 	camera.initialize_image(spec);
 	int no_of_pixels = camera.get_image_spec().get_x_resolution() * camera.get_image_spec().get_y_resolution();
@@ -12,7 +15,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	
 	auto now = std::chrono::system_clock::now();
 
-	scene_database db = scene_database(spheres, rectangles);
+	scene_database db = scene_database(spheres, rectangles,materials,a_lights,s_lights,d_lights,p_lights);
 	
 	
 	vector<vector<float>> image_view(no_of_pixels);
@@ -21,7 +24,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	
 
 
-	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel(),db);
+	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel(),db,ambience_color,ambience_intensity);
 
 
 	for (int i = 0; i < spec.get_x_resolution(); i++)

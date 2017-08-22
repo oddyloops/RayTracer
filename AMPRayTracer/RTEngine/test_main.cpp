@@ -61,8 +61,6 @@ int main()
 	vector<rt_rectangle> rectangles = { rect1,rect2,rect3};
 
 
-	const int X_RES = 256;
-	const int Y_RES = 144;
 	int samples = 1;
 	
 

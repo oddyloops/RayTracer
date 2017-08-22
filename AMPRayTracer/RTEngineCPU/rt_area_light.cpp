@@ -6,74 +6,60 @@
 
 using namespace rt_support::lights;
 
-rt_area_light::rt_area_light(vector<float> origin, vector<float> direction, float vertical_tilt, float focus, float lit_width, float lit_height, float padding,float drop_constant) : rt_light(light_type::AREA)
+rt_area_light::rt_area_light( vector<float> direction, rt_rectangle lit_area, float padding,float drop_constant) : rt_light(light_type::AREA)
 {
-	m_origin = origin;
-	m_direction = direction;
+
+	m_direction = vector_util::normalize(direction);
 	m_drop_constant = drop_constant;
-	m_focus = focus;
+	m_lit_area = lit_area;
 	m_padding = padding;
 
-	intiliaze_rectangles(vertical_tilt, focus, lit_width, lit_height);
+	initialize_penumbra();
 	
 	
 }
 
-rt_area_light::rt_area_light(vector<float> origin, vector<float> direction, float vertical_tilt, float focus, float lit_width, float lit_height, float padding, float drop_constant, vector<float> color) : rt_light(light_type::AREA)
+rt_area_light::rt_area_light(vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color) : rt_light(light_type::AREA)
 {
-	m_origin = origin;
-	m_direction = direction;
+
+	m_direction = vector_util::normalize(direction);
 	m_drop_constant = drop_constant;
-	m_focus = focus;
+	m_lit_area = lit_area;
 	m_color = color;
 	m_padding = padding;
-	intiliaze_rectangles(vertical_tilt, focus, lit_width, lit_height);
+	initialize_penumbra();
 }
 
-rt_area_light::rt_area_light(vector<float> origin, vector<float> direction, float vertical_tilt, float focus, float lit_width, float lit_height, float padding, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att) : rt_light(light_type::AREA)
+rt_area_light::rt_area_light( vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att) : rt_light(light_type::AREA)
 {
-	m_origin = origin;
-	m_direction = direction;
+
+	m_direction = vector_util::normalize(direction);
 	m_drop_constant = drop_constant;
-	m_focus = focus;
+	m_lit_area = lit_area;
 	m_color = color;
 	m_padding = padding;
 	m_range = range;
 	m_att_frac = att_frac;
 	m_realistic_att = is_real_att;
-	intiliaze_rectangles(vertical_tilt, focus, lit_width, lit_height);
+	initialize_penumbra();
 }
 
 
-void rt_area_light::intiliaze_rectangles(float vertical_tilt, float focus, float lit_width, float lit_height)
+void rt_area_light::initialize_penumbra()
 {
-	//compute horizontal and vertical directions for the rectangles
-	//rotate y axis by the z-axis direction by the vertical tilt
-	vector<float> up_direction = vector_util::normalize(matrix::transform({ 0,1,0 }, matrix::rotate_z(math_util::deg_to_rad(vertical_tilt))));
-	m_ver_direction = up_direction;
+	vector<float> pen_vertices[4];
+	
+	//hor_direction
+	m_hor_direction = vector_util::normalize(m_lit_area.get_vertex(1) - m_lit_area.get_vertex(0));
+	m_ver_direction = vector_util::normalize(m_lit_area.get_vertex(3) - m_lit_area.get_vertex(0));
+	
+	
+	pen_vertices[0] = m_lit_area.get_vertex(0) - (m_padding * m_hor_direction) - (m_padding * m_ver_direction);
+	pen_vertices[1] = m_lit_area.get_vertex(1) + (m_padding * m_hor_direction) - (m_padding * m_ver_direction);
+	pen_vertices[2] = m_lit_area.get_vertex(2) + (m_padding * m_hor_direction) + (m_padding * m_ver_direction);
+	pen_vertices[3] = m_lit_area.get_vertex(3) - (m_padding * m_hor_direction) + (m_padding * m_ver_direction);
 
-	vector<float> side_direction = vector_util::normalize(vector_util::cross(m_direction, up_direction));
-	m_hor_direction = side_direction;
-
-	vector<float> rect_center = m_origin + focus * m_direction;
-
-	//compute vertices for each rectangle
-	vector<float> vertices[4];
-	vertices[0] = { rect_center - 0.5f * lit_width * side_direction - 0.5f* lit_height * up_direction};
-	vertices[1] = { rect_center - 0.5f * lit_width * side_direction + 0.5f* lit_height * up_direction };
-	vertices[2] = { rect_center + 0.5f * lit_width * side_direction + 0.5f* lit_height * up_direction };
-	vertices[3] = { rect_center + 0.5f * lit_width * side_direction - 0.5f* lit_height * up_direction };
-
-	float penumbra_width = lit_width + m_padding;
-	float penumbra_height = lit_width + m_padding;
-	vector<float> outer_vertices[4];
-	outer_vertices[0] = { rect_center - 0.5f * penumbra_width * side_direction - 0.5f* penumbra_height * up_direction };
-	outer_vertices[1] = { rect_center - 0.5f * penumbra_width * side_direction + 0.5f* penumbra_height * up_direction };
-	outer_vertices[2] = { rect_center + 0.5f * penumbra_width * side_direction + 0.5f* penumbra_height * up_direction };
-	outer_vertices[3] = { rect_center + 0.5f * penumbra_width * side_direction - 0.5f* penumbra_height * up_direction };
-
-	m_lit_area = rt_rectangle(vertices);
-	m_penumbra = rt_rectangle(outer_vertices);
+	m_penumbra = rt_rectangle(pen_vertices);
 
 
 }
@@ -86,11 +72,11 @@ float rt_area_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 	float percent = 1.0f;
 
 	//determine if it is within the total fov
-	ray r(geomPoint, m_origin);
+	ray r=ray::create_ray_from_pt_dir(geomPoint,vector_util::negate(m_direction));
 	intersection_record rec;
 	
 
-	float dist = vector_util::magnitude(m_origin - r.get_origin()); //distance between spot light and geometry
+	float dist = vector_util::dot(m_lit_area.get_vertex(0)- r.get_origin(),r.get_direction()); //distance between spot light and geometry
 	intersection_record light_rec;
 	
 	if (m_penumbra.intersect(r,light_rec))

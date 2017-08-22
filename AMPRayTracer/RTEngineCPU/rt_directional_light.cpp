@@ -6,12 +6,12 @@ using namespace rt_support::lights;
 
 rt_directional_light::rt_directional_light(vector<float> direction) : rt_light(light_type::DIRECTIONAL)
 {
-	m_direction = direction;
+	m_direction = vector_util::normalize(direction);
 }
 
 rt_directional_light::rt_directional_light(vector<float> direction, vector<float> color) : rt_light(light_type::DIRECTIONAL)
 {
-	m_direction = direction;
+	m_direction = vector_util::normalize(direction);
 	m_color = color;
 }
 

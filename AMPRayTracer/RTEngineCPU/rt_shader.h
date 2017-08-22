@@ -28,6 +28,7 @@ namespace rt
 		scene_database* m_db;
 		vector<float> m_ambient_light;
 		float m_ambient_intensity;
+		vector<float> m_view_dir;
 
 		vector<float> compute_ambience(rt_material& mat);
 
@@ -37,7 +38,7 @@ namespace rt
 	public:
 		rt_shader();
 
-		rt_shader(scene_database* db,vector<float> ambient_light,float ambient_intensity);
+		rt_shader(scene_database* db,vector<float> ambient_light,float ambient_intensity,vector<float> view_dir);
 
 		vector<float> compute_shade(intersection_record& rec, int generation);
 
