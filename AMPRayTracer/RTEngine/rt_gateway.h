@@ -28,7 +28,11 @@ class rt_gateway
 public:
 	
 	//initializes the required parameters and initiates the ray tracing process
-	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,  rt_camera camera,image_spec spec);
+	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,
+		vector<rt_material> materials, vector<rt_directional_light> d_lights,
+		vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
+		vector<rt_area_light> a_lights, float_3 ambience_color, float ambience_intensity,
+		rt_camera camera, image_spec spec);
 
 };
 

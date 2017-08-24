@@ -55,6 +55,12 @@
     <Filter Include="Source Files\rt_support\easy_bmp">
       <UniqueIdentifier>{7481af25-54b2-402e-84fe-093b12da150d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\rt_support\lights">
+      <UniqueIdentifier>{714982fd-49db-469a-b29f-5139ce0c4876}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\rt_support\lights">
+      <UniqueIdentifier>{c235a37d-eb1f-40c5-b816-351ef7ad9ac6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rt_geometry.h">
@@ -123,6 +129,24 @@
     <ClInclude Include="matrix_amp.h">
       <Filter>Header Files\amp_utils</Filter>
     </ClInclude>
+    <ClInclude Include="rt_wave_props.h">
+      <Filter>Header Files\rt</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_light.h">
+      <Filter>Header Files\rt_support\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_directional_light.h">
+      <Filter>Header Files\rt_support\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_point_light.h">
+      <Filter>Header Files\rt_support\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_spot_light.h">
+      <Filter>Header Files\rt_support\lights</Filter>
+    </ClInclude>
+    <ClInclude Include="rt_area_light.h">
+      <Filter>Header Files\rt_support\lights</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray.cpp">
@@ -184,6 +208,24 @@
     </ClCompile>
     <ClCompile Include="matrix_amp.cpp">
       <Filter>Source Files\amp_utils</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_wave_props.cpp">
+      <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_directional_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_point_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_spot_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_area_light.cpp">
+      <Filter>Source Files\rt_support\lights</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

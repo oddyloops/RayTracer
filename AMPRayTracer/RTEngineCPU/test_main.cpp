@@ -20,14 +20,14 @@ struct res
 
 int main()
 {
-	vector<res> r = { res(1920,1080) };
-		// { res(64,64),res(256,144), res(320,240), res(640,360),res(640,480),res(1280,720),res(1920,1080)};
+	vector<res> r = { res(3840,2160) };
+		//{ res(64,64),res(256,144), res(320,240), res(640,360),res(640,480),res(1280,720),res(1920,1080),res(3840,2160)};
 	//materials
 	rt_material mat1 = rt_material({ 0.9f,0.9f,0.9f },
 	{ 0.5f,0.1f,0.3f }, { 0.9f,0.2f,0.6f }, 10);
 
 	rt_material mat2 = rt_material({ 0.9f,0.9f,0.3f },
-	{ 0.2f,0.8f,0.9f }, { 0.9f,0.9f,0.9f }, 2);
+	{ 0.2f,0.8f,0.9f }, { 0.9f,0.9f,0.9f }, 10);
 
 	rt_material mat3 = rt_material({ 0.7f,0.3f,0.2f },
 	{ 0.5f,0.2f,0.1f });
@@ -78,10 +78,10 @@ int main()
 	};
 	rt_area_light a_light = rt_area_light( { 0,-1,0 }, rt_rectangle(area_vertices), 0.2f, 5.0);
 
-	vector<rt_directional_light> dir_lights = { d_light };
-	vector<rt_point_light> point_lights = { p_light };
+	vector<rt_directional_light> dir_lights = { d_light};
+	vector<rt_point_light> point_lights = { p_light};
 	vector<rt_spot_light> spot_lights = { s_light };
-	vector<rt_area_light> area_lights = { a_light };
+	vector<rt_area_light> area_lights = { };
 
 	const int X_RES = 256;
 	const int Y_RES = 144;
@@ -95,8 +95,8 @@ int main()
 		printf("Resolution: %d x %d\n\n", rs.x, rs.y);
 		rt_camera cam = rt_camera({ -8, 5, -8 }, { 0, 0, 0 }, { 0, 1, 0 }, 45, 2);
 		image_spec spec = image_spec(rs.x, rs.y, 1);
-		for (int i = 0; i < 1; i++) {
-			results = rt_gateway::ray_trace(spheres, rectangles, materials, dir_lights, point_lights, spot_lights, area_lights, { 0.2f,0.2f,0.2f }, 0.5f, cam, spec);
+		for (int i = 0; i < 3; i++) {
+			results = rt_gateway::ray_trace(spheres, rectangles, materials, dir_lights, point_lights, spot_lights, area_lights, { 0.2f,0.2f,0.2f }, 0.2f, cam, spec);
 		}
 		printf("\n\n______________________________________\n");
 	}

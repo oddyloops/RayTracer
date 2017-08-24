@@ -30,7 +30,7 @@ void intersection_record::initialize_record() restrict(amp)
 	m_ray_dir = float_3(0, 0, 0);
 }
 
-void intersection_record::update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index) restrict(amp)
+void intersection_record::update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index, int type) restrict(amp)
 {
 	if (dist < m_hit_distance)
 	{
@@ -41,6 +41,7 @@ void intersection_record::update_record(float dist, float_3 intersection_pt, flo
 		m_material_index = mat_index;
 		m_geom_index = geom_index;
 		m_ray_dir = ray.get_direction();
+		m_type = type;
 	}
 }
 
@@ -89,5 +90,10 @@ float_3 intersection_record::get_hit_pt_bc() restrict(amp)
 void intersection_record::set_normal_at_intersection(float_3 n) restrict(amp)
 {
 	m_normal = n;
+}
+
+int intersection_record::get_type() restrict(amp)
+{
+	return m_type;
 }
 

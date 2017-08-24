@@ -7,6 +7,7 @@ rt_material::rt_material(vector<float> ambient_color, vector<float> diffuse_colo
 {
 	m_diffuse_color = diffuse_color;
 	m_ambient_color = ambient_color;
+	
 }
 
 rt_material::rt_material(vector<float> ambient_color, vector<float> diffuse_color, vector<float> specular_color, float specularity)

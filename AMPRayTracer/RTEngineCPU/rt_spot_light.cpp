@@ -62,7 +62,7 @@ float rt_spot_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 	float percent =	1.0f;
 
 	//determine if it is within the total fov
-	ray r(geomPoint, m_origin);
+	ray r = ray(geomPoint, m_origin);
 	intersection_record rec;
 	//compute cosine of angle between ray and centerline of the spotlight
 	float cosine = vector_util::dot(vector_util::negate(r.get_direction()), m_direction);
@@ -71,6 +71,7 @@ float rt_spot_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 	if (cosine > m_cos_half_fov)
 	{
 		//within the coverage of the spotlight
+	
 
 		for (rt_rectangle& rect : rects)
 		{

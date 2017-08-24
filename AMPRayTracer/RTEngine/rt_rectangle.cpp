@@ -7,6 +7,8 @@
 
 using namespace rt_support::geometries;
 
+rt_rectangle::rt_rectangle()  restrict(amp, cpu) {}
+
 rt_rectangle::rt_rectangle(float_3 vertices[], int material_index, array<float,2> xform, int has_transform)
 {
 	m_type = rt_geometry_type::rectangle;
@@ -29,7 +31,7 @@ rt_rectangle::rt_rectangle(float_3 vertices[], int material_index, array<float,2
 	initialize_rectangle();
 }
 
-rt_rectangle::rt_rectangle(float_3 vertices[])
+rt_rectangle::rt_rectangle(float_3 vertices[])  restrict(amp, cpu)
 {
 	m_type = rt_geometry_type::rectangle;
 	m_material_index = 0;
@@ -133,7 +135,7 @@ int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)
 	if (!inside_polygon(hitPt))
 		return false;
 
-	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index());
+	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index(),m_type);
 	return true;
 
 }
@@ -185,4 +187,9 @@ float_3 rt_rectangle::get_min() restrict(amp)
 {
 	//stub
 	return float_3();
+}
+
+float_3 rt_rectangle::get_vertex(int i) restrict(amp,cpu)
+{
+	return m_vertices[i];
 }

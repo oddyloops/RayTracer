@@ -24,6 +24,7 @@ namespace rt_support
 			float m_hit_distance; // distance from the mPoint to the origin of the interesecting ray
 			int m_geom_index;     // index into the geometry (of the global geometry) array
 			int m_material_index; // index into the material array (of the global material) array
+			int m_type; //type of geometry intersected
 
 		public:
 			/// <summary>
@@ -51,7 +52,7 @@ namespace rt_support
 			/// <param name="ray">ray that caused the intersection</param>
 			/// <param name="matIndex">material index at the intersection point</param>
 			/// <param name="geomIndex">geometry index at the interesection point</param>
-			void update_record(float dist, vector<float> intersection_pt, vector<float> normal, ray ray, int mat_index, int geom_index);
+			void update_record(float dist, vector<float> intersection_pt, vector<float> normal, ray ray, int mat_index, int geom_index, int type);
 
 			void update_bc(float u, float v, float w);
 
@@ -74,6 +75,8 @@ namespace rt_support
 			vector<float> get_hit_pt_bc();
 
 			void set_normal_at_intersection(vector<float> n);
+
+			int get_type();
 
 
 

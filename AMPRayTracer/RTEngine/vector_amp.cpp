@@ -54,3 +54,24 @@ float_3 vector_amp::cross(float_3 lhs, float_3 rhs) restrict(amp, cpu)
 	result.z = (lhs.x * rhs.y) - (lhs.y * rhs.x);
 	return result;
 }
+
+
+float vector_amp::point_line_distance(float_3 pt, float_3 ln_start, float_3 ln_end) restrict(amp, cpu)
+{
+	float t = -(dot(ln_start - pt, ln_end - ln_start)) / magnitude_sqr(ln_end - ln_start);
+
+	float dist = powf((ln_start.x - pt.x) + (t * (ln_end.x - ln_start.x)), 2)
+		+ powf((ln_start.y - pt.y) + (t * (ln_end.y - ln_start.y)), 2)
+		+ powf((ln_start.z - pt.z) + (t * (ln_end.z - ln_start.z)), 2);
+
+	return sqrtf(dist);
+}
+
+float_3 vector_amp::clip_color(float_3 color) restrict(amp)
+{
+	float_3 result;
+	result.r = fmaxf(0,fminf(color.r, 1.0f));
+	result.g = fmaxf(0,fminf(color.g, 1.0f));
+	result.b = fmaxf(0,fminf(color.b, 1.0f));
+	return result;
+}

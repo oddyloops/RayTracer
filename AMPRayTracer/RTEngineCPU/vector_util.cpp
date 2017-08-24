@@ -85,7 +85,7 @@ vector<float> vector_util::clip_color(vector<float> input)
 	vector<float> result;
 	for (float c : input) 
 	{
-		result.push_back(fminf(c, 1.0f));
+		result.push_back(fmaxf(0,fminf(c, 1.0f)));
 	}
 	return result;
 }

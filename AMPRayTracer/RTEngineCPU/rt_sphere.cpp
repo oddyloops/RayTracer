@@ -9,6 +9,7 @@ rt_sphere::rt_sphere(vector<float> center, float radius)
 	m_center = center;
 	m_radius = radius;
 	m_radius_squared = radius * radius;
+	m_type = rt_geometry_type::sphere;
 }
 
 bool rt_sphere::intersect(ray& ray, intersection_record& record)
@@ -28,7 +29,7 @@ bool rt_sphere::intersect(ray& ray, intersection_record& record)
 	float hc = sqrtf(m_radius * m_radius - d * d);
 	vector<float> pt = ray.get_origin() + (ca - hc)*ray.get_direction(); //adding ca and hc will give exit intersection
 	vector<float> n = vector_util::normalize(pt - m_center); //normal at entry intersection
-	record.update_record(ca-hc, pt, n, ray, m_material_index, get_resource_index());
+	record.update_record(ca-hc, pt, n, ray, m_material_index, get_resource_index(),m_type);
 
 	return true;
 

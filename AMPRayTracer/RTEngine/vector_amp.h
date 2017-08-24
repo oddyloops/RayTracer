@@ -28,4 +28,12 @@ public:
 	static float dot(float_2 lhs, float_2 rhs) restrict(amp,cpu);
 
 	static float_3 cross(float_3 lhs, float_3 rhs) restrict(amp, cpu);
+
+
+	///<summary>
+	///computes distance between a point and a line assuming they are on the same plane
+	///</summary>
+	static float point_line_distance(float_3 pt, float_3 ln_start, float_3 ln_end) restrict(amp,cpu);
+
+	static float_3 clip_color(float_3 color) restrict(amp);
 };

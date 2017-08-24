@@ -5,6 +5,7 @@
 #include "intersection_record.h"
 #include "indexed_resource.h"
 
+
 using namespace concurrency;
 using namespace concurrency::graphics;
 using namespace rt_support::ray_support;

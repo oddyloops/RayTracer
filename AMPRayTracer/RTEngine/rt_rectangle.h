@@ -41,17 +41,19 @@ namespace rt_support
 
 									
 		public:
+
+			rt_rectangle()  restrict(amp, cpu);
 			/// <summary>
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>
 
-			rt_rectangle(float_3 vertices[], int material_index,concurrency::array<float,2> xform,int has_transform);
+			rt_rectangle(float_3 vertices[], int material_index, concurrency::array<float, 2> xform, int has_transform);
 
 			/// <summary>
 			/// Construting a rectange from given vertices.
 			/// </summary>
 			/// <param name="v"></param>
-			rt_rectangle(float_3 v[]);
+			rt_rectangle(float_3 v[]) restrict(amp,cpu);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
@@ -96,6 +98,7 @@ namespace rt_support
 			float_3 get_max() restrict(amp);
 			float_3 get_min() restrict(amp);
 
+			float_3 get_vertex(int i) restrict(amp,cpu);
 
 
 

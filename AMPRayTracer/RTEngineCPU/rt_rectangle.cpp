@@ -15,6 +15,7 @@ rt_rectangle::rt_rectangle()
 
 rt_rectangle& rt_rectangle::operator=(const rt_rectangle& r)
 {
+	m_type = r.m_type;
 	m_material_index = r.m_material_index;
 	m_normal = r.m_normal;
 	m_type = r.m_type;
@@ -169,7 +170,7 @@ bool rt_rectangle::intersect(ray& ray, intersection_record& record)
 	if (!inside_polygon(hitPt))
 		return false;
 
-	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index());
+	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index(),m_type);
 	return true;
 
 }

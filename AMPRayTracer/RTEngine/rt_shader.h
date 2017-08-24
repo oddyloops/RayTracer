@@ -5,6 +5,11 @@
 
 #include "ray.h"
 #include "intersection_record.h"
+#include "rt_directional_light.h"
+#include "rt_point_light.h"
+#include "rt_spot_light.h"
+#include "rt_area_light.h"
+#include "rt_material.h"
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
 #include "pixel_data.h"
@@ -14,6 +19,7 @@ using namespace std;
 
 
 using namespace rt_support;
+using namespace rt_support::lights;
 using namespace rt_support::geometries;
 using namespace rt_support::ray_support;
 using namespace rt_support::scene_resource_support;
@@ -26,9 +32,25 @@ namespace rt
 	///</summary>
 	class rt_shader
 	{
-		int dummy; //used to force object to be a multiple of 32 -bit (Requirement in the GPU kernel code)
+	
+		
+
+		float_3 m_ambient_light;
+		float m_ambient_intensity;
+		float_3 m_view_dir;
+
+		float_3 compute_ambience(rt_material& mat) restrict(amp);
+
+		float_3 compute_diffuse(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
+
+		float_3 compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
 	public:
 		rt_shader() restrict(amp, cpu);
-		float_3 compute_shade(intersection_record rec, int generation) restrict(amp);
+
+		rt_shader(float_3 ambient_light, float ambient_intensity, float_3 view_dir) restrict(amp, cpu);
+		float_3 compute_shade(intersection_record& rec, int generation,  array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
 	};
 }
