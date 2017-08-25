@@ -41,7 +41,7 @@ int main()
 	vector<res> r =  { res(64,64),res(256,144), res(320,240), res(640,360),res(640,480),res(1280,720),res(1920,1080),res(3840,2160) };
 
 	rt_material mat1 = rt_material(float_3( 0.9f,0.9f,0.9f ),
-	float_3( 0.5f,0.1f,0.3f ), float_3( 0.9f,0.2f,0.6f ), 10);
+	float_3( 0.1f,0.1f,0.1f ), float_3( 0.8f,0.8f,0.8f ), 10);
 
 	rt_material mat2 = rt_material(float_3(0.9f,0.9f,0.3f ),
 		float_3(0.2f,0.8f,0.9f ), float_3(0.4f,0.9f,0.9f ), 5);

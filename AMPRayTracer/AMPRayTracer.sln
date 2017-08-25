@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTEngine", "RTEngine\RTEngi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTEngineCPU", "RTEngineCPU\RTEngineCPU.vcxproj", "{144171B6-2013-4EAB-8FE3-9B7B891045E5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JsonParser", "JsonParser\JsonParser.vcxproj", "{2DBC5796-CE34-44C2-BF8C-0A21341F613A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -37,6 +39,16 @@ Global
 		{144171B6-2013-4EAB-8FE3-9B7B891045E5}.Release|x64.Build.0 = Release|x64
 		{144171B6-2013-4EAB-8FE3-9B7B891045E5}.Release|x86.ActiveCfg = Release|Win32
 		{144171B6-2013-4EAB-8FE3-9B7B891045E5}.Release|x86.Build.0 = Release|Win32
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Debug|ARM.ActiveCfg = Debug|Win32
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Debug|x64.ActiveCfg = Debug|x64
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Debug|x64.Build.0 = Debug|x64
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Debug|x86.ActiveCfg = Debug|Win32
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Debug|x86.Build.0 = Debug|Win32
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Release|ARM.ActiveCfg = Release|Win32
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Release|x64.ActiveCfg = Release|x64
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Release|x64.Build.0 = Release|x64
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Release|x86.ActiveCfg = Release|Win32
+		{2DBC5796-CE34-44C2-BF8C-0A21341F613A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
