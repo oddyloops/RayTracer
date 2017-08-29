@@ -142,15 +142,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="JsonParser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="JsonParser.cpp" />
+    <ClCompile Include="PInvoke.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\RTEngineCPU\RTEngineCPU.vcxproj">
       <Project>{144171b6-2013-4eab-8fe3-9b7b891045e5}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\RTEngine\RTEngine.vcxproj">
-      <Project>{7a47d688-4e4e-428c-b10c-a06ac0be2bc9}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="IParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

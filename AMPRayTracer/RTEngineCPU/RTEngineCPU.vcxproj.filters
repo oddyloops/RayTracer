@@ -147,6 +147,9 @@
     <ClInclude Include="rt_wave_props.h">
       <Filter>rt</Filter>
     </ClInclude>
+    <ClInclude Include="IParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
@@ -194,9 +197,6 @@
     <ClCompile Include="rt_gateway.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="scene_database.cpp">
       <Filter>Source Files\rt_support</Filter>
     </ClCompile>
@@ -229,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="rt_wave_props.cpp">
       <Filter>Source Files\rt</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

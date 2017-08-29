@@ -1,6 +1,8 @@
 #pragma once
 #include "rt_geometry.h"
 
+  
+
 
 namespace rt_support
 {
@@ -15,7 +17,7 @@ namespace rt_support
 
 		
 		public:
-			rt_sphere(vector<float> center, float radius);
+			__declspec(dllexport) rt_sphere(vector<float> center, float radius);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,

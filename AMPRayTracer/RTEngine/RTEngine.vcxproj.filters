@@ -191,9 +191,6 @@
     <ClCompile Include="rt_gateway.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EasyBMP.cpp">
       <Filter>Source Files\rt_support\easy_bmp</Filter>
     </ClCompile>

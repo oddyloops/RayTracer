@@ -23,7 +23,7 @@ class rt_gateway
 public:
 	
 
-	static scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, 
+	static __declspec(dllexport) scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,
 		vector<rt_material> materials,vector<rt_directional_light> d_lights,
 		vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
 		vector<rt_area_light> a_lights,vector<float> ambience_color,float ambience_intensity,

@@ -154,7 +154,6 @@
     <ClCompile Include="rt_spot_light.cpp" />
     <ClCompile Include="rt_visibility.cpp" />
     <ClCompile Include="rt_wave_props.cpp" />
-    <ClCompile Include="test_main.cpp" />
     <ClCompile Include="math_util.cpp" />
     <ClCompile Include="matrix_amp.cpp" />
     <ClCompile Include="pixel_data.cpp" />

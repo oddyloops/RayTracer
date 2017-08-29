@@ -5,7 +5,8 @@ typedef unsigned char byte;
 class IParser
 {
 private:
+	
+public:
+	virtual void parse(const char* input) = 0;
 
-public: 
-	static void parse_and_render(const char* input,byte* )
-};
+}; 

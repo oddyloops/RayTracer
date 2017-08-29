@@ -34,25 +34,24 @@ rt_rectangle& rt_rectangle::operator=(const rt_rectangle& r)
 
 }
 
-rt_rectangle::rt_rectangle(vector<float> vertices[], int material_index, matrix xform, int has_transform)
+rt_rectangle::rt_rectangle(vector<float> vertices[],  matrix xform)
 {
 	m_type = rt_geometry_type::rectangle;
 	if (vertices + 3 == nullptr) //not up to four vertices?
 	{
 		return;
 	}
-	m_material_index = material_index;
+
 	for (int i = 0; i < 4; i++)
 	{
 		m_vertices[i] = vertices[i];
 	}
-	if (has_transform)
+	
+	for (int i = 0; i < 4; i++)
 	{
-		for (int i = 0; i < 4; i++)
-		{
-			m_vertices[i] = matrix::transform(m_vertices[i], xform);
-		}
+		m_vertices[i] = matrix::transform(m_vertices[i], xform);
 	}
+	
 	initialize_rectangle();
 }
 
