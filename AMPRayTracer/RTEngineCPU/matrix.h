@@ -10,9 +10,9 @@ class matrix
 private: 
 	vector<vector<float>> _mat;
 public:
-	matrix(int row,int col, float init);
+	__declspec(dllexport) matrix(int row,int col, float init);
 
-	matrix(vector<vector<float>> mat);
+	__declspec(dllexport) matrix(vector<vector<float>> mat);
 
 	int get_row_length();
 

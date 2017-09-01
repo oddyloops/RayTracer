@@ -2,6 +2,10 @@
 
 using namespace rt_support::scene_resource_support;
 
+rt_material::rt_material()
+{
+
+}
 
 rt_material::rt_material(vector<float> ambient_color, vector<float> diffuse_color)
 {

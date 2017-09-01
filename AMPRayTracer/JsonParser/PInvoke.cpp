@@ -1,14 +1,32 @@
 #include "JsonParser.h"
+#include <fstream>
+#include <string>
 
 void parse(const char* input)
 {
 	IParser* parser = new JsonParser();
 	parser->parse(input);
+	delete parser;
 }
 
 int main()
 {
-	const char* json ="{\"geometries\" :{\"spheres\":[{ \"radius\" : 5.0, \"center\" : [1, 2, 4]},{ \"radius\" : 3.0, \"center\" : [-8.2,2,4]},{ \"radius\" : 2.0, \"center\" : [-8.2,2,4.0]}]}}";
+	fstream fs;
+	fs.open("json_test.json", fstream::in);
+	string content;
+	string line;
+	bool exists = fs.good();
+	system("echo %cd%");
+	if (exists)
+	{
+		while (getline(fs, line))
+		{
+			content += line;
+		}
+	}
+	
+	const char* json =content.c_str();
+	fs.close();
 	parse(json);
 	return 0;
 }

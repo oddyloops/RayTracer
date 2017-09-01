@@ -142,10 +142,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="EasyBMP.h" />
+    <ClInclude Include="EasyBMP_BMP.h" />
+    <ClInclude Include="EasyBMP_DataStructures.h" />
+    <ClInclude Include="EasyBMP_VariousBMPutilities.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="JsonParser.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EasyBMP.cpp" />
     <ClCompile Include="JsonParser.cpp" />
     <ClCompile Include="PInvoke.cpp" />
   </ItemGroup>

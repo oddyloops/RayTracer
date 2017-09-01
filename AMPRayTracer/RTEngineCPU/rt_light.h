@@ -34,7 +34,7 @@ namespace rt_support
 			float compute_attenuation(float hitDist);
 
 		public:
-			rt_light(int type);
+			__declspec(dllexport) rt_light(int type);
 
 			void set_color(vector<float> color);
 			void set_direction(vector<float> direction);

@@ -14,7 +14,7 @@ namespace rt_support
 		private:
 			int m_index = 0;
 		public:
-			void set_resource_index(int index);
+			__declspec(dllexport) void set_resource_index(int index);
 			int get_resource_index();
 		};
 	}

@@ -53,5 +53,5 @@ float pixel_data::get_depth() const
 
 vector<float> pixel_data::get_default_color()
 {
-	return {1.0f,0.7f,0.7f};
+	return {0,0,0};
 }

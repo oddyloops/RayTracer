@@ -16,6 +16,10 @@ private:
 	vector<rt_point_light> _point_lights;
 	vector<rt_spot_light> _spot_lights;
 	vector <rt_area_light > _area_lights;
+	rt_camera _camera;
+	image_spec _specs;
+	vector<float> _ambient_color;
+	float _ambient_intensity;
 
 
 		void parse_helper(json& j);
@@ -36,8 +40,13 @@ private:
 
 		void parse_area_light(json& j_alight);
 
+		void parse_camera(json& j_cam);
+
+		void parse_image_spec(json& j_spec);
+
 		vector<float> json_to_vector(json& v);
 
+		void render();
 		
 public:
 		virtual void parse(const char* input);

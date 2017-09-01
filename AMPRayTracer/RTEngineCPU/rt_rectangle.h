@@ -44,20 +44,20 @@ namespace rt_support
 		public:
 
 
-			rt_rectangle();
+			__declspec(dllexport) rt_rectangle();
 
-			rt_rectangle& operator=(const rt_rectangle& r);
+			__declspec(dllexport) rt_rectangle& operator=(const rt_rectangle& r);
 			/// <summary>
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>
 
-			rt_rectangle(vector<float> vertices[],matrix xform);
+			__declspec(dllexport) rt_rectangle(vector<float> vertices[],matrix xform);
 
 			/// <summary>
 			/// Construting a rectange from given vertices.
 			/// </summary>
 			/// <param name="v"></param>
-			rt_rectangle(vector<float> v[]);
+			__declspec(dllexport) rt_rectangle(vector<float> v[]);
 
 			
 

@@ -18,9 +18,11 @@ namespace rt_support
 			vector<float> m_specular_color;
 			float m_specularity;
 		public:
-			rt_material(vector<float> ambient_color, vector<float> diffuse_color);
+			__declspec(dllexport) rt_material();
 
-			rt_material(vector<float> ambient_color, vector<float> diffuse_color, vector<float> specular_color, float specularity);
+			__declspec(dllexport) rt_material(vector<float> ambient_color, vector<float> diffuse_color);
+
+			__declspec(dllexport) rt_material(vector<float> ambient_color, vector<float> diffuse_color, vector<float> specular_color, float specularity);
 
 			void set_diffuse(vector<float> color);
 

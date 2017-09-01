@@ -22,11 +22,11 @@ namespace rt_support
 			void initialize_penumbra();
 
 		public:
-			rt_area_light(vector<float> direction, rt_rectangle lit_area , float padding, float drop_constant);
+			__declspec(dllexport) rt_area_light(vector<float> direction, rt_rectangle lit_area , float padding, float drop_constant);
 
-			rt_area_light( vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color);
+			__declspec(dllexport) rt_area_light( vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color);
 
-			rt_area_light(vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att);
+			__declspec(dllexport) rt_area_light(vector<float> direction, rt_rectangle lit_area, float padding, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att);
 
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray

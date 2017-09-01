@@ -15,11 +15,11 @@ namespace rt_support
 			float m_cos_half_cent_fov; //cosine of half the central fov angle
 			float m_drop_constant; //used fot computing penumbra attenuation (higher values means steeper attenuations)
 		public:
-			rt_spot_light(vector<float> origin, vector<float> direction, float total_fov, float central_fov, float drop_constant);
+			__declspec(dllexport) rt_spot_light(vector<float> origin, vector<float> direction, float total_fov, float central_fov, float drop_constant);
 
-			rt_spot_light(vector<float> origin, vector<float> direction, float total_fov, float central_fov, float drop_constant,vector<float> color);
+			__declspec(dllexport) rt_spot_light(vector<float> origin, vector<float> direction, float total_fov, float central_fov, float drop_constant,vector<float> color);
 
-			rt_spot_light(vector<float> origin, vector<float> direction, float total_fov, float central_fov, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att);
+			__declspec(dllexport) rt_spot_light(vector<float> origin, vector<float> direction, float total_fov, float central_fov, float drop_constant, vector<float> color, float range, float att_frac, bool is_real_att);
 
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray

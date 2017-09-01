@@ -1,5 +1,5 @@
 #include "JsonParser.h"
-
+#include "EasyBMP.h"
 
 
 void JsonParser::parse_helper(json& j)
@@ -13,12 +13,24 @@ void JsonParser::parse_helper(json& j)
 	parse_rects(j_rects);
 
 	/*extract materials*/
-	json j_mats = j["materials"]["diffuse"];
+	json j_mats = j["materials"]["solids"];
 	parse_diffuse_materials(j_mats);
 
 	/*extract lights*/
 	json j_lights = j["lights"];
 	parse_lights(j_lights);
+
+	/*extract camera*/
+	json j_cam = j["camera"];
+	parse_camera(j_cam);
+
+	/*extract image specs*/
+	json j_spec = j["specs"];
+	parse_image_spec(j_spec);
+
+	/*extract ambient properties*/
+	_ambient_color = json_to_vector(j["ambient_color"]);
+	_ambient_intensity = j["ambient_intensity"].get<float>();
 
 	
 }
@@ -209,17 +221,21 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 		}
 
 		vector<float> diffuse_color = json_to_vector(mat["diffuse_color"]);
-		vector<float> ambient_color = json_to_vector(mat["ambient _color"]);
+		vector<float> ambient_color = json_to_vector(mat["ambient_color"]);
+		rt_material m;
 		if (mat.find("specular_color") != mat.end() && mat.find("specularity") != mat.end())
 		{
 			vector<float> specular_color = json_to_vector(mat["specular_color"]);
 			float specularity = mat["specularity"].get<float>();
-			_mats.push_back(rt_material(ambient_color, diffuse_color, specular_color, specularity));
+			m = rt_material(ambient_color, diffuse_color, specular_color, specularity);
+			
 		}
 		else
 		{
-			_mats.push_back(rt_material(ambient_color, diffuse_color));
+			m = rt_material(ambient_color, diffuse_color);
 		}
+		m.set_resource_index(mat["resource_index"].get<int>());
+		_mats.push_back(m);
 	}
 }
 
@@ -238,6 +254,11 @@ void JsonParser::parse_spheres(json& j_sphs)
 		float radius = sph["radius"].get<float>();
 		vector<float> center = json_to_vector(sph["center"]);
 		rt_sphere s = rt_sphere(center, radius);
+		s.set_resource_index(sph["resource_index"].get<int>());
+		if (sph.find("material_index") != sph.end())
+		{
+			s.set_material_index(sph["material_index"].get<int>());
+		}
 		_spheres.push_back(s);
 	}
 }
@@ -266,7 +287,7 @@ void JsonParser::parse_rects(json& j_rects)
 			vertices[i++] = json_to_vector(*v_itr);
 		}
 
-
+		rt_rectangle r;
 		if (rect.find("xform") != rect.end())
 		{
 			//parse xform
@@ -283,13 +304,56 @@ void JsonParser::parse_rects(json& j_rects)
 			{
 				throw exception("3D transformation matrix must be 3x3!");
 			}
-
-			_rects.push_back(rt_rectangle(vertices, matrix(x_form_mat)));
+			r = rt_rectangle(vertices, matrix(x_form_mat));
+			
 		}
 		else {
-			_rects.push_back(rt_rectangle(vertices));
+			r = rt_rectangle(vertices);
 		}
+		r.set_resource_index(rect["resource_index"].get<int>());
+		if (rect.find("material_index") != rect.end())
+		{
+			r.set_material_index(rect["material_index"].get<int>());
+		}
+		_rects.push_back(r);
 	}
+}
+
+void JsonParser::parse_camera(json& j_cam)
+{
+	if (j_cam.find("eye") == j_cam.end() || j_cam.find("is_orthographic") == j_cam.end() ||
+		j_cam.find("at") == j_cam.end() || j_cam.find("focus") == j_cam.end() ||
+		j_cam.find("fov") == j_cam.end() || j_cam.find("up") == j_cam.end())
+	{
+		throw exception("Incorrect camera structure!");
+	}
+
+	vector<float> eye = json_to_vector(j_cam["eye"]);
+	vector<float> at = json_to_vector(j_cam["at"]);
+	vector<float> up = json_to_vector(j_cam["up"]);
+	bool is_ortho = j_cam["is_orthographic"].get<bool>();
+	float focus = j_cam["focus"].get<float>();
+	float fov = j_cam["fov"].get<float>();
+
+	_camera = rt_camera(eye, at, up, fov, focus);
+	_camera.set_ortho_mode_on(is_ortho);
+	
+
+}
+
+
+void JsonParser::parse_image_spec(json& j_spec)
+{
+	if (j_spec.find("x_res") == j_spec.end() || j_spec.find("y_res") == j_spec.end() ||
+		j_spec.find("samples_per_pixel") == j_spec.end())
+	{
+		throw exception("Incorrect image spec structure!");
+	}
+	int x_res = j_spec["x_res"].get<int>();
+	int y_res = j_spec["y_res"].get<int>();
+	int samples = j_spec["samples_per_pixel"].get<int>();
+
+	_specs = image_spec(x_res, y_res, samples);
 }
 
 vector<float> JsonParser::json_to_vector(json& v)
@@ -306,5 +370,48 @@ void JsonParser::parse(const char* input)
 {
 	json j = json::parse(input);
 	parse_helper(j);
+	render();
+
+}
+
+void JsonParser::render()
+{
+	auto results = rt_gateway::ray_trace(_spheres, _rects, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
+		_camera, _specs);
+
+	int img_count = 1;
+	for (auto& image : results)
+	{
+		BMP input;
+		input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
+		for (int x = 0; x < _specs.get_x_resolution(); x++)
+		{
+			for (int y = 0; y < _specs.get_y_resolution(); y++)
+			{
+				int index = x * _specs.get_y_resolution() + y;
+				if (image[0].size() > 1)
+				{
+					input(x, y)->Alpha = 255;
+
+
+
+					input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(image[index][0] * 255));
+					input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(image[index][1] * 255));
+					input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(image[index][2] * 255));
+				}
+				else
+				{
+					input(x, y)->Alpha = 255;
+					input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(image[index][0] * 255));
+					input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(image[index][0] * 255));
+					input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(image[index][0] * 255));
+				}
+
+			}
+		}
+		input.WriteToFile((string("img") + to_string(img_count++) + string(".bmp")).c_str());
+	}
+
+	system("PAUSE");
 
 }

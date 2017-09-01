@@ -8,11 +8,11 @@ namespace rt_support
 		class rt_point_light : public rt_light
 		{
 		public:
-			rt_point_light(vector<float> origin);
+			__declspec(dllexport) rt_point_light(vector<float> origin);
 
-			rt_point_light(vector<float> origin, vector<float> color);
+			__declspec(dllexport) rt_point_light(vector<float> origin, vector<float> color);
 
-			rt_point_light(vector<float> origin, vector<float> color, float range,float att_frac,bool is_real_att);
+			__declspec(dllexport) rt_point_light(vector<float> origin, vector<float> color, float range,float att_frac,bool is_real_att);
 
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray

@@ -43,11 +43,11 @@ namespace rt_support
 		vector<float> m_pixel_origin;
 		
 	public:
-		rt_camera();
+		__declspec(dllexport) rt_camera();
 
-		rt_camera(vector<float> eye, vector<float> at, vector<float> up,float fov,float focus);
+		__declspec(dllexport) rt_camera(vector<float> eye, vector<float> at, vector<float> up,float fov,float focus);
 
-		rt_camera& operator=(const rt_camera& cam);
+		__declspec(dllexport) rt_camera& operator=(const rt_camera& cam);
 
 		// sets the image spec object of camera
 		void set_image_spec(image_spec spec);
@@ -56,7 +56,7 @@ namespace rt_support
 		void set_generation(int generation);
 
 		// sets the projection mode for camera
-		void set_ortho_mode_on(bool ortho_mode_on);
+		__declspec(dllexport) void set_ortho_mode_on(bool ortho_mode_on);
 
 		void initialize_image(image_spec& spec);
 	
