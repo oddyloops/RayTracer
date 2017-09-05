@@ -56,7 +56,7 @@ namespace rt_support
 		public:
 			
 
-			void set_material_index(int index);
+			__declspec(dllexport) void set_material_index(int index);
 
 
 			/// <summary>

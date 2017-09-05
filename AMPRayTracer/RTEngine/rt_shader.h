@@ -32,8 +32,6 @@ namespace rt
 	///</summary>
 	class rt_shader
 	{
-	
-		
 
 		float_3 m_ambient_light;
 		float m_ambient_intensity;

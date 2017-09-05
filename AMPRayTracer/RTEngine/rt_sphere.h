@@ -15,7 +15,7 @@ namespace rt_support
 
 		
 		public:
-			rt_sphere(float_3 center, float radius);
+			__declspec(dllexport) rt_sphere(float_3 center, float radius);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,

@@ -22,6 +22,6 @@ float math_util::abs(float x)
 
 float math_util::rnd0to1()
 {
-	return (float)rand() / INT_MIN;
+	return (float)rand() / INT_MAX;
 }
 

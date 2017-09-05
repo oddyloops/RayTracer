@@ -11,8 +11,8 @@ namespace rt_support
 		private:
 			int m_index = 0;
 		public:
-			indexed_resource() restrict(amp, cpu);
-			void set_resource_index(int index) restrict(amp,cpu);
+			__declspec(dllexport) indexed_resource() restrict(amp, cpu);
+			__declspec(dllexport) void set_resource_index(int index) restrict(amp,cpu);
 			int get_resource_index() restrict(amp,cpu);
 		};
 	}

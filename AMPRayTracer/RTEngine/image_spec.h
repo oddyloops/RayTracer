@@ -17,15 +17,15 @@ namespace rt_support
 		int m_y_resolution;
 
 	public:
-		image_spec() restrict(amp, cpu);
-		image_spec(int x_resolution, int y_resolution, int samples_per_pixel) restrict(amp, cpu);
+		__declspec(dllexport) image_spec() restrict(amp, cpu);
+		__declspec(dllexport) image_spec(int x_resolution, int y_resolution, int samples_per_pixel) restrict(amp, cpu);
 
 		/// <summary>
 		/// Access functions for the image spec. information
 		/// </summary>
 		int get_samples_per_pixel() restrict(amp, cpu);
-		int get_x_resolution() restrict(amp, cpu);
-		int get_y_resolution() restrict(amp, cpu);
+		__declspec(dllexport) int get_x_resolution() restrict(amp, cpu);
+		__declspec(dllexport) int get_y_resolution() restrict(amp, cpu);
 		float get_aspect_ratio() restrict(amp, cpu);
 	};
 }

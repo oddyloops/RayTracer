@@ -1,5 +1,6 @@
 #pragma once
 
+
 typedef unsigned char byte;
 
 class IParser

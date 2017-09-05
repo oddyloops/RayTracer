@@ -155,8 +155,8 @@
     <ClCompile Include="PInvoke.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RTEngineCPU\RTEngineCPU.vcxproj">
-      <Project>{144171b6-2013-4eab-8fe3-9b7b891045e5}</Project>
+    <ProjectReference Include="..\RTEngine\RTEngine.vcxproj">
+      <Project>{7a47d688-4e4e-428c-b10c-a06ac0be2bc9}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

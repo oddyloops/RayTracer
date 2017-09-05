@@ -9,25 +9,24 @@ using namespace rt_support::geometries;
 
 rt_rectangle::rt_rectangle()  restrict(amp, cpu) {}
 
-rt_rectangle::rt_rectangle(float_3 vertices[], int material_index, array<float,2> xform, int has_transform)
+rt_rectangle::rt_rectangle(float_3 vertices[], array<float,2> xform)
 {
 	m_type = rt_geometry_type::rectangle;
 	if (vertices + 3 == nullptr) //not up to four vertices?
 	{
 		return;
 	}
-	m_material_index = material_index;
+
 	for (int i = 0; i < 4; i++)
 	{
 		m_vertices[i] = vertices[i];
 	}
-	if (has_transform)
-	{
+	
 		for (int i = 0; i < 4; i++)
 		{
 			m_vertices[i] = matrix_amp::transform(m_vertices[i], xform);
 		}
-	}
+	
 	initialize_rectangle();
 }
 

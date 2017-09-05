@@ -9,9 +9,9 @@ namespace rt_support
 		class rt_directional_light : public rt_light
 		{
 		public:
-			rt_directional_light(float_3 direction) restrict(amp,cpu);
+			__declspec(dllexport) rt_directional_light(float_3 direction) restrict(amp,cpu);
 
-			rt_directional_light(float_3 direction,float_3 color) restrict(amp, cpu);
+			__declspec(dllexport) rt_directional_light(float_3 direction,float_3 color) restrict(amp, cpu);
 
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray

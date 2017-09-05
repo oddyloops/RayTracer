@@ -25,6 +25,7 @@ rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int num_of_samples
 
 pixel_data rt_core::compute_pixel_data(int current_x, int current_y)
 {
+
 	ray r;
 	vector<float> sample_position = m_camera.get_pixel_position(current_x, current_y);
 

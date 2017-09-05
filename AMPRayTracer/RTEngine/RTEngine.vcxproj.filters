@@ -147,6 +147,9 @@
     <ClInclude Include="rt_area_light.h">
       <Filter>Header Files\rt_support\lights</Filter>
     </ClInclude>
+    <ClInclude Include="IParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ray.cpp">
@@ -223,6 +226,9 @@
     </ClCompile>
     <ClCompile Include="rt_area_light.cpp">
       <Filter>Source Files\rt_support\lights</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

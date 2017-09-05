@@ -4,7 +4,8 @@
 
 void parse(const char* input)
 {
-	IParser* parser = new JsonParser();
+	IParser* parser = new JsonParser();;
+	
 	parser->parse(input);
 	delete parser;
 }

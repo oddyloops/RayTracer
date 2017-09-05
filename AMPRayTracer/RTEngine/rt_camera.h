@@ -42,21 +42,21 @@ namespace rt_support
 		float_3 m_pixel_origin;
 		
 	public:
-		rt_camera() restrict(amp, cpu);
+		__declspec(dllexport) rt_camera() restrict(amp, cpu);
 
-		rt_camera(float_3 eye, float_3 at,float_3 up,float fov,float focus) restrict(amp,cpu);
+		__declspec(dllexport) rt_camera(float_3 eye, float_3 at,float_3 up,float fov,float focus) restrict(amp,cpu);
 
-		rt_camera& operator=(const rt_camera& cam) restrict(amp, cpu);
+		__declspec(dllexport) rt_camera& operator=(const rt_camera& cam) restrict(amp, cpu);
 
 	
 		// sets the image spec object of camera
-		void set_image_spec(image_spec spec) restrict(amp,cpu);
+		__declspec(dllexport) void set_image_spec(image_spec spec) restrict(amp,cpu);
 
 		// sets the generation value for camera
-		void set_generation(int generation) restrict(amp, cpu);
+		__declspec(dllexport) void set_generation(int generation) restrict(amp, cpu);
 
 		// sets the projection mode for camera
-		void set_ortho_mode_on(int ortho_mode_on) restrict(amp, cpu);
+		__declspec(dllexport) void set_ortho_mode_on(int ortho_mode_on) restrict(amp, cpu);
 
 		void initialize_image(image_spec& spec) restrict(amp, cpu);
 

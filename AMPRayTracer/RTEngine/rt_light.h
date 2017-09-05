@@ -36,7 +36,7 @@ namespace rt_support
 			float compute_attenuation(float hitDist) restrict(amp);
 
 		public:
-			rt_light(int type) restrict(amp,cpu);
+			__declspec(dllexport) rt_light(int type) restrict(amp,cpu);
 
 			void set_color(float_3 color) restrict(amp,cpu);
 			void set_direction(float_3 direction) restrict(amp, cpu);

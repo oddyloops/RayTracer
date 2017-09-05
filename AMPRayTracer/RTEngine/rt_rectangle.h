@@ -42,18 +42,18 @@ namespace rt_support
 									
 		public:
 
-			rt_rectangle()  restrict(amp, cpu);
+			__declspec(dllexport) rt_rectangle()  restrict(amp, cpu);
 			/// <summary>
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>
 
-			rt_rectangle(float_3 vertices[], int material_index, concurrency::array<float, 2> xform, int has_transform);
+			__declspec(dllexport) rt_rectangle(float_3 vertices[], concurrency::array<float, 2> xform);
 
 			/// <summary>
 			/// Construting a rectange from given vertices.
 			/// </summary>
 			/// <param name="v"></param>
-			rt_rectangle(float_3 v[]) restrict(amp,cpu);
+			__declspec(dllexport) rt_rectangle(float_3 v[]) restrict(amp,cpu);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,

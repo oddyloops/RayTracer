@@ -18,9 +18,11 @@ namespace rt_support
 			float_3 m_specular_color;
 			float m_specularity;
 		public:
-			rt_material(float_3 ambient_color, float_3 diffuse_color) restrict(amp,cpu);
+			__declspec(dllexport) rt_material();
 
-			rt_material(float_3 ambient_color, float_3 diffuse_color, float_3 specular_color, float specularity) restrict(amp,cpu);
+			__declspec(dllexport) rt_material(float_3 ambient_color, float_3 diffuse_color) restrict(amp,cpu);
+
+			__declspec(dllexport) rt_material(float_3 ambient_color, float_3 diffuse_color, float_3 specular_color, float specularity) restrict(amp,cpu);
 
 			void set_diffuse(float_3 color) restrict(amp,cpu);
 			

@@ -1,7 +1,7 @@
 #include "rt_material.h"
 
 using namespace rt_support::scene_resource_support;
-
+rt_material::rt_material() {}
 
 rt_material::rt_material(float_3 ambient_color, float_3 diffuse_color) restrict(amp, cpu)
 {
