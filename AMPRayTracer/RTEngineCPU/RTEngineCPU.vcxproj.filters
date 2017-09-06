@@ -105,18 +105,6 @@
     <ClInclude Include="rt_gateway.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_VariousBMPutilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_BMP.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_DataStructures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="scene_database.h">
       <Filter>rt_support</Filter>
     </ClInclude>
@@ -205,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="pixel_data.cpp">
       <Filter>Source Files\rt</Filter>
-    </ClCompile>
-    <ClCompile Include="EasyBMP.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rt_material.cpp">
       <Filter>Source Files\rt_support\scene_resource_support</Filter>

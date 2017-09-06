@@ -37,7 +37,7 @@ namespace rt_support
 		float m_focus;                   // place to form the image plane
 		image_spec m_image_spec;           // image spec
 		int m_generation;                // generation value
-		bool m_ortho_mode_on;              // flags whether orthographic mode is on 
+		bool m_ortho_mode_on = false;              // flags whether orthographic mode is on 
 	
 		vector<float> m_pixel_dx,m_pixel_dy;
 		vector<float> m_pixel_origin;

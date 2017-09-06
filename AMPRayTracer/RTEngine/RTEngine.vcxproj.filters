@@ -49,12 +49,6 @@
     <Filter Include="Source Files\rt">
       <UniqueIdentifier>{88701c32-9f51-4819-88cc-398c7a0fcaa4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\easy_bmp">
-      <UniqueIdentifier>{be058b81-93be-4ea1-adb4-73de9d62348a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\rt_support\easy_bmp">
-      <UniqueIdentifier>{7481af25-54b2-402e-84fe-093b12da150d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\rt_support\lights">
       <UniqueIdentifier>{714982fd-49db-469a-b29f-5139ce0c4876}</UniqueIdentifier>
     </Filter>
@@ -107,18 +101,6 @@
     </ClInclude>
     <ClInclude Include="rt_gateway.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EasyBMP_VariousBMPutilities.h">
-      <Filter>Header Files\easy_bmp</Filter>
-    </ClInclude>
-    <ClInclude Include="EasyBMP.h">
-      <Filter>Header Files\easy_bmp</Filter>
-    </ClInclude>
-    <ClInclude Include="EasyBMP_BMP.h">
-      <Filter>Header Files\easy_bmp</Filter>
-    </ClInclude>
-    <ClInclude Include="EasyBMP_DataStructures.h">
-      <Filter>Header Files\easy_bmp</Filter>
     </ClInclude>
     <ClInclude Include="rt_visibility.h">
       <Filter>Header Files\rt</Filter>
@@ -193,9 +175,6 @@
     </ClCompile>
     <ClCompile Include="rt_gateway.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EasyBMP.cpp">
-      <Filter>Source Files\rt_support\easy_bmp</Filter>
     </ClCompile>
     <ClCompile Include="rt_geometry.cpp">
       <Filter>Source Files\rt_support\geometries</Filter>

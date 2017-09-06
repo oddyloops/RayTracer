@@ -121,7 +121,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 
 	// area lights
 
-	/*for (int i = 0; i < m_area_lights->extent.size(); i++)
+	for (int i = 0; i < m_area_lights->extent.size(); i++)
 	{
 		rt_area_light& light = (*m_area_lights)(index<1>(i));
 		nDotL = vector_amp::dot(rec.get_normal_at_intersect(), -light.get_direction());
@@ -137,7 +137,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 				light.get_color()
 				);
 		}
-	}*/
+	}
 	
 	return vector_amp::clip_color(diffuse_color);
 }
@@ -213,19 +213,24 @@ float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, 
 		
 		// area lights
 
-		/*for (int i = 0; i < m_area_lights->extent.size(); i++)
+		for (int i = 0; i < m_area_lights->extent.size(); i++)
 		{
 			rt_area_light& light = (*m_area_lights)(index<1>(i));
-			halfway_vec = -(0.5f * (-(m_view_dir) + (-(light.get_direction()))));
-			nDotH = vector_amp::dot(rec.get_normal_at_intersect(), halfway_vec);
-			if (nDotH > 0) {
+			reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), light.get_direction());
+
+			vDotR = vector_amp::dot(-m_view_dir, reflected);
+			if (rec.get_type() == rt_geometry_type::rectangle)
+			{
+				vDotR = math_util::abs(vDotR);
+			}
+			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
-					powf(nDotH, mat.get_specularity()) *
+					powf(vDotR, mat.get_specularity()) *
 					mat.get_specular_color() * light.get_color()
 					);
 			}
-		}*/
+		}
 
 		return vector_amp::clip_color(specular_color);
 	}

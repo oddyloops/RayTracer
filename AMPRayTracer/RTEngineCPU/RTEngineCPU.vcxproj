@@ -146,10 +146,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP.h" />
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_BMP.h" />
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_DataStructures.h" />
-    <ClInclude Include="..\..\..\..\..\Downloads\EasyBMP_VariousBMPutilities.h" />
     <ClInclude Include="image_spec.h" />
     <ClInclude Include="indexed_resource.h" />
     <ClInclude Include="intersection_record.h" />
@@ -179,7 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="EasyBMP.cpp" />
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />

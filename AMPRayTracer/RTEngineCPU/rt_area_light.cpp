@@ -111,7 +111,7 @@ float rt_area_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 			percent = compute_attenuation(dist);
 		}
 		//is it outside the fully lit area
-		if (!m_lit_area.intersect(r,light_rec))
+		/*if (!m_lit_area.intersect(r,light_rec))
 		{
 			//compute area light penumbra attenuation with cosine interpolation
 			//determine if intersection happens within vertical or horizontal penumbra
@@ -121,16 +121,18 @@ float rt_area_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 			if (verDist <= m_padding)
 			{
 				//compute using vertical padding
-				percent *= powf(cosf((verDist / m_padding) * 0.5f * PI), m_drop_constant);
+				//percent *= powf(cosf((verDist / m_padding) * 0.5f * PI), m_drop_constant);
+				percent *= (1 - (verDist / m_padding));
 			}
 			else
 			{
 				horDist = vector_util::point_line_distance(hitPt, m_lit_area.get_vertex(0), m_lit_area.get_vertex(1));
 				//compute using vertical padding
-				percent *= powf(cosf((horDist / m_padding) * 0.5f * PI), m_drop_constant);
+				//percent *= powf(cosf((horDist / m_padding) * 0.5f * PI), m_drop_constant);
+				percent *= (1 - (horDist / m_padding));
 			}
 		}
-
+		*/
 		return percent;
 	}
 	return 0.0f;

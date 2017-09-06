@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JsonParser", "JsonParser\Js
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestResultGenerator", "TestResultGenerator\TestResultGenerator.vcxproj", "{B2DBDA98-BEE2-4169-879B-41200A68A863}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestResultGeneratorGpu", "TestResultGeneratorGpu\TestResultGeneratorGpu.vcxproj", "{C408FD49-94E5-4116-B237-036A4140047C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -61,6 +63,16 @@ Global
 		{B2DBDA98-BEE2-4169-879B-41200A68A863}.Release|x64.Build.0 = Release|x64
 		{B2DBDA98-BEE2-4169-879B-41200A68A863}.Release|x86.ActiveCfg = Release|Win32
 		{B2DBDA98-BEE2-4169-879B-41200A68A863}.Release|x86.Build.0 = Release|Win32
+		{C408FD49-94E5-4116-B237-036A4140047C}.Debug|ARM.ActiveCfg = Debug|Win32
+		{C408FD49-94E5-4116-B237-036A4140047C}.Debug|x64.ActiveCfg = Debug|x64
+		{C408FD49-94E5-4116-B237-036A4140047C}.Debug|x64.Build.0 = Debug|x64
+		{C408FD49-94E5-4116-B237-036A4140047C}.Debug|x86.ActiveCfg = Debug|Win32
+		{C408FD49-94E5-4116-B237-036A4140047C}.Debug|x86.Build.0 = Debug|Win32
+		{C408FD49-94E5-4116-B237-036A4140047C}.Release|ARM.ActiveCfg = Release|Win32
+		{C408FD49-94E5-4116-B237-036A4140047C}.Release|x64.ActiveCfg = Release|x64
+		{C408FD49-94E5-4116-B237-036A4140047C}.Release|x64.Build.0 = Release|x64
+		{C408FD49-94E5-4116-B237-036A4140047C}.Release|x86.ActiveCfg = Release|Win32
+		{C408FD49-94E5-4116-B237-036A4140047C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

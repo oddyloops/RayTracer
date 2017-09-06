@@ -114,10 +114,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="amp_lcg_rand.h" />
-    <ClInclude Include="EasyBMP.h" />
-    <ClInclude Include="EasyBMP_BMP.h" />
-    <ClInclude Include="EasyBMP_DataStructures.h" />
-    <ClInclude Include="EasyBMP_VariousBMPutilities.h" />
     <ClInclude Include="image_spec.h" />
     <ClInclude Include="indexed_resource.h" />
     <ClInclude Include="intersection_record.h" />
@@ -146,7 +142,6 @@
   <ItemGroup>
     <ClCompile Include="amp_lcg_rand.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="EasyBMP.cpp" />
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
