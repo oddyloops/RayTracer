@@ -53,7 +53,7 @@ namespace rt_support
 		void set_image_spec(image_spec spec);
 
 		// sets the generation value for camera
-		void set_generation(int generation);
+		__declspec(dllexport) void set_generation(int generation);
 
 		// sets the projection mode for camera
 		__declspec(dllexport) void set_ortho_mode_on(bool ortho_mode_on);

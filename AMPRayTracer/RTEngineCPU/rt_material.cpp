@@ -22,6 +22,16 @@ rt_material::rt_material(vector<float> ambient_color, vector<float> diffuse_colo
 	m_specularity = specularity;
 }
 
+
+void rt_material::set_ref_properties(float ref_index, float transparency,float reflectivity)
+{
+	m_refractive_index = ref_index;
+	m_transparency = transparency;
+	m_reflectivity = reflectivity;
+}
+
+
+
 void rt_material::set_diffuse(vector<float> color)
 {
 	m_diffuse_color = color;
@@ -61,4 +71,29 @@ vector<float> rt_material::get_specular_color() const
 float rt_material::get_specularity() const
 {
 	return m_specularity;
+}
+
+float rt_material::get_refractive_index() const
+{
+	return m_refractive_index;
+}
+
+float rt_material::get_transparency() const
+{
+	return m_transparency;
+}
+
+float rt_material::get_reflectivity() const
+{
+	return m_reflectivity;
+}
+
+bool rt_material::get_is_specular()
+{
+	return m_specularity >= 0;
+}
+
+bool rt_material::get_is_reflective_refractive()
+{
+	return m_reflectivity >= 0 && m_refractive_index >=0;
 }

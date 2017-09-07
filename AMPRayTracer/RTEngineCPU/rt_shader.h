@@ -3,7 +3,7 @@
 #include<vector>
 
 
-
+#include "rt_visibility.h"
 #include "ray.h"
 #include "intersection_record.h"
 #include "rt_sphere.h"
@@ -29,12 +29,20 @@ namespace rt
 		vector<float> m_ambient_light;
 		float m_ambient_intensity;
 		vector<float> m_view_dir;
+		rt_visibility m_visible; //used for reflection and refraction computations
 
 		vector<float> compute_ambience(rt_material& mat);
 
-		vector<float> compute_diffuse(intersection_record& rec, rt_material& mat);
+		vector<float> compute_diffuse(intersection_record& rec, rt_material& mat,  int generation);
 
-		vector<float> compute_specular(intersection_record& rec, rt_material& mat);
+		vector<float> compute_specular(intersection_record& rec, rt_material& mat, int generation);
+
+		rt_material get_material_from_index(int mat_res_index);
+
+		vector<float> color_bounce_lights(vector<float>& light_dir, intersection_record& prev_rec, int generation);
+
+		void reflect_and_refract(intersection_record current_rec, vector<float> light_dir, float percent_light, rt_material& mat, vector<float>& result_color
+			, int generation);
 	public:
 		rt_shader();
 
