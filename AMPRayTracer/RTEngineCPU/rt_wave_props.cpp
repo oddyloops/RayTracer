@@ -11,17 +11,12 @@ vector<float> rt_wave_props::reflect(vector<float> normal, vector<float> light_d
 vector<float> rt_wave_props::refract(vector<float> normal, vector<float> light_dir, float src_refr_index, float dest_refr_index)
 {
 	float n = dest_refr_index / src_refr_index;
-	vector<float> v = vector_util::negate(light_dir);
-	float nDotV = vector_util::dot(normal, v);
-
-	vector<float> refracted = (
-		n * nDotV - sqrtf(
-			1 - (
-				n*n*(
-					1- 
-					(
-						nDotV * nDotV))))) * normal  - (
-							n * v);
+	vector<float> v = vector_util::normalize(vector_util::negate(light_dir));
+	float cosThetaI = vector_util::dot(v, normal);
+	float invN = 1 / n;
+	float cosThetaT = sqrtf(1 - ((invN * invN) * (1 - (cosThetaI * cosThetaI))));
+	vector<float> refracted = vector_util::negate(((invN * v) + ((cosThetaT - (invN * cosThetaI)) * normal)));
 	return refracted;
+
 
 }
