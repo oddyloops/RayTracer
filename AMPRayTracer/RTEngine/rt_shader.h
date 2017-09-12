@@ -36,6 +36,7 @@ namespace rt
 		float_3 m_ambient_light;
 		float m_ambient_intensity;
 		float_3 m_view_dir;
+		rt_visibility m_visibility;
 
 		float_3 compute_ambience(rt_material& mat) restrict(amp);
 
