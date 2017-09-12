@@ -53,8 +53,8 @@ vector<float> rt_shader::compute_shade(intersection_record& rec, int generation)
 					if (refr_rec.get_geom_index() != -1) {
 						refracted_shade = compute_shade(refr_rec, generation - 1);
 					}
-					shade = shade * (1 - mat.get_transparency() - mat.get_reflectivity()) + compute_shade(refl_rec, generation - 1)
-						* mat.get_reflectivity() + compute_shade(refr_rec, generation - 1) * mat.get_transparency();
+					shade = shade * (1 - mat.get_transparency() - mat.get_reflectivity()) + reflected_shade
+						* mat.get_reflectivity() + refracted_shade * mat.get_transparency();
 
 				}
 				break;
