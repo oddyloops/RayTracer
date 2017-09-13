@@ -166,6 +166,9 @@
     <ClCompile Include="rt_sphere.cpp" />
     <ClCompile Include="vector_amp.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="ShaderBackupGpu.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

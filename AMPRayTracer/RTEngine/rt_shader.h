@@ -13,6 +13,7 @@
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
 #include "pixel_data.h"
+#include "rt_visibility.h"
 
 
 using namespace std;
@@ -27,6 +28,7 @@ using namespace rt_support::scene_resource_support;
 
 namespace rt
 {
+	
 	///<summary>
 	///Handles all shading computation
 	///</summary>
@@ -45,6 +47,16 @@ namespace rt
 
 		float_3 compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
+	
+	
+		rt_material get_material_from_rec(intersection_record& rec, array_view<rt_material, 1>* materials) restrict(amp);
+
+		float_3 compute_shade_from_ray_dir(int exceptIndex,float_3 origin,float_3 dir, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+
+		float_3 compute_shade_helper(intersection_record& rec,  array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+
 	public:
 		rt_shader() restrict(amp, cpu);
 

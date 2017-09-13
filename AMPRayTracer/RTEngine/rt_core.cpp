@@ -57,7 +57,7 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<
 
 		intersection_record rec;
 		//compute visibility
-		m_visibility.compute_visibility(r, INVALID_INDEX, rec,spheres,rectangles);
+		m_visibility.compute_visibility(r, INVALID_INDEX, rec,&spheres,&rectangles);
 		color = color + m_shader.compute_shade(rec, m_camera.get_generation(),&dir_lights,&point_lights, &area_lights, &spot_lights,&materials,&rectangles,&spheres);
 		coverage_mask = coverage_mask + ((rec.get_geom_index() == INVALID_INDEX) ? 0 : 1);
 		depth_map = depth_map + (1.0f - fminf(1.0f, rec.get_hit_distance() / FAR_PLANE_DIST));

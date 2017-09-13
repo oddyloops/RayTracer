@@ -21,7 +21,7 @@ namespace rt_support
 			float m_transparency = -1;
 			float m_reflectivity = -1;
 		public:
-			__declspec(dllexport) rt_material();
+			__declspec(dllexport) rt_material() restrict(amp,cpu);
 
 			__declspec(dllexport) rt_material(float_3 ambient_color, float_3 diffuse_color) restrict(amp,cpu);
 
