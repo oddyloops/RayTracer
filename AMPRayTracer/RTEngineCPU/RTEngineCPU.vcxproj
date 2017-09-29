@@ -168,6 +168,7 @@
     <ClInclude Include="rt_shader.h" />
     <ClInclude Include="rt_sphere.h" />
     <ClInclude Include="rt_spot_light.h" />
+    <ClInclude Include="rt_triangle.h" />
     <ClInclude Include="rt_visibility.h" />
     <ClInclude Include="rt_wave_props.h" />
     <ClInclude Include="scene_database.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="rt_shader.cpp" />
     <ClCompile Include="rt_sphere.cpp" />
     <ClCompile Include="rt_spot_light.cpp" />
+    <ClCompile Include="rt_triangle.cpp" />
     <ClCompile Include="rt_visibility.cpp" />
     <ClCompile Include="rt_wave_props.cpp" />
     <ClCompile Include="scene_database.cpp" />

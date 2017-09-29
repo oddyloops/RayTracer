@@ -16,7 +16,7 @@ namespace rt_support
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray
 			///</summary>
-			float percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<float> geomPoint, int exceptGeomIndex);
+			float percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<float> geomPoint, int exceptGeomIndex);
 		};
 
 	}

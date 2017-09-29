@@ -16,7 +16,7 @@ rt_directional_light::rt_directional_light(vector<float> direction, vector<float
 }
 
 
-float rt_directional_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<float> geomPoint, int exceptGeomIndex)
+float rt_directional_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<float> geomPoint, int exceptGeomIndex)
 {
 	ray r = ray::create_ray_from_pt_dir(geomPoint, vector_util::negate(m_direction));
 	intersection_record rec;
@@ -36,6 +36,17 @@ float rt_directional_light::percent_light(vector<rt_rectangle>& rects, vector<rt
 		if (sph.get_resource_index() != exceptGeomIndex)
 		{
 			if (sph.intersect(r, rec) && rec.get_hit_distance() > 0)
+			{
+				return 0.0f;
+			}
+		}
+	}
+
+	for (rt_triangle& tri : triangles)
+	{
+		if (tri.get_resource_index() != exceptGeomIndex)
+		{
+			if (tri.intersect(r, rec) && rec.get_hit_distance() > 0)
 			{
 				return 0.0f;
 			}

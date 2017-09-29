@@ -88,5 +88,5 @@ int rt_material::get_is_specular() restrict(amp)
 
 int rt_material::get_is_reflective_refractive() restrict(amp)
 {
-	return m_reflectivity < 0 || m_transparency < 0;
+	return m_reflectivity > 0 || m_transparency > 0;
 }

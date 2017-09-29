@@ -39,7 +39,7 @@ rt_rectangle::rt_rectangle(vector<float> vertices[],  matrix xform)
 	m_type = rt_geometry_type::rectangle;
 	if (vertices + 3 == nullptr) //not up to four vertices?
 	{
-		return;
+		throw exception("Rectangle must have four vertices");
 	}
 
 	for (int i = 0; i < 4; i++)

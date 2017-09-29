@@ -234,6 +234,7 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 		{
 			m = rt_material(ambient_color, diffuse_color);
 		}
+		m.set_ref_properties(mat["refractive_index"].get<float>(), mat["transparency"].get<float>(), mat["reflectivity"].get<float>());
 		m.set_resource_index(mat["resource_index"].get<int>());
 		_mats.push_back(m);
 	}
@@ -340,6 +341,7 @@ void JsonParser::parse_camera(json& j_cam)
 
 	_camera = rt_camera(eye, at, up, fov, focus);
 	_camera.set_ortho_mode_on(is_ortho);
+	_camera.set_generation(j_cam["generation"].get<int>());
 
 
 }

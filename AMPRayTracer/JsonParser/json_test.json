@@ -47,10 +47,16 @@
 	{"solids":
 		[
 			{"ambient_color" : [0.9,0.9,0.9], "diffuse_color":[0.1,0.1,0.1], "specular_color":[0.8,0.8,0.8],
-				"specularity":10, "resource_index" : 0},
+				"specularity":10, "resource_index" : 0, "reflectivity" :  0.8, "transparency" : 0, "refractive_index":  1},
 			{"ambient_color" : [0.9,0.9,0.3], "diffuse_color":[0.2,0.8,0.9], "specular_color":[0.4,0.9,0.9],
-				"specularity":5, "resource_index" : 1},
-			{"ambient_color" : [0.7,0.3,0.2], "diffuse_color":[0.5,0.2,0.1], "resource_index" : 2}
+        "specularity": 5,
+        "resource_index": 1,
+         "reflectivity" :  0.2, "transparency" : 0.5, "refractive_index":  2},
+      {
+        "ambient_color": [ 0.7, 0.3, 0.2 ],
+        "diffuse_color": [ 0.5, 0.2, 0.1 ],
+        "resource_index": 2,
+         "reflectivity" :  0.5, "transparency" : 0.2, "refractive_index":  1}
 		]
 	}
 ,
@@ -80,7 +86,7 @@
 	]
 ,
 "camera":
-	{ "eye" : [-8,5,-8], "at": [0,0,0], "up": [0,1,0], "fov" : 45,"focus" : 2, "is_orthographic" : false},
+	{ "eye" : [-8,5,-8], "at": [0,0,0], "up": [0,1,0], "fov" : 45,"focus" : 2, "is_orthographic" : false, "generation":  1},
 "specs" :
 	{ "x_res" : 3840, "y_res" : 2160, "samples_per_pixel" : 1},
 "ambient_color" : [0.2,0.2,0.2],

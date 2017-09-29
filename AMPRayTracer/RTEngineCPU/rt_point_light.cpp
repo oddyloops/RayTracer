@@ -27,7 +27,7 @@ rt_point_light::rt_point_light(vector<float> origin, vector<float> color, float 
 ///<summary>
 ///Determines the percentage of light a pixel gets based on intersection with the light ray
 ///</summary>
-float rt_point_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<float> geomPoint, int exceptGeomIndex)
+float rt_point_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<float> geomPoint, int exceptGeomIndex)
 {
 	ray r(geomPoint, m_origin);
 	intersection_record rec;
@@ -52,6 +52,17 @@ float rt_point_light::percent_light(vector<rt_rectangle>& rects, vector<rt_spher
 		if (sph.get_resource_index() != exceptGeomIndex)
 		{
 			if (sph.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() < dist)
+			{
+				return 0.0f;
+			}
+		}
+	}
+
+	for (rt_triangle& tri : triangles)
+	{
+		if (tri.get_resource_index() != exceptGeomIndex)
+		{
+			if (tri.intersect(r, rec) && rec.get_hit_distance() > 0)
 			{
 				return 0.0f;
 			}
