@@ -21,6 +21,7 @@ namespace rt_support
 			static const int sphere = 1;
 			static const int rectangle = 2;
 			static const int triangle = 3;
+			static const int plane = 4;
 		};
 
 		class rt_geometry  : public indexed_resource

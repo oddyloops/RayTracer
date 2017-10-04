@@ -8,13 +8,14 @@ scene_database::scene_database()
 }
 
 
-scene_database::scene_database(std::vector<rt_sphere> _spheres,vector<rt_rectangle> _rects, vector<rt_triangle> _triangles,vector<rt_material> materials,
+scene_database::scene_database(std::vector<rt_sphere> _spheres,vector<rt_rectangle> _rects, vector<rt_triangle> _triangles, vector<rt_plane> _plane,vector<rt_material> materials,
 	vector<rt_area_light> area_lights, vector<rt_spot_light> spot_lights, vector<rt_directional_light> directional_lights,
 	vector<rt_point_light> point_lights)
 {
 	m_spheres = _spheres;
 	m_rects = _rects;
 	m_triangles = _triangles;
+	m_planes = _plane;
 	m_materials = materials;
 	m_area_lights = area_lights;
 	m_point_lights = point_lights;
@@ -38,6 +39,11 @@ void scene_database::add_triangle(rt_triangle t)
 	m_triangles.push_back(t);
 }
 
+
+void scene_database::add_plane(rt_plane p)
+{
+	m_planes.push_back(p);
+}
 
 void scene_database::add_material(rt_material m)
 {
@@ -79,6 +85,11 @@ rt_rectangle scene_database::get_rectangle(int index)
 rt_triangle scene_database::get_triangle(int index)
 {
 	return m_triangles[index];
+}
+
+rt_plane scene_database::get_plane(int index)
+{
+	return m_planes[index];
 }
 
 
@@ -125,6 +136,11 @@ vector<rt_triangle>& scene_database::get_all_triangles()
 	return m_triangles;
 }
 
+vector<rt_plane>& scene_database::get_all_planes()
+{
+	return m_planes;
+}
+
 vector<rt_material>& scene_database::get_all_materials()
 {
 	return m_materials;
@@ -166,6 +182,11 @@ int scene_database::get_num_triangles()
 	return m_triangles.size();
 }
 
+
+int scene_database::get_num_planes()
+{
+	return static_cast<int>(m_planes.size());
+}
 
 int scene_database::get_num_materials()
 {

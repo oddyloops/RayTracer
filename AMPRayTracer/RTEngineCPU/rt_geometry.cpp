@@ -27,6 +27,11 @@ bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float d, fl
 	float numerator = vector_util::dot(norm, (plane_point - r.get_origin()));
 	dist = numerator / denomenator;
 
+	if (dist < 0)
+	{
+		return false;
+	}
+
 	if (denomenator > 0)
 		norm = -1 * norm;
 
