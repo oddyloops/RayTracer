@@ -13,6 +13,13 @@ void rt_geometry::set_material_index(int index)
 	m_material_index = index;
 }
 
+
+float rt_geometry::plane_point_dist(vector<float> pt,vector<float> norm, vector<float> plane_point)
+{
+	vector<float> v = pt - plane_point;
+	return vector_util::dot(v, norm);
+}
+
 bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist, vector<float> plane_point)
 {
 

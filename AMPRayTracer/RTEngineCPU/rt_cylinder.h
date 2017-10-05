@@ -9,15 +9,18 @@ namespace rt_support
 		{
 		private:
 			float m_radius;
+			float m_radius_sq;
 			float m_height;
-			vector<float> m_axis;
+			vector<float> m_top_center;
 			vector<float> m_base_center;
-			float ma;
-			float mb;
+			vector<float> m_axis_dir;
+			float m_orth_d; //d for orthogonal plane
+
+			bool inside_circle(vector<float> point, bool is_top_circle);
 		public:
 			__declspec(dllexport) rt_cylinder();
 
-			__declspec(dllexport) rt_cylinder(float radius, float height, vector<float> axis,vector<float> base_center);
+			__declspec(dllexport) rt_cylinder(float radius, vector<float> top_center,vector<float> base_center);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
@@ -47,7 +50,7 @@ namespace rt_support
 			vector<float> get_position(float u, float v);
 
 			/// <summary>
-			/// Returns the "approximated center" of the rectangle. By simple averaging.
+			/// Returns the "approximated center" of the cylinder
 			/// </summary>
 			/// <returns></returns>
 			vector<float> get_center();

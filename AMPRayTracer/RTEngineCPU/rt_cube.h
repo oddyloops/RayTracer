@@ -1,24 +1,22 @@
 #pragma once
-#include "rt_geometry.h"
-
-  
-
+#include "rt_rectangle.h"
 
 namespace rt_support
 {
 	namespace geometries
 	{
-		class rt_sphere : public rt_geometry
+		class rt_cube : public rt_geometry
 		{
 		private:
-			vector<float> m_center;
-			float m_radius;
-			float m_radius_squared;
-			
-			;
-		
-		public:
-			__declspec(dllexport) rt_sphere(vector<float> center, float radius);
+			rt_rectangle m_rects[6]; //all faces of the cube
+			vector<float> m_min;
+			vector<float> m_max;
+		public: 
+			__declspec(dllexport)  rt_cube();
+
+			//construct a cube from its bounding box
+			__declspec(dllexport) rt_cube(vector<float> min, vector<float> max);
+
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
@@ -47,12 +45,7 @@ namespace rt_support
 			/// <returns>A position that cooresponds to (u,v) on the geometry </returns>
 			vector<float> get_position(float u, float v);
 
-			/// <summary>
-			/// Returns the "approximated center" of the rectangle. By simple averaging.
-			/// </summary>
-			/// <returns></returns>
-			vector<float> get_center();
-			float get_radius();
+			
 
 			vector<float> get_max();
 			vector<float> get_min();

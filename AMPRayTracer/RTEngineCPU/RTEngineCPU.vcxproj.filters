@@ -147,6 +147,9 @@
     <ClInclude Include="rt_cylinder.h">
       <Filter>Header Files\rt_support\geometries</Filter>
     </ClInclude>
+    <ClInclude Include="rt_cube.h">
+      <Filter>Header Files\rt_support\geometries</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
@@ -234,6 +237,9 @@
       <Filter>Source Files\rt_support\geometries</Filter>
     </ClCompile>
     <ClCompile Include="rt_cylinder.cpp">
+      <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="rt_cube.cpp">
       <Filter>Source Files\rt_support\geometries</Filter>
     </ClCompile>
   </ItemGroup>
