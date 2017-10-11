@@ -62,9 +62,20 @@ int intersection_record::get_material_index()
 	return m_material_index;
 }
 
+void intersection_record::set_material_index(int index)
+{
+	m_material_index = index;
+}
+
 int intersection_record::get_geom_index()
 {
 	return m_geom_index;
+}
+
+
+void intersection_record::set_geom_index(int index)
+{
+	m_geom_index = index;
 }
 
 vector<float> intersection_record::get_intersection_position()
@@ -95,4 +106,9 @@ void intersection_record::set_normal_at_intersection(vector<float> n)
 int intersection_record::get_type()
 {
 	return m_type;
+}
+
+void intersection_record::set_type(int type)
+{
+	m_type = type;
 }

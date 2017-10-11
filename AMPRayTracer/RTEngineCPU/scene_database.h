@@ -5,6 +5,8 @@
 #include "rt_rectangle.h"
 #include "rt_triangle.h"
 #include "rt_plane.h"
+#include "rt_cylinder.h"
+#include "rt_cube.h"
 #include "rt_material.h"
 #include "rt_area_light.h"
 #include "rt_directional_light.h"
@@ -61,6 +63,8 @@ namespace rt_support
 		vector<rt_rectangle> m_rects;
 		vector<rt_triangle> m_triangles;
 		vector<rt_plane> m_planes;
+		vector<rt_cylinder> m_cylinders;
+		vector<rt_cube> m_cubes;
 		vector<rt_material> m_materials;
 		vector<rt_area_light> m_area_lights;
 		vector<rt_spot_light> m_spot_lights;
@@ -71,7 +75,8 @@ namespace rt_support
 
 	public:
 		scene_database();
-		scene_database(vector<rt_sphere> _spheres, vector<rt_rectangle> _rects,vector<rt_triangle> _triangles,vector<rt_plane> _plane,vector<rt_material> materials,
+		scene_database(vector<rt_sphere> _spheres, vector<rt_rectangle> _rects,vector<rt_triangle> _triangles,vector<rt_plane> _plane,
+			vector<rt_cylinder> _cylinders, vector<rt_cube> _cubes,vector<rt_material> materials,
 			vector<rt_area_light> area_lights, vector<rt_spot_light> spot_lights, vector<rt_directional_light> directional_lights,
 			vector<rt_point_light> point_lights);
 
@@ -79,6 +84,8 @@ namespace rt_support
 		void add_rect(rt_rectangle r);
 		void add_triangle(rt_triangle t);
 		void add_plane(rt_plane p);
+		void add_cylinder(rt_cylinder c);
+		void add_cube(rt_cube c);
 		void add_material(rt_material m);
 		void add_area_light(rt_area_light a);
 		void add_directional_light(rt_directional_light d);
@@ -89,6 +96,8 @@ namespace rt_support
 		rt_rectangle get_rectangle(int index);
 		rt_triangle get_triangle(int index);
 		rt_plane get_plane(int index);
+		rt_cylinder get_cylinder(int index);
+		rt_cube get_cube(int index);
 		rt_material get_material(int index);
 		rt_area_light get_area_light(int index);
 		rt_directional_light get_directional_light(int index);
@@ -99,6 +108,8 @@ namespace rt_support
 		vector<rt_rectangle>& get_all_rectangles();
 		vector<rt_triangle>& get_all_triangles();
 		vector<rt_plane>& get_all_planes();
+		vector<rt_cylinder>& get_all_cylinders();
+		vector<rt_cube>& get_all_cubes();
 		vector<rt_material>& get_all_materials();
 		vector<rt_directional_light>& get_all_directional_lights();
 		vector<rt_area_light>& get_all_area_lights();
@@ -110,6 +121,8 @@ namespace rt_support
 		int get_num_rects();
 		int get_num_triangles();
 		int get_num_planes();
+		int get_num_cylinders();
+		int get_num_cubes();
 		int get_num_materials();
 		int get_num_area_lights();
 		int get_num_directional_lights();

@@ -20,7 +20,7 @@ float rt_geometry::plane_point_dist(vector<float> pt,vector<float> norm, vector<
 	return vector_util::dot(v, norm);
 }
 
-bool rt_geometry::ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist, vector<float> plane_point)
+bool rt_geometry::ray_plane_intersection(ray& r, vector<float>& norm, float d, float& dist, vector<float> plane_point)
 {
 
 	float denomenator = vector_util::dot(norm, r.get_direction());

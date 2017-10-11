@@ -5,6 +5,9 @@
 #include "rt_rectangle.h"
 #include "rt_triangle.h"
 #include "rt_plane.h"
+#include "rt_cylinder.h"
+#include "rt_cube.h"
+
 
 using namespace std;
 using namespace rt_support::geometries;
@@ -55,7 +58,8 @@ namespace rt_support
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray (GPU hates virtual functions)
 			///</summary>
-			float percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<float> geomPoint, int exceptGeomIndex);
+			float percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, 
+				vector<rt_cylinder>& cylinders, vector<rt_cube>& cubes,vector<float> geomPoint, int exceptGeomIndex);
 		
 		
 	};

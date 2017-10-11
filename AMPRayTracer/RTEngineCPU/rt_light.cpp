@@ -105,7 +105,7 @@ bool rt_light::get_is_realistic_att() const
 
 
 
-float rt_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes,vector<float> geomPoint, int exceptGeomIndex)
+float rt_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<rt_cylinder>& cylinders, vector<rt_cube>& cubes, vector<float> geomPoint, int exceptGeomIndex)
 {
 	return 0.0f;
 }

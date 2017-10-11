@@ -28,18 +28,18 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 	
 	//intersection with infinite cylinder
 	//At^2 + Bt + C = 0
-	//A = |r(d) - (r(d).base_center)* base_center| ^ 2 http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
-	float A = vector_util::magnitude_sqr(ray.get_direction() - vector_util::dot(ray.get_direction(), m_base_center) * m_base_center);
+	//A = |r(d) - (r(d).axis-dir)* axis-dir| ^ 2 http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
+	float A = vector_util::magnitude_sqr(ray.get_direction() - vector_util::dot(ray.get_direction(), m_axis_dir) * m_axis_dir);
 	//let p =(r(o) - base_center) 
 	vector<float> p = ray.get_origin() - m_base_center;
-	//B = 2(r(d) - (r(d).base_center) * base_center).( p - (p.base_center) * base_center)  http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
+	//B = 2(r(d) - (r(d).axis-dir) * axis-dir).( p - (p.axis-dir) * axis-dir)  http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
 	float B = 2 * vector_util::dot(
-		(ray.get_direction() - vector_util::dot(ray.get_direction(), m_base_center) * m_base_center),
-		(p - vector_util::dot(p, m_base_center) * m_base_center)
+		(ray.get_direction() - vector_util::dot(ray.get_direction(),m_axis_dir) * m_axis_dir),
+		(p - vector_util::dot(p, m_axis_dir) * m_axis_dir)
 	);
 
-	//C = |p - (p.base_center) * base_center | ^ 2 - R ^ 2  http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
-	float C = vector_util::magnitude_sqr(p - vector_util::dot(p, m_base_center) * m_base_center) - m_radius_sq;
+	//C = |p - (p.axis-dir) * axis-dir | ^ 2 - R ^ 2  http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
+	float C = vector_util::magnitude_sqr(p - vector_util::dot(p, m_axis_dir) * m_axis_dir) - m_radius_sq;
 
 	float num = B * B - 4 * A * C;
 	if (num < 0)
@@ -48,15 +48,15 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 		return false;
 	}
 
-	dist1 = (sqrtf(num) + B * B) / (2 * A);
-	dist2 = (B * B - sqrtf(num)) / (2 * A);
-	bool either_between = false;
+	dist1 = (-B -sqrtf(num) ) / (2 * A);
+	dist2 = (-B + sqrtf(num)) / (2 * A);
+	bool intersect_any = false;
 	if (dist1 > 0)
 	{
 		vector<float> pt1 = ray.get_origin() + dist1 * ray.get_direction();
 		float pt1toBase = plane_point_dist(pt1, m_axis_dir, m_base_center);
 		
-		either_between = either_between || ((pt1toBase < m_height) && pt1toBase > 0);
+		intersect_any = intersect_any || ((pt1toBase < m_height) && pt1toBase > 0);
 	}
 	else {
 		dist1 = FLT_MAX;
@@ -65,18 +65,15 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 	{
 		vector<float> pt2 = ray.get_origin() + dist2 * ray.get_direction();
 		float pt2toBase = plane_point_dist(pt2, m_axis_dir, m_base_center);
-		either_between = either_between || ((pt2toBase < m_height) && pt2toBase > 0);
+		intersect_any = intersect_any || ((pt2toBase < m_height) && pt2toBase > 0);
 	}
 	else
 	{
 		dist2 = FLT_MAX;
 	}
 
-	//if neither p1 nor p2 falls within the caps plane, the ray missed
-	if (!either_between)
-	{
-		return false;
-	}
+	
+	
 
 	vector<float> pt3;
 	vector<float> pt4;
@@ -96,6 +93,9 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 			//not within the base cap
 			dist3 = FLT_MAX; //we dont care about that distance value anymore
 		}
+		else {
+			intersect_any = intersect_any || true;
+		}
 		
 		
 	
@@ -111,14 +111,23 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 			//not within the top cap
 			dist4 = FLT_MAX; //we dont care about that distance value anymore
 		}
+		else
+		{
+			intersect_any = intersect_any || true;
+		}
 
+	}
+
+	if (!intersect_any)
+	{
+		return false;
 	}
 
 	//update intersection record with the closest distance
 	vector<float> normal; //normal at the point of intersect
 	float dist;
 	int dist_index = 1;
-	int curr_min = dist1;
+	float curr_min = dist1;
 	if (dist2 < curr_min)
 	{
 		curr_min = dist2;
@@ -134,14 +143,16 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 		curr_min = dist4;
 		dist_index = 4;
 	}
-
-	vector<float> hitPt = ray.get_origin() + curr_min * ray.get_direction();
+	dist = curr_min;
+	vector<float> hitPt = ray.get_origin() + dist * ray.get_direction();
 	
-	if (dist_index> 2)
+	if (dist_index < 3)
 	{
 		vector<float> pBase = hitPt - m_base_center;
-		//hit the side of the cylinder first, hence horizontal normal (which is annoying to compute)
-		normal = vector_util::normalize(vector_util::cross(m_axis_dir, vector_util::cross(m_axis_dir, pBase)));
+		//project pBase on the axis to find axis point
+		float axisPtDist = vector_util::dot(pBase, m_axis_dir);
+		vector<float> axisPt = m_base_center + axisPtDist * m_axis_dir;
+		normal = vector_util::normalize(hitPt - axisPt);
 	}
 	else
 	{

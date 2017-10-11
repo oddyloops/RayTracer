@@ -8,6 +8,8 @@
 #include "rt_rectangle.h"
 #include "rt_triangle.h"
 #include "rt_plane.h"
+#include "rt_cylinder.h"
+#include "rt_cube.h"
 #include "rt_core.h"
 
 using namespace std;
@@ -26,7 +28,7 @@ public:
 	
 
 	static __declspec(dllexport) scene_results ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,
-		vector<rt_triangle> triangles,vector<rt_plane> planes,
+		vector<rt_triangle> triangles,vector<rt_plane> planes,vector<rt_cylinder> cylinders, vector<rt_cube> cubes,
 		vector<rt_material> materials,vector<rt_directional_light> d_lights,
 		vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
 		vector<rt_area_light> a_lights,vector<float> ambience_color,float ambience_intensity,

@@ -16,7 +16,7 @@ rt_directional_light::rt_directional_light(vector<float> direction, vector<float
 }
 
 
-float rt_directional_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<float> geomPoint, int exceptGeomIndex)
+float rt_directional_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<rt_cylinder>& cylinders, vector<rt_cube>& cubes, vector<float> geomPoint, int exceptGeomIndex)
 {
 	ray r = ray::create_ray_from_pt_dir(geomPoint, vector_util::negate(m_direction));
 	intersection_record rec;
@@ -59,6 +59,29 @@ float rt_directional_light::percent_light(vector<rt_rectangle>& rects, vector<rt
 		if (pln.get_resource_index() != exceptGeomIndex)
 		{
 			if (pln.intersect(r, rec) && rec.get_hit_distance() > 0)
+			{
+				return 0.0f;
+			}
+		}
+	}
+
+	for (rt_cylinder& cyl : cylinders)
+	{
+		if (cyl.get_resource_index() != exceptGeomIndex)
+		{
+			if (cyl.intersect(r, rec) && rec.get_hit_distance() > 0)
+			{
+				return 0.0f;
+			}
+		}
+	}
+
+
+	for (rt_cube& cub : cubes)
+	{
+		if (cub.get_resource_index() != exceptGeomIndex)
+		{
+			if (cub.intersect(r, rec) && rec.get_hit_distance() > 0)
 			{
 				return 0.0f;
 			}

@@ -57,7 +57,7 @@ rt_spot_light::rt_spot_light(vector<float> origin, vector<float> direction, floa
 
 
 
-float rt_spot_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<float> geomPoint, int exceptGeomIndex)
+float rt_spot_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<rt_cylinder>& cylinders, vector<rt_cube>& cubes, vector<float> geomPoint, int exceptGeomIndex)
 {
 	float percent =	1.0f;
 
@@ -112,6 +112,29 @@ float rt_spot_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere
 			if (pln.get_resource_index() != exceptGeomIndex)
 			{
 				if (pln.intersect(r, rec) && rec.get_hit_distance() > 0)
+				{
+					return 0.0f;
+				}
+			}
+		}
+
+		for (rt_cylinder& cyl : cylinders)
+		{
+			if (cyl.get_resource_index() != exceptGeomIndex)
+			{
+				if (cyl.intersect(r, rec) && rec.get_hit_distance() > 0)
+				{
+					return 0.0f;
+				}
+			}
+		}
+
+
+		for (rt_cube& cub : cubes)
+		{
+			if (cub.get_resource_index() != exceptGeomIndex)
+			{
+				if (cub.intersect(r, rec) && rec.get_hit_distance() > 0)
 				{
 					return 0.0f;
 				}

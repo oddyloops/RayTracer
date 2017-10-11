@@ -18,6 +18,10 @@ namespace rt_support
 			__declspec(dllexport) rt_cube(vector<float> min, vector<float> max);
 
 
+			//construct a cube from its bounding box also applying the transformation
+			__declspec(dllexport) rt_cube(vector<float> min, vector<float> max, matrix xform);
+
+
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
 			/// sets the records with intersection information.

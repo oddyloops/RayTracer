@@ -5,6 +5,7 @@
 using namespace rt_support;
 
 scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles, vector<rt_triangle> triangles, vector<rt_plane> planes,
+	vector<rt_cylinder> cylinders, vector<rt_cube> cubes,
 	vector<rt_material> materials, vector<rt_directional_light> d_lights,
 	vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
 	vector<rt_area_light> a_lights, vector<float> ambience_color, float ambience_intensity, rt_camera camera,image_spec spec)
@@ -15,7 +16,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	
 	auto now = std::chrono::system_clock::now();
 
-	scene_database db = scene_database(spheres, rectangles,triangles,planes,materials,a_lights,s_lights,d_lights,p_lights);
+	scene_database db = scene_database(spheres, rectangles,triangles,planes,cylinders,cubes,materials,a_lights,s_lights,d_lights,p_lights);
 	
 	
 	vector<vector<float>> image_view(no_of_pixels);

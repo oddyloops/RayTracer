@@ -64,7 +64,11 @@ namespace rt_support
 
 			int get_material_index();
 
+			void set_material_index(int index);
+
 			int get_geom_index();
+
+			void set_geom_index(int index);
 
 			vector<float> get_intersection_position();
 
@@ -77,6 +81,8 @@ namespace rt_support
 			void set_normal_at_intersection(vector<float> n);
 
 			int get_type();
+
+			void set_type(int type);
 
 
 

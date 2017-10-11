@@ -167,7 +167,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 
 	// area lights
 
-	for (int i = 0; i < m_area_lights->extent.size(); i++)
+	/*for (int i = 0; i < m_area_lights->extent.size(); i++)
 	{
 		rt_area_light& light = (*m_area_lights)(index<1>(i));
 		nDotL = vector_amp::dot(rec.get_normal_at_intersect(), -light.get_direction());
@@ -183,7 +183,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 				light.get_color()
 				);
 		}
-	}
+	}*/
 
 	return vector_amp::clip_color(diffuse_color);
 }
@@ -259,7 +259,7 @@ float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, 
 
 		// area lights
 
-		for (int i = 0; i < m_area_lights->extent.size(); i++)
+		/*for (int i = 0; i < m_area_lights->extent.size(); i++)
 		{
 			rt_area_light& light = (*m_area_lights)(index<1>(i));
 			reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), light.get_direction());
@@ -276,7 +276,7 @@ float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, 
 					mat.get_specular_color() * light.get_color()
 					);
 			}
-		}
+		}*/
 
 		return vector_amp::clip_color(specular_color);
 	}

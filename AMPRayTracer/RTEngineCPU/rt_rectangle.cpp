@@ -228,3 +228,8 @@ vector<float> rt_rectangle::get_vertex(int i)
 {
 	return m_vertices[i];
 }
+
+void rt_rectangle::get_vertices(vector<float>* vertices)
+{
+	vertices = m_vertices;
+}

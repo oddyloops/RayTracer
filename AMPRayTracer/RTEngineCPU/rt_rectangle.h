@@ -107,6 +107,8 @@ namespace rt_support
 			vector<float> get_vertex(int i);
 
 
+			void get_vertices(vector<float>* vertices);
+
 
 
 		};

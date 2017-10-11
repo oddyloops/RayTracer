@@ -23,6 +23,7 @@ namespace rt_support
 			static const int triangle = 3;
 			static const int plane = 4;
 			static const int cylinder = 5;
+			static const int cube = 6;
 		};
 
 		class rt_geometry  : public indexed_resource
@@ -37,7 +38,7 @@ namespace rt_support
 
 
 		
-			bool ray_plane_intersection(ray& r, vector<float> norm, float d, float& dist,vector<float> plane_point);
+			bool ray_plane_intersection(ray& r, vector<float>& norm, float d, float& dist,vector<float> plane_point);
 
 			float plane_point_dist(vector<float> pt,vector<float> norm,  vector<float> plane_point);
 		public:
