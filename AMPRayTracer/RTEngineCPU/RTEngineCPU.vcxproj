@@ -157,7 +157,6 @@
     <ClInclude Include="rt_area_light.h" />
     <ClInclude Include="rt_camera.h" />
     <ClInclude Include="rt_core.h" />
-    <ClInclude Include="rt_cube.h" />
     <ClInclude Include="rt_cylinder.h" />
     <ClInclude Include="rt_directional_light.h" />
     <ClInclude Include="rt_gateway.h" />
@@ -189,7 +188,6 @@
     <ClCompile Include="rt_area_light.cpp" />
     <ClCompile Include="rt_camera.cpp" />
     <ClCompile Include="rt_core.cpp" />
-    <ClCompile Include="rt_cube.cpp" />
     <ClCompile Include="rt_cylinder.cpp" />
     <ClCompile Include="rt_directional_light.cpp" />
     <ClCompile Include="rt_gateway.cpp" />

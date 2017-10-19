@@ -4,6 +4,7 @@
 
 
 scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectangle> rectangles,
+	vector<rt_triangle> triangles, vector<rt_plane> planes, vector<rt_cylinder> cylinders,
 	vector<rt_material> materials, vector<rt_directional_light> d_lights,
 	vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
 	vector<rt_area_light> a_lights, float_3 ambience_color, float ambience_intensity,
@@ -21,6 +22,9 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 
 	array_view<rt_rectangle, 1> rectangle_view(rectangles);
 	array_view<rt_sphere, 1> sphere_view(spheres);
+	array_view<rt_triangle, 1> triangle_view(triangles);
+	array_view<rt_plane, 1> plane_view(planes);
+	array_view<rt_cylinder, 1> cylinder_view(cylinders);
 	array_view<rt_directional_light, 1> d_lights_view(d_lights);
 	array_view<rt_point_light, 1> p_lights_view(p_lights);
 	array_view<rt_spot_light, 1> s_lights_view(s_lights);
@@ -39,7 +43,8 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 		const int tile_y = 8;
 		parallel_for_each(image_view.extent.tile<tile_x, tile_y>(), [=](tiled_index<tile_x, tile_y> t_idx) mutable restrict(amp) {
 			
-			pixel_data data = ray_tracer.compute_pixel_data(t_idx.global[0], t_idx.global[1], sphere_view, rectangle_view, d_lights_view, p_lights_view, a_lights_view, s_lights_view,materials_view);
+			pixel_data data = ray_tracer.compute_pixel_data(t_idx.global[0], t_idx.global[1], sphere_view, rectangle_view, triangle_view,
+				plane_view,cylinder_view,d_lights_view, p_lights_view, a_lights_view, s_lights_view,materials_view);
 					image_view[t_idx] = data.get_pixel_color();
 					coverage_mask_view[t_idx] = data.get_pixel_coverage();
 					depth_map_view[t_idx] = data.get_pixel_depth();
@@ -48,7 +53,8 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	}
 	else {
 		parallel_for_each(image_view.extent, [=](index<2> idx) mutable restrict(amp) {
-			pixel_data data = ray_tracer.compute_pixel_data(idx[0], idx[1], sphere_view, rectangle_view, d_lights_view, p_lights_view, a_lights_view, s_lights_view, materials_view);
+			pixel_data data = ray_tracer.compute_pixel_data(idx[0], idx[1], sphere_view, rectangle_view,
+				triangle_view,plane_view, cylinder_view,d_lights_view, p_lights_view, a_lights_view, s_lights_view, materials_view);
 			image_view[idx] = data.get_pixel_color();
 			coverage_mask_view[idx] = data.get_pixel_coverage();
 			depth_map_view[idx] = data.get_pixel_depth();

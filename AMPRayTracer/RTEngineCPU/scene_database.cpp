@@ -9,7 +9,7 @@ scene_database::scene_database()
 
 
 scene_database::scene_database(std::vector<rt_sphere> _spheres,vector<rt_rectangle> _rects, vector<rt_triangle> _triangles, vector<rt_plane> _plane,
-	vector<rt_cylinder> _cylinders, vector<rt_cube> _cubes,vector<rt_material> materials,
+	vector<rt_cylinder> _cylinders, vector<rt_material> materials,
 	vector<rt_area_light> area_lights, vector<rt_spot_light> spot_lights, vector<rt_directional_light> directional_lights,
 	vector<rt_point_light> point_lights)
 {
@@ -18,7 +18,6 @@ scene_database::scene_database(std::vector<rt_sphere> _spheres,vector<rt_rectang
 	m_triangles = _triangles;
 	m_planes = _plane;
 	m_cylinders = _cylinders;
-	m_cubes = _cubes;
 	m_materials = materials;
 	m_area_lights = area_lights;
 	m_point_lights = point_lights;
@@ -53,10 +52,6 @@ void scene_database::add_cylinder(rt_cylinder c)
 	m_cylinders.push_back(c);
 }
 
-void scene_database::add_cube(rt_cube c)
-{
-	m_cubes.push_back(c);
-}
 
 void scene_database::add_material(rt_material m)
 {
@@ -112,11 +107,6 @@ rt_cylinder scene_database::get_cylinder(int index)
 }
 
 
-rt_cube scene_database::get_cube(int index)
-{
-	return m_cubes[index];
-}
-
 rt_material scene_database::get_material(int index)
 {
 	return m_materials[index];
@@ -170,10 +160,7 @@ vector<rt_cylinder>& scene_database::get_all_cylinders()
 	return m_cylinders;
 }
 
-vector<rt_cube>& scene_database::get_all_cubes()
-{
-	return m_cubes;
-}
+
 
 vector<rt_material>& scene_database::get_all_materials()
 {
@@ -227,10 +214,6 @@ int scene_database::get_num_cylinders()
 	return static_cast<int>(m_cylinders.size());
 }
 
-int scene_database::get_num_cubes()
-{
-	return static_cast<int>(m_cubes.size());
-}
 
 int scene_database::get_num_materials()
 {

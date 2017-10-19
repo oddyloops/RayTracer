@@ -55,12 +55,5 @@ void rt_visibility::compute_visibility(ray r, int except_geom_index, intersectio
 		}
 	}
 
-	for (int i = 0; i < m_db->get_num_cubes(); i++)
-	{
-		if (m_db->get_cube(i).get_resource_index() != except_geom_index)
-		{
-			m_db->get_cube(i).intersect(r, rec);
-		}
-	}
 
 }

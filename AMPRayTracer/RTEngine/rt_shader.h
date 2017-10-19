@@ -12,6 +12,9 @@
 #include "rt_material.h"
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
+#include "rt_triangle.h"
+#include "rt_cylinder.h"
+#include "rt_plane.h"
 #include "pixel_data.h"
 #include "rt_visibility.h"
 
@@ -43,25 +46,30 @@ namespace rt
 		float_3 compute_ambience(rt_material& mat) restrict(amp);
 
 		float_3 compute_diffuse(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
-			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
+			array_view<rt_triangle,1>* m_triangles,array_view<rt_plane,1>* m_planes, array_view<rt_cylinder,1>* m_cylinders)  restrict(amp);
 
 		float_3 compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
-			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
+			array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders)  restrict(amp);
 	
 	
 		rt_material get_material_from_rec(intersection_record& rec, array_view<rt_material, 1>* materials) restrict(amp);
 
 		float_3 compute_shade_from_ray_dir(int exceptIndex,float_3 origin,float_3 dir, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
-			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
+			array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp);
 
 		float_3 compute_shade_helper(intersection_record& rec,  array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
-			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
+			array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp);
 
 	public:
 		rt_shader() restrict(amp, cpu);
 
 		rt_shader(float_3 ambient_light, float ambient_intensity, float_3 view_dir) restrict(amp, cpu);
 		float_3 compute_shade(intersection_record& rec, int generation,  array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
-			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
+			array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp);
 	};
 }

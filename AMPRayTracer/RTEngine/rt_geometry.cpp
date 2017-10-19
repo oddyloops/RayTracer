@@ -14,7 +14,14 @@ void rt_geometry::set_material_index(int index)
 	m_material_index = index;
 }
 
-int rt_geometry::ray_plane_intersection(ray& r, float_3 norm, float d, float& dist, float_3 plane_point) restrict(amp)
+float rt_geometry::plane_point_dist(float_3 pt, float_3 norm, float_3 plane_point) restrict(amp)
+{
+	float_3 v = pt - plane_point;
+	return vector_amp::dot(v, norm);
+
+}
+
+int rt_geometry::ray_plane_intersection(ray& r, float_3& norm, float d, float& dist, float_3 plane_point) restrict(amp)
 {
 	float denomenator = vector_amp::dot(norm, r.get_direction());
 

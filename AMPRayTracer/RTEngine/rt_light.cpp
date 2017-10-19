@@ -88,7 +88,8 @@ int rt_light::get_is_realistic_att() const restrict(amp)
 
 
 
-float rt_light::percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres, float_3 geomPoint, int exceptGeomIndex) restrict(amp)
+float rt_light::percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres, 
+	array_view<rt_triangle, 1>& triangles, array_view<rt_plane, 1>& planes, array_view<rt_cylinder>& cylinders, float_3 geomPoint, int exceptGeomIndex) restrict(amp)
 {
 	return 0.0f;
 }

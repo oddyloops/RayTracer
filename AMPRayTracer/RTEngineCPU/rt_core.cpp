@@ -29,7 +29,8 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y)
 	ray r;
 	vector<float> sample_position = m_camera.get_pixel_position(current_x, current_y);
 
-	
+
+
 	//compute color
 	vector<float> color = { 0,0,0, };
 

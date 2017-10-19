@@ -66,7 +66,8 @@ void rt_area_light::initialize_penumbra() restrict(amp,cpu)
 ///<summary>
 ///Determines the percentage of light a pixel gets based on intersection with the light ray
 ///</summary>
-float rt_area_light::percent_light(array_view<rt_rectangle, 1>& rects, array_view<rt_sphere, 1>& spheres, float_3 geomPoint, int exceptGeomIndex) restrict(amp)
+float rt_area_light::percent_light(array_view<rt_rectangle, 1>& rects, array_view<rt_sphere, 1>& spheres, 
+	array_view<rt_triangle, 1>& triangles, array_view<rt_plane, 1>& planes, array_view<rt_cylinder>& cylinders, float_3 geomPoint, int exceptGeomIndex) restrict(amp)
 {
 	float percent = 1.0f;
 
@@ -102,6 +103,45 @@ float rt_area_light::percent_light(array_view<rt_rectangle, 1>& rects, array_vie
 			if (sph.get_resource_index() != exceptGeomIndex)
 			{
 				if (sph.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() < dist)
+				{
+					return 0.0f;
+				}
+			}
+		}
+
+		for (int i = 0; i < triangles.extent.size(); i++)
+		{
+			index<1> idx(i);
+			rt_triangle& tri = triangles(idx);
+			if (tri.get_resource_index() != exceptGeomIndex)
+			{
+				if (tri.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() < dist)
+				{
+					return 0.0f;
+				}
+			}
+		}
+
+		for (int i = 0; i < planes.extent.size(); i++)
+		{
+			index<1> idx(i);
+			rt_plane& pln = planes(idx);
+			if (pln.get_resource_index() != exceptGeomIndex)
+			{
+				if (pln.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() < dist)
+				{
+					return 0.0f;
+				}
+			}
+		}
+
+		for (int i = 0; i < cylinders.extent.size(); i++)
+		{
+			index<1> idx(i);
+			rt_cylinder& cyl = cylinders(idx);
+			if (cyl.get_resource_index() != exceptGeomIndex)
+			{
+				if (cyl.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() < dist)
 				{
 					return 0.0f;
 				}

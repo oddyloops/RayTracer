@@ -54,9 +54,14 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 	if (dist1 > 0)
 	{
 		vector<float> pt1 = ray.get_origin() + dist1 * ray.get_direction();
-		float pt1toBase = plane_point_dist(pt1, m_axis_dir, m_base_center);
+		float pt1toBase = abs(plane_point_dist(pt1, m_axis_dir, m_base_center));
+		float pt1toTop = abs(plane_point_dist(pt1, vector_util::negate(m_axis_dir), m_top_center));
 		
-		intersect_any = intersect_any || ((pt1toBase < m_height) && pt1toBase > 0);
+		intersect_any = intersect_any || ((pt1toBase < m_height) &&  (pt1toTop < m_height));
+		if (!intersect_any)
+		{
+			dist1 = FLT_MAX;
+		}
 	}
 	else {
 		dist1 = FLT_MAX;
@@ -64,8 +69,14 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 	if (dist2 > 0)
 	{
 		vector<float> pt2 = ray.get_origin() + dist2 * ray.get_direction();
-		float pt2toBase = plane_point_dist(pt2, m_axis_dir, m_base_center);
-		intersect_any = intersect_any || ((pt2toBase < m_height) && pt2toBase > 0);
+		float pt2toBase = abs(plane_point_dist(pt2, m_axis_dir, m_base_center));
+		float pt2toTop = abs(plane_point_dist(pt2, vector_util::negate(m_axis_dir), m_top_center));
+		bool intersect_pt_2 = ((pt2toBase < m_height) &&  (pt2toTop < m_height));
+		intersect_any = intersect_any || intersect_pt_2;
+		if (!intersect_pt_2)
+		{
+			dist2 = FLT_MAX;
+		}
 	}
 	else
 	{
@@ -80,8 +91,8 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 
 
 
-
-	bool intersects = ray_plane_intersection(ray, m_axis_dir, m_orth_d, dist3, m_base_center); //check for intersection with the base plane
+	vector<float> n1 = m_axis_dir;
+	bool intersects = ray_plane_intersection(ray, n1, m_orth_d, dist3, m_base_center); //check for intersection with the base plane
 
 	if (intersects)
 	{
@@ -100,8 +111,8 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 		
 	
 	}
-
-	intersects = ray_plane_intersection(ray, m_axis_dir, m_orth_d, dist4, m_top_center); //check for intersection with the top plane
+	vector<float> n2 = m_axis_dir;
+	intersects = ray_plane_intersection(ray, n2, m_orth_d, dist4, m_top_center); //check for intersection with the top plane
 	if (intersects)
 	{
 		pt4 = ray.get_origin() + dist4 * ray.get_direction();

@@ -88,7 +88,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 		if (nDotL > 0) {
 			diffuse_color = diffuse_color + (
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(),m_db->get_all_planes(),m_db->get_all_cylinders(),
-					m_db->get_all_cubes(),rec.get_intersection_position(), rec.get_geom_index())*
+				rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
 				mat.get_diffuse_color() *
 				light.get_color()
@@ -107,7 +107,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 			diffuse_color = diffuse_color + (
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(),
 					m_db->get_all_cylinders(),
-					m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+					rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
 				mat.get_diffuse_color() *
 				light.get_color()
@@ -124,7 +124,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 		if (nDotL > 0) {
 			diffuse_color = diffuse_color + (
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
-					m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+					 rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
 				mat.get_diffuse_color() *
 				light.get_color()
@@ -142,7 +142,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 		if (nDotL > 0) {
 			diffuse_color = diffuse_color + (
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
-					m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+					 rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
 				mat.get_diffuse_color() *
 				light.get_color()
@@ -171,7 +171,7 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
-						m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+						 rec.get_intersection_position(), rec.get_geom_index())*
 					powf(vDotR, mat.get_specularity()) *
 					mat.get_specular_color() * light.get_color()
 					);
@@ -189,7 +189,7 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
-						m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+						rec.get_intersection_position(), rec.get_geom_index())*
 					powf(vDotR, mat.get_specularity()) *
 					mat.get_specular_color() * light.get_color()
 					);
@@ -207,7 +207,7 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
-						m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+						 rec.get_intersection_position(), rec.get_geom_index())*
 					powf(vDotR, mat.get_specularity()) *
 					mat.get_specular_color() * light.get_color()
 					);
@@ -225,7 +225,7 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
-						m_db->get_all_cubes(), rec.get_intersection_position(), rec.get_geom_index())*
+						 rec.get_intersection_position(), rec.get_geom_index())*
 					powf(vDotR, mat.get_specularity()) *
 					mat.get_specular_color() * light.get_color()
 					);

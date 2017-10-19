@@ -12,6 +12,15 @@ void JsonParser::parse_helper(json& j)
 	json j_rects = j["geometries"]["rectangles"];
 	parse_rects(j_rects);
 
+	json j_triangles = j["geometries"]["triangles"];
+	parse_triangles(j_triangles);
+
+	json j_planes = j["geometries"]["planes"];
+	parse_planes(j_planes);
+
+	json j_cylinders = j["geometries"]["cylinders"];
+	parse_cylinders(j_cylinders);
+
 	/*extract materials*/
 	json j_mats = j["materials"]["solids"];
 	parse_diffuse_materials(j_mats);
@@ -109,7 +118,7 @@ void JsonParser::parse_point_light(json& j_plight)
 		{
 			float range = j_plight["range"].get<float>();
 			float att_frac = j_plight["attenuation_fraction"].get<float>();
-			int is_real_att = j_plight["is_realistic_attuation"].get<bool>()?1:0;
+			int is_real_att = j_plight["is_realistic_attuation"].get<bool>() ? 1 : 0;
 			_point_lights.push_back(rt_point_light(origin, color, range, att_frac, is_real_att));
 		}
 		else
@@ -194,7 +203,7 @@ void JsonParser::parse_area_light(json& j_alight)
 		{
 			float range = j_alight["range"].get<float>();
 			float att_frac = j_alight["attenuation_fraction"].get<float>();
-			int is_real_att = j_alight["is_realistic_attuation"].get<bool>() ? 1 :0;
+			int is_real_att = j_alight["is_realistic_attuation"].get<bool>() ? 1 : 0;
 			_area_lights.push_back(rt_area_light(direction, rt_rectangle(vertices), padding, drop_constant, color, range, att_frac, is_real_att));
 		}
 		else
@@ -266,6 +275,7 @@ void JsonParser::parse_spheres(json& j_sphs)
 
 void JsonParser::parse_rects(json& j_rects)
 {
+
 	for (auto itr = j_rects.begin(); itr != j_rects.end(); itr++)
 	{
 		json rect = *itr;
@@ -292,7 +302,7 @@ void JsonParser::parse_rects(json& j_rects)
 		if (rect.find("xform") != rect.end())
 		{
 			//parse xform
-			concurrency::array<float, 2> x_form_mat(3,3);
+			concurrency::array<float, 2> x_form_mat(3, 3);
 
 			json j_xform = rect["xform"];
 			int rowIndex = 0;
@@ -322,6 +332,124 @@ void JsonParser::parse_rects(json& j_rects)
 		_rects.push_back(r);
 	}
 }
+
+void JsonParser::parse_triangles(json& j_triangles)
+{
+	for (auto itr = j_triangles.begin(); itr != j_triangles.end(); itr++)
+	{
+		json tri = *itr;
+
+		if (tri.find("vertices") == tri.end() || tri.find("resource_index") == tri.end())
+		{
+			throw exception("Incorrect triangle structure");
+		}
+
+		json j_vert = tri["vertices"];
+		if (j_vert.size() != 3)
+		{
+			throw exception("Triangles must have exactly 3 vertices!");
+		}
+		float_3 vertices[3];
+
+		int i = 0;
+		for (auto v_itr = j_vert.begin(); v_itr != j_vert.end(); v_itr++)
+		{
+			vertices[i++] = json_to_vector(*v_itr);
+		}
+
+		rt_triangle t;
+		if (tri.find("xform") != tri.end())
+		{
+			//parse xform
+			concurrency::array<float, 2> x_form_mat(3, 3);
+
+			json j_xform = tri["xform"];
+			int rowIndex = 0;
+			for (auto x_itr = j_xform.begin(); x_itr != j_xform.end(); x_itr++, rowIndex++)
+			{
+				float_3 row = json_to_vector(*itr);
+				x_form_mat[index<2>(rowIndex, 0)] = row.x;
+				x_form_mat[index<2>(rowIndex, 1)] = row.y;
+				x_form_mat[index<2>(rowIndex, 2)] = row.z;
+			}
+
+			if (rowIndex != 3)
+			{
+				throw exception("3D transformation matrix must be 3x3!");
+			}
+			t = rt_triangle(vertices, x_form_mat);
+
+		}
+		else {
+			t = rt_triangle(vertices);
+		}
+		t.set_resource_index(tri["resource_index"].get<int>());
+		if (tri.find("material_index") != tri.end())
+		{
+			t.set_material_index(tri["material_index"].get<int>());
+		}
+		_triangles.push_back(t);
+	}
+}
+void JsonParser::parse_planes(json& j_planes)
+{
+	for (auto itr = j_planes.begin(); itr != j_planes.end(); itr++)
+	{
+		json plane = *itr;
+		if (plane.find("points") == plane.end() || plane.find("resource_index") == plane.end())
+		{
+			throw exception("Incorrect plane structure");
+		}
+		json points = plane["points"];
+		if (points.size() != 3)
+		{
+			throw exception("Plane needs to be defined by 3 points");
+		}
+		float_3 points_vector[3];
+		int i = 0;
+		for (auto p_itr = points.begin(); p_itr != points.end(); p_itr++)
+		{
+			points_vector[i++] = json_to_vector(*p_itr);
+		}
+
+		rt_plane p = rt_plane(points_vector);
+		p.set_resource_index(plane["resource_index"].get<int>());
+		if (plane.find("material_index") != plane.end())
+		{
+			p.set_material_index(plane["material_index"].get<int>());
+		}
+		_planes.push_back(p);
+
+	}
+}
+
+void JsonParser::parse_cylinders(json& j_cylinders)
+{
+	for (auto itr = j_cylinders.begin(); itr != j_cylinders.end(); itr++)
+	{
+		json cylinder = *itr;
+
+		if (cylinder.find("radius") == cylinder.end() || cylinder.find("top_center") == cylinder.end()
+			|| cylinder.find("bottom_center") == cylinder.end() || cylinder.find("resource_index") == cylinder.end())
+		{
+			throw exception("Incorrect cylinder structure");
+		}
+
+		float radius = cylinder["radius"].get<float>();
+		float_3 top_center = json_to_vector(cylinder["top_center"]);
+		float_3 bottom_center = json_to_vector(cylinder["bottom_center"]);
+
+		rt_cylinder c = rt_cylinder(radius, top_center, bottom_center);
+		c.set_resource_index(cylinder["resource_index"].get<int>());
+
+		if (cylinder.find("material_index") != cylinder.end())
+		{
+			c.set_material_index(cylinder["material_index"].get<int>());
+		}
+		_cylinders.push_back(c);
+	}
+}
+
 
 void JsonParser::parse_camera(json& j_cam)
 {
@@ -364,10 +492,10 @@ void JsonParser::parse_image_spec(json& j_spec)
 float_3 JsonParser::json_to_vector(json& v)
 {
 	float_3 result;
-	result.x =v.at(0).get<float>();
+	result.x = v.at(0).get<float>();
 	result.y = v.at(1).get<float>();
 	result.z = v.at(2).get<float>();
-	
+
 	return result;
 }
 
@@ -381,63 +509,63 @@ void JsonParser::parse(const char* input)
 
 void JsonParser::render()
 {
-	auto results = rt_gateway::ray_trace(_spheres, _rects, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
+	auto results = rt_gateway::ray_trace(_spheres, _rects,_triangles,_planes,_cylinders, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
 		_camera, _specs);
 
 	auto image = results.color;
-	
-		BMP input;
-		input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
-		for (int x = 0; x < _specs.get_x_resolution(); x++)
+
+	BMP input;
+	input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
+	for (int x = 0; x < _specs.get_x_resolution(); x++)
+	{
+		for (int y = 0; y < _specs.get_y_resolution(); y++)
 		{
-			for (int y = 0; y < _specs.get_y_resolution(); y++)
-			{
-				int index = x * _specs.get_y_resolution() + y;
-				input(x, y)->Alpha = 255;
-				input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(image[index].r * 255));
-				input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(image[index].g * 255));
-				input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(image[index].b * 255));
+			int index = x * _specs.get_y_resolution() + y;
+			input(x, y)->Alpha = 255;
+			input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(image[index].r * 255));
+			input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(image[index].g * 255));
+			input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(image[index].b * 255));
 
-			}
 		}
-		input.WriteToFile("img.bmp");
+	}
+	input.WriteToFile("img.bmp");
 
 
-		auto cvg = results.coverage;
+	auto cvg = results.coverage;
 
 
-		input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
-		for (int x = 0; x < _specs.get_x_resolution(); x++)
+	input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
+	for (int x = 0; x < _specs.get_x_resolution(); x++)
+	{
+		for (int y = 0; y < _specs.get_y_resolution(); y++)
 		{
-			for (int y = 0; y < _specs.get_y_resolution(); y++)
-			{
-				int index = x * _specs.get_y_resolution() + y;
-				input(x, y)->Alpha = 255;
-				input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
-				input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
-				input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
+			int index = x * _specs.get_y_resolution() + y;
+			input(x, y)->Alpha = 255;
+			input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
+			input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
+			input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
 
-			}
 		}
-		input.WriteToFile("cvg.bmp");
-	
-		auto dpt = results.depth;
+	}
+	input.WriteToFile("cvg.bmp");
 
-		input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
-		for (int x = 0; x < _specs.get_x_resolution(); x++)
+	auto dpt = results.depth;
+
+	input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
+	for (int x = 0; x < _specs.get_x_resolution(); x++)
+	{
+		for (int y = 0; y < _specs.get_y_resolution(); y++)
 		{
-			for (int y = 0; y < _specs.get_y_resolution(); y++)
-			{
-				int index = x * _specs.get_y_resolution() + y;
-				input(x, y)->Alpha = 255;
-				input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
-				input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
-				input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
+			int index = x * _specs.get_y_resolution() + y;
+			input(x, y)->Alpha = 255;
+			input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
+			input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
+			input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
 
-			}
 		}
-		input.WriteToFile("dpt.bmp");
-	
+	}
+	input.WriteToFile("dpt.bmp");
+
 
 	system("PAUSE");
 

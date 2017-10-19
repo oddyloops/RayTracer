@@ -16,7 +16,8 @@ rt_directional_light::rt_directional_light(float_3 direction, float_3 color) res
 }
 
 
-float rt_directional_light::percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres, float_3 geomPoint, int exceptGeomIndex) restrict(amp)
+float rt_directional_light::percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres,
+	array_view<rt_triangle, 1>& triangles, array_view<rt_plane, 1>& planes, array_view<rt_cylinder>& cylinders, float_3 geomPoint, int exceptGeomIndex) restrict(amp)
 {
 	ray r = ray::create_ray_from_pt_dir(geomPoint, -m_direction);
 	intersection_record rec;
@@ -46,5 +47,44 @@ float rt_directional_light::percent_light(array_view<rt_rectangle,1>& rects, arr
 		}
 	}
 
+
+	for (int i = 0; i < triangles.extent.size(); i++)
+	{
+		index<1> idx(i);
+		rt_triangle& tri = triangles(idx);
+		if (tri.get_resource_index() != exceptGeomIndex)
+		{
+			if (tri.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() >0)
+			{
+				return 0.0f;
+			}
+		}
+	}
+
+	for (int i = 0; i < planes.extent.size(); i++)
+	{
+		index<1> idx(i);
+		rt_plane& pln = planes(idx);
+		if (pln.get_resource_index() != exceptGeomIndex)
+		{
+			if (pln.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() >0)
+			{
+				return 0.0f;
+			}
+		}
+	}
+
+	for (int i = 0; i < cylinders.extent.size(); i++)
+	{
+		index<1> idx(i);
+		rt_cylinder& cyl = cylinders(idx);
+		if (cyl.get_resource_index() != exceptGeomIndex)
+		{
+			if (cyl.intersect(r, rec) && rec.get_hit_distance() > 0 && rec.get_hit_distance() > 0)
+			{
+				return 0.0f;
+			}
+		}
+	}
 	return 1.0f;
 }

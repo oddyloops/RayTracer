@@ -32,7 +32,7 @@ void intersection_record::initialize_record() restrict(amp)
 
 void intersection_record::update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index, int type) restrict(amp)
 {
-	if (dist < m_hit_distance)
+	if (dist < m_hit_distance && dist > 0)
 	{
 		m_hit_distance = dist;
 		m_point = intersection_pt;

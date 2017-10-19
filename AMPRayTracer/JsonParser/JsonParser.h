@@ -11,6 +11,9 @@ class JsonParser : public IParser
 private:
 	vector<rt_sphere> _spheres;
 	vector<rt_rectangle> _rects;
+	vector<rt_triangle> _triangles;
+	vector<rt_plane> _planes;
+	vector<rt_cylinder> _cylinders;
 	vector<rt_material> _mats;
 	vector<rt_directional_light> _dir_lights;
 	vector<rt_point_light> _point_lights;
@@ -27,6 +30,12 @@ private:
 	void parse_spheres(json& j_sphs);
 
 	void parse_rects(json& j_rects);
+
+	void parse_triangles(json& j_triangles);
+
+	void parse_planes(json& j_planes);
+
+	void parse_cylinders(json& j_cylinders);
 
 	void parse_diffuse_materials(json& j_mats);
 

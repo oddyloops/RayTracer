@@ -20,6 +20,9 @@ namespace rt_support
 			static const int sphere = 1;
 			static const int rectangle = 2;
 			static const int triangle = 3;
+			static const int plane = 4;
+			static const int cylinder = 5;
+			static const int cube = 6;
 		};
 
 		///<summary>
@@ -52,7 +55,9 @@ namespace rt_support
 			/// <param name="d">Dot(norm, P) + d = 0.</param>
 			/// <param name="dist">Returned: Distance between the ray to the plane if the ray is not paralle with the plane</param>
 			/// <returns>True, if there is an interesection, False, if ray is parallel to the plane</returns>
-			int ray_plane_intersection(ray& r, float_3 norm, float d, float& dist,float_3 plane_point) restrict(amp);
+			int ray_plane_intersection(ray& r, float_3& norm, float d, float& dist,float_3 plane_point) restrict(amp);
+
+			float plane_point_dist(float_3 pt, float_3 norm, float_3 plane_point) restrict(amp);
 		public:
 			
 

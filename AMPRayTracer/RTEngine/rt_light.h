@@ -4,6 +4,9 @@
 
 #include "rt_sphere.h"
 #include "rt_rectangle.h"
+#include "rt_triangle.h"
+#include "rt_plane.h"
+#include "rt_cylinder.h"
 
 using namespace concurrency;
 using namespace concurrency::graphics;
@@ -55,7 +58,8 @@ namespace rt_support
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray (GPU hates virtual functions)
 			///</summary>
-			float percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres, float_3 geomPoint, int exceptGeomIndex) restrict(amp);
+			float percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres,
+				array_view<rt_triangle,1>& triangles, array_view<rt_plane,1>& planes, array_view<rt_cylinder>& cylinders,float_3 geomPoint, int exceptGeomIndex) restrict(amp);
 
 
 		};
