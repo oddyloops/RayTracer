@@ -17,7 +17,9 @@ rt_rectangle& rt_rectangle::operator=(const rt_rectangle& r)
 {
 	m_type = r.m_type;
 	m_material_index = r.m_material_index;
-	m_normal = r.m_normal;
+	m_true_normal = r.m_true_normal;
+	m_normal_map = r.m_normal_map;
+	m_bump_map = r.m_bump_map;
 	m_type = r.m_type;
 	m_u_axis_index = r.m_u_axis_index;
 	m_u_size = r.m_u_size;
@@ -34,7 +36,7 @@ rt_rectangle& rt_rectangle::operator=(const rt_rectangle& r)
 
 }
 
-rt_rectangle::rt_rectangle(vector<float> vertices[],  matrix xform)
+rt_rectangle::rt_rectangle(vector<float> vertices[],  matrix<float> xform)
 {
 	m_type = rt_geometry_type::rectangle;
 	if (vertices + 3 == nullptr) //not up to four vertices?
@@ -49,7 +51,7 @@ rt_rectangle::rt_rectangle(vector<float> vertices[],  matrix xform)
 	
 	for (int i = 0; i < 4; i++)
 	{
-		m_vertices[i] = matrix::transform(m_vertices[i], xform);
+		m_vertices[i] = matrix<float>::transform(m_vertices[i], xform);
 	}
 	
 	initialize_rectangle();
@@ -79,18 +81,18 @@ void rt_rectangle::initialize_rectangle()
 	m_u_vec = vector_util::normalize(m_u_vec);
 	m_v_vec = vector_util::normalize(m_v_vec);
 
-	m_normal = vector_util::cross(v1, v2);
-	m_normal = vector_util::normalize(m_normal);
-	ma = m_normal[0];
-	mb = m_normal[1];
-	mc = m_normal[2];
+	m_true_normal = vector_util::cross(v1, v2);
+	m_true_normal = vector_util::normalize(m_true_normal);
+	ma = m_true_normal[0];
+	mb = m_true_normal[1];
+	mc = m_true_normal[2];
 
-	md = -vector_util::dot(m_normal, m_vertices[0]);
+	md = -vector_util::dot(m_true_normal, m_vertices[0]);
 	
-	if (math_util::abs(m_normal[0]) > math_util::abs(m_normal[1]))
+	if (math_util::abs(m_true_normal[0]) > math_util::abs(m_true_normal[1]))
 	{
 		/*normal x > normal y*/
-		if (math_util::abs(m_normal[0]) > math_util::abs(m_normal[2]))
+		if (math_util::abs(m_true_normal[0]) > math_util::abs(m_true_normal[2]))
 		{
 			/*normal x > both y and z*/
 			m_u_axis_index = 1;
@@ -105,7 +107,7 @@ void rt_rectangle::initialize_rectangle()
 	else
 	{
 		/* y > x*/
-		if (math_util::abs(m_normal[1]) > math_util::abs(m_normal[2]))
+		if (math_util::abs(m_true_normal[1]) > math_util::abs(m_true_normal[2]))
 		{
 			/* y  > x and z*/
 			m_u_axis_index = 0;
@@ -131,8 +133,8 @@ bool rt_rectangle::inside_polygon(vector<float> pt)
 
 	//compute clockwise angle between v1 and v4 : v3 and v5
 
-	float v1v4 = clock_wise_angle(v1, v4, m_normal);
-	float v3v5 = clock_wise_angle(v3, v5, m_normal);
+	float v1v4 = clock_wise_angle(v1, v4, m_true_normal);
+	float v3v5 = clock_wise_angle(v3, v5, m_true_normal);
 	float angle90 = 0.5f * PI;
 	return (v1v4 < angle90 && v1v4 > 0 ) && (v3v5 < angle90 && v3v5 > 0);
 	
@@ -154,8 +156,9 @@ bool rt_rectangle::intersect(ray& ray, intersection_record& record)
 {
 	float dist = 0;
 	vector<float> hitPt, n;
-
-	n = m_normal;    // because ray/plane intersection may flip the normal!
+	
+	
+	n = m_true_normal;    // because ray/plane intersection may flip the normal!
 	if (!ray_plane_intersection(ray, n,md,dist,m_vertices[0]))
 		return false;
 
@@ -168,16 +171,50 @@ bool rt_rectangle::intersect(ray& ray, intersection_record& record)
 	*/
 	if (!inside_polygon(hitPt))
 		return false;
+	vector<float> normal = n;
+	float u, v;
+	get_uv(hitPt, { 0 }, u, v);
 
-	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index(),m_type);
+
+
+	if (!m_normal_map.is_null())
+	{
+		
+		normal = vector_util::normalize(get_normal(u, v));
+
+		if (vector_util::is_mirror_of(n, m_true_normal))
+		{
+			normal = vector_util::negate(normal);
+		}
+
+	}
+
+	if (!m_bump_map.is_null())
+	{
+		//bump the point by a height b along the normal
+		float b = m_bump_map.get_value(u, v);
+		vector<float> old_hit_point = hitPt;
+		hitPt = old_hit_point + b * normal;
+		
+		float dist_diff = vector_util::magnitude(hitPt - old_hit_point);
+		dist += dist_diff;
+	}
+
+
+
+	
+
+	record.update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(),m_type,u,v);
 	return true;
 
 }
 
 void rt_rectangle::get_uv(vector<float> pt, vector<float> bc, float& u, float& v)
 {
-	//stubbed
-	u = v = 0;
+	vector<float> pt_norm = pt - m_vertices[0];
+	u = vector_util::dot(pt_norm, m_u_vec) / m_u_size; //project vec on u dir
+	v = vector_util::dot(pt_norm, m_v_vec) /m_v_size; // project vec on v dir
+
 }
 
 vector<float> rt_rectangle::get_position(float u, float v)
@@ -206,10 +243,7 @@ float rt_rectangle::get_v_size()
 	return m_v_size;
 }
 
-vector<float> rt_rectangle::get_normal()
-{
-	return m_normal;
-}
+
 
 vector<float> rt_rectangle::get_max()
 {

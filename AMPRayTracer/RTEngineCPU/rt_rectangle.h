@@ -2,6 +2,7 @@
 #include "rt_geometry.h"
 
 
+
 namespace rt_support
 {
 	namespace geometries
@@ -17,7 +18,7 @@ namespace rt_support
 			int m_u_axis_index, m_v_axis_index; // 0 is X, 1 is Y, and 2 is Z
 			float ma, mb, mc;
 			float md;   // AX + BY + CZ + D = 0, this is the D
-			vector<float> m_normal; // normal to the polygon
+			vector<float> m_true_normal; // true normal to the polygon
 			
 
 									 // for texture mapping
@@ -51,7 +52,7 @@ namespace rt_support
 			/// Constructs from parameters and then intialize for intersection computation.
 			/// </summary>
 
-			__declspec(dllexport) rt_rectangle(vector<float> vertices[],matrix xform);
+			__declspec(dllexport) rt_rectangle(vector<float> vertices[],matrix<float> xform);
 
 			/// <summary>
 			/// Construting a rectange from given vertices.
@@ -99,7 +100,7 @@ namespace rt_support
 			/// </summary>
 			float get_u_size();
 			float get_v_size();
-			vector<float> get_normal();
+		
 
 			vector<float> get_max();
 			vector<float> get_min();

@@ -67,6 +67,25 @@ vector<float> vector_util::negate(vector<float> input)
 	return result;
 }
 
+bool vector_util::is_mirror_of(vector<float> a, vector<float> b)
+{
+	if (a.size() != b.size())
+	{
+		throw exception("Cannot use vectors of different dimensions");
+	}
+
+	for (int i = 0; i < a.size(); i++)
+	{
+		//their absolute values are not the same or their values are the same
+		if ((abs(a[i]) - abs(b[i]) > FLT_EPSILON) || ( a[i]- b[i]  <= FLT_EPSILON))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 
 float vector_util::point_line_distance(vector<float> pt, vector<float> ln_start, vector<float> ln_end)
 {
@@ -94,7 +113,18 @@ vector<float> vector_util::clip_color(vector<float> input)
 	return result;
 }
 
+bool vector_util::is_zero(vector<float> v)
+{
+	for (float f : v)
+	{
+		if (abs(f) > FLT_EPSILON)
+		{
+			return false;
+		}
+	}
 
+	return true;
+}
 
 vector<float> operator+(vector<float>& lhs, vector<float>& rhs)
 {

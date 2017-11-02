@@ -63,9 +63,9 @@
     "triangles": [
       {
         "vertices": [
-          [ -4, -2, 4 ],
-          [ 4, -2, 4 ],
-          [ 0, 4, 4]
+          [ -4, -2, 5 ],
+          [ 4, -2, 5 ],
+          [ 0, 4, 5]
         ],
         "resource_index": 7,
         "material_index": 1
@@ -139,7 +139,7 @@
 	]
 ,
 "camera":
-	{ "eye" : [-8,0,-8], "at": [0,0,0], "up": [0,1,0], "fov" : 45,"focus" : 2, "is_orthographic" : false, "generation":  1},
+	{ "eye" : [-8,5,-8], "at": [0,0,0], "up": [0,1,0], "fov" : 45,"focus" : 2, "is_orthographic" : false, "generation":  1},
 "specs" :
 	{ "x_res" : 3840, "y_res" : 2160, "samples_per_pixel" : 1},
 "ambient_color" : [0.2,0.2,0.2],

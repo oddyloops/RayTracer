@@ -33,12 +33,12 @@ vector<float> rt_shader::compute_shade(intersection_record& rec, int generation)
 			if (index == rec.get_material_index())
 			{
 				rt_material& mat = m_db->get_material(i);
-				shade = compute_ambience(mat) + compute_diffuse(rec, mat) + compute_specular(rec, mat);
+				shade = compute_ambience(mat,rec) + compute_diffuse(rec, mat) + compute_specular(rec, mat);
 				vector<float> ray_dir = rec.get_ray_direction();
 				if ( mat.get_is_reflective_refractive() && generation > 0)
 				{
 					vector<float> reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), ray_dir);
-					vector<float> refracted = rt_wave_props::refract(rec.get_normal_at_intersect(), ray_dir, 1, mat.get_refractive_index());
+					vector<float> refracted = rt_wave_props::refract(rec.get_normal_at_intersect(), ray_dir, 1, mat.get_refractive_index(rec.get_u(),rec.get_v()));
 					ray refl_ray = ray::create_ray_from_pt_dir(rec.get_intersection_position(), reflected);
 					ray refr_ray = ray::create_ray_from_pt_dir(rec.get_intersection_position(), refracted);
 					intersection_record refl_rec;
@@ -53,8 +53,8 @@ vector<float> rt_shader::compute_shade(intersection_record& rec, int generation)
 					if (refr_rec.get_geom_index() != -1) {
 						refracted_shade = compute_shade(refr_rec, generation - 1);
 					}
-					shade = shade * (1 - mat.get_transparency() - mat.get_reflectivity()) + reflected_shade
-						* mat.get_reflectivity() + refracted_shade * mat.get_transparency();
+					shade = shade * (1 - mat.get_transparency(rec.get_u(), rec.get_v()) - mat.get_reflectivity(rec.get_u(), rec.get_v())) + reflected_shade
+						* mat.get_reflectivity(rec.get_u(), rec.get_v()) + refracted_shade * mat.get_transparency(rec.get_u(), rec.get_v());
 
 				}
 				break;
@@ -70,15 +70,17 @@ vector<float> rt_shader::compute_shade(intersection_record& rec, int generation)
 	}
 }
 
-vector<float> rt_shader::compute_ambience(rt_material& mat)
+vector<float> rt_shader::compute_ambience(rt_material& mat,intersection_record& rec)
 {
-	return m_ambient_intensity * m_ambient_light * mat.get_ambient_color();
+	return m_ambient_intensity * m_ambient_light * mat.get_ambient_color(rec.get_u(), rec.get_v());
 }
 
 vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat)
 {
+
 	vector<float> diffuse_color = { 0,0,0 };
 	float nDotL;
+	vector<float> mat_diffuse_color = mat.get_diffuse_color(rec.get_u(), rec.get_v());
 	//directional lights
 	for (int i = 0; i < m_db->get_num_directional_lights(); i++)
 	{
@@ -90,7 +92,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(),m_db->get_all_planes(),m_db->get_all_cylinders(),
 				rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diffuse_color *
 				light.get_color()
 				);
 		}
@@ -109,7 +111,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 					m_db->get_all_cylinders(),
 					rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diffuse_color *
 				light.get_color()
 				);
 		}
@@ -126,7 +128,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
 					 rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diffuse_color *
 				light.get_color()
 				);
 		}
@@ -144,7 +146,7 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 				light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
 					 rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diffuse_color *
 				light.get_color()
 				);
 		}
@@ -155,11 +157,11 @@ vector<float> rt_shader::compute_diffuse(intersection_record& rec, rt_material& 
 
 vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material& mat)
 {
-	if (mat.get_specular_color().size() > 0)
+	if (mat.get_is_specular())
 	{
 		vector<float> specular_color = { 0,0,0 };
-
-
+		vector<float> mat_spec_color = mat.get_specular_color(rec.get_u(), rec.get_v());
+		float mat_spec = mat.get_specularity(rec.get_u(), rec.get_v());
 		vector<float> reflected;
 		float vDotR;
 		for (int i = 0; i < m_db->get_num_directional_lights(); i++)
@@ -172,8 +174,8 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
 						 rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spec) *
+					mat_spec_color * light.get_color()
 					);
 			}
 		}
@@ -190,8 +192,8 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
 						rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spec) *
+					mat_spec_color * light.get_color()
 					);
 			}
 		}
@@ -208,8 +210,8 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
 						 rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spec) *
+					mat_spec_color * light.get_color()
 					);
 			}
 		}
@@ -226,8 +228,8 @@ vector<float> rt_shader::compute_specular(intersection_record& rec, rt_material&
 				specular_color = specular_color + (
 					light.percent_light(m_db->get_all_rectangles(), m_db->get_all_spheres(), m_db->get_all_triangles(), m_db->get_all_planes(), m_db->get_all_cylinders(),
 						 rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spec) *
+					mat_spec_color * light.get_color()
 					);
 			}
 		}

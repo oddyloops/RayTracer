@@ -14,8 +14,6 @@ namespace rt_support
 			vector<float> m_center;
 			float m_radius;
 			float m_radius_squared;
-			
-			;
 		
 		public:
 			__declspec(dllexport) rt_sphere(vector<float> center, float radius);
@@ -35,9 +33,10 @@ namespace rt_support
 			/// </summary>
 			/// <param name="pt">position inside the rectangle (no error checking!)</param>
 			/// <param name="bc">barrycentric coordinate of hit point (for triangle only)</param>
+			/// <param name="n">normal at the point</param>
 			/// <param name="u">returned normalized u value</param>
 			/// <param name="v">returned normalized v value</param>
-			void get_uv(vector<float> pt, vector<float> bc, float& u, float& v);
+			void get_uv(vector<float> pt,vector<float> n, vector<float> bc, float& u, float& v);
 
 			/// <summary>
 			/// recreives (u,v) and returns the object position that corresponds to the (u,v) coordinate.
@@ -56,6 +55,8 @@ namespace rt_support
 
 			vector<float> get_max();
 			vector<float> get_min();
+
+			
 
 		};
 	}

@@ -15,7 +15,19 @@ rt_cylinder::rt_cylinder(float radius, vector<float> top_center, vector<float> b
 	m_height = vector_util::magnitude(top_center - base_center);
 	m_axis_dir = (top_center - base_center) / m_height;
 	m_orth_d = -vector_util::dot(m_axis_dir, m_base_center);
+	m_curve_section =  m_height / ( 2 * m_radius + m_height);
+	m_flat_section = 0.5f * (1 - m_curve_section);
+
+	//approximate horizontal axes directions by crossing vertical axis with y axis
+	m_hor_axis_dir =vector_util::normalize( vector_util::cross(m_axis_dir, { 0,1,0 }));
 	
+	if (vector_util::is_zero(m_hor_axis_dir))
+	{
+		m_hor_axis_dir = { 1,0,0 }; //x axis
+	}
+
+	m_hor_axis_dir_perp = vector_util::normalize(vector_util::cross(m_hor_axis_dir, m_axis_dir));
+
 
 }
 
@@ -165,11 +177,33 @@ bool rt_cylinder::intersect(ray& ray, intersection_record& record)
 		vector<float> axisPt = m_base_center + axisPtDist * m_axis_dir;
 		normal = vector_util::normalize(hitPt - axisPt);
 	}
-	else
-	{
+	else if (dist_index == 3)
+	{ //top cap
 		normal = m_axis_dir;
 	}
-	record.update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(), m_type);
+	else
+	{//bottom cap
+		normal = vector_util::negate(m_axis_dir);
+	}
+	float u, v = 0;
+	get_uv(hitPt, { 0 }, normal, dist_index, u, v);
+	if (!m_normal_map.is_null())
+	{
+		normal = vector_util::normalize(get_normal(u, v));
+	}
+
+	if (!m_bump_map.is_null())
+	{
+		//bump the point by a height b along the normal
+		float b = m_bump_map.get_value(u, v);
+		vector<float> old_hit_point = hitPt;
+		hitPt = old_hit_point + b * normal;
+
+		float dist_diff = vector_util::magnitude(hitPt - old_hit_point);
+		dist += dist_diff;
+	}
+
+	record.update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(), m_type,u,v);
 	return true;
 
 }
@@ -181,12 +215,60 @@ bool rt_cylinder::inside_circle(vector<float> point, bool is_top_circle)
 	return vector_util::magnitude_sqr(point - center) <= m_radius_sq;
 }
 
-void rt_cylinder::get_uv(vector<float> pt, vector<float> bc, float& u, float& v) {}
+void rt_cylinder::get_uv(vector<float> pt, vector<float> bc,  vector<float> n, int dist_index, float& u, float& v) 
+{
+	vector<float> p = pt - m_base_center;
+
+	if (dist_index < 3)
+	{
+		///project p on the cylindrical axis
+		float dist = vector_util::dot(p, m_axis_dir);
+		vector<float> axis_point = m_base_center + dist * m_axis_dir;
+		vector<float> p1 = p - axis_point;
+		//project p1 on both horizontal axes
+		float a1 = vector_util::dot(p1, m_hor_axis_dir);
+		float a2 = vector_util::dot(p1, m_hor_axis_dir_perp);
+		
+
+		//around the curves 
+		u = atan2(a2, a1) / (2 * PI) + 0.5f; //https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for-sphere-cylindrical-projection
+		
+		//project p on the axis to get vertical distance
+		float v_dist = vector_util::dot(p, m_axis_dir);
+		v = (v_dist / m_height * m_curve_section) + m_flat_section;
+	}
+	else {
+		//along the flat surfaces
+		
+		if (dist_index == 3)
+		{
+			//top surface
+			p = pt - m_top_center;
+			float p_size = vector_util::magnitude(p);
+			//project p1 on both horizontal axes
+			float a1 = vector_util::dot(p, m_hor_axis_dir);
+			float a2 = vector_util::dot(p, m_hor_axis_dir_perp);
+			u = atan2(a2, a1) / (2 * PI) + 0.5f;
+			v =( (1 - p_size / m_radius) * m_flat_section ) + m_curve_section + m_flat_section;
+		}
+		else
+		{
+			//bottom surface
+			float p_size = vector_util::magnitude(p);
+			//project p1 on both horizontal axes
+			float a1 = vector_util::dot(p, m_hor_axis_dir);
+			float a2 = vector_util::dot(p, m_hor_axis_dir_perp);
+			u = atan2(a2, a1) / (2 * PI) + 0.5f;
+			v = p_size / m_radius * m_flat_section;
+		}
+	}
+}
 
 
 
 vector<float> rt_cylinder::get_position(float u, float v)
 {
+	
 	return { 0 };
 }
 

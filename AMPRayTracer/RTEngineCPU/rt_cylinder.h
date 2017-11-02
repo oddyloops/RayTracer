@@ -14,7 +14,12 @@ namespace rt_support
 			vector<float> m_top_center;
 			vector<float> m_base_center;
 			vector<float> m_axis_dir;
+			vector<float> m_hor_axis_dir;
+			vector<float> m_hor_axis_dir_perp; 
 			float m_orth_d; //d for orthogonal plane
+			float m_curve_section; //the section of v occupied by curved surface for u-v mapping
+			float m_flat_section; //the section of v occupied by a single flat circular surface
+			
 
 			bool inside_circle(vector<float> point, bool is_top_circle);
 		public:
@@ -37,15 +42,19 @@ namespace rt_support
 			/// </summary>
 			/// <param name="pt">position inside the rectangle (no error checking!)</param>
 			/// <param name="bc">barrycentric coordinate of hit point (for triangle only)</param>
+			/// <param name="n">normal at intersection point</param>
+			/// <param name="dist_index">determines if the intersection is on the circle ends or the side curves </param>
 			/// <param name="u">returned normalized u value</param>
 			/// <param name="v">returned normalized v value</param>
-			void get_uv(vector<float> pt, vector<float> bc, float& u, float& v);
+
+			void get_uv(vector<float> pt, vector<float> bc,  vector<float> n, int dist_index, float& u, float& v);
 
 			/// <summary>
 			/// recreives (u,v) and returns the object position that corresponds to the (u,v) coordinate.
 			/// </summary>
 			/// <param name="u">normalized u</param>
 			/// <param name="v">normalized v</param>
+			
 			/// <returns>A position that cooresponds to (u,v) on the geometry </returns>
 			vector<float> get_position(float u, float v);
 

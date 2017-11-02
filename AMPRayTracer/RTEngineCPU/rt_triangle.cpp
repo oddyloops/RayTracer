@@ -5,11 +5,11 @@ using namespace rt_support::geometries;
 
 rt_triangle::rt_triangle() {}
 
-rt_triangle::rt_triangle(vector<float> vertices[], matrix xform)
+rt_triangle::rt_triangle(vector<float> vertices[], matrix<float> xform)
 {
 	for (vector<float>* v = vertices; v!= nullptr; v++)
 	{
-		*v = matrix::transform(*v, xform);
+		*v = matrix<float>::transform(*v, xform);
 	}
 	if (vertices + 2 == nullptr)
 	{
@@ -43,8 +43,8 @@ void rt_triangle::initialize_triangle()
 {
 	m_u_vec = m_vertices[1] - m_vertices[0];
 	m_v_vec = m_vertices[2] - m_vertices[0];
-	m_normal = vector_util::normalize(vector_util::cross(m_u_vec,m_v_vec));
-	md = -vector_util::dot(m_normal, m_vertices[0]);
+	m_true_normal = vector_util::normalize(vector_util::cross(m_u_vec,m_v_vec));
+	md = -vector_util::dot(m_true_normal, m_vertices[0]);
 }
 
 
@@ -53,7 +53,7 @@ bool rt_triangle::intersect(ray& ray, intersection_record& record)
 	float dist = 0;
 	vector<float> hitPt, n;
 
-	n = m_normal;    // because ray/plane intersection may flip the normal!
+	n = m_true_normal;    // because ray/plane intersection may flip the normal!
 	if (!ray_plane_intersection(ray, n, md, dist, m_vertices[0]))
 		return false;
 
@@ -64,14 +64,40 @@ bool rt_triangle::intersect(ray& ray, intersection_record& record)
 	/*
 	* Now need to decide inside or outside
 	*/
-	if (!inside_polygon(hitPt))
+	float u, v =-1;
+	if (!inside_polygon(hitPt,u,v))
 		return false;
 
-	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index(), m_type);
+	vector<float> normal = n;
+
+	get_uv(hitPt, { 0 }, u, v);
+	if (!m_normal_map.is_null())
+	{
+
+		normal = vector_util::normalize(get_normal(u, v));
+
+		if (vector_util::is_mirror_of(n, m_true_normal))
+		{
+			normal = vector_util::negate(normal);
+		}
+
+	}
+
+	if (!m_bump_map.is_null())
+	{
+		//bump the point by a height b along the normal
+		float b = m_bump_map.get_value(u, v);
+		vector<float> old_hit_point = hitPt;
+		hitPt = old_hit_point + b * normal;
+		float dist_diff = vector_util::magnitude(hitPt - old_hit_point);
+		dist += dist_diff;
+	}
+
+	record.update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(), m_type, u, v);
 	return true;
 }
 
-bool rt_triangle::inside_polygon(vector<float> pt)
+bool rt_triangle::inside_polygon(vector<float> pt,float& u, float& v)
 {
 	vector<float> w = pt - m_vertices[0];  // w = rU + tV where r + t <= 1 (barycentric coordinates)
 	
@@ -95,15 +121,22 @@ bool rt_triangle::inside_polygon(vector<float> pt)
 
 	float r = vw_size / uv_size;
 	float t = uw_size / uv_size;
+	vector<float> bc = { r, 1 - (r + t), t };
+	bool inside = r + t <= 1;
+	if (inside)
+	{
+		get_uv(pt, bc, u, v);
+	}
 
-	return r + t <= 1;
+	return inside;
 
 }
 
 
 void rt_triangle::get_uv(vector<float> pt, vector<float> bc, float& u, float& v)
 {
-
+	u = bc[1] * 1 + bc[2] * 0.5;
+	v = bc[2] * 1;
 }
 
 vector<float> rt_triangle::get_position(float u, float v)
@@ -116,10 +149,7 @@ vector<float> rt_triangle::get_center()
 	return  (m_vertices[0] + m_vertices[1] + m_vertices[2]) / 3;
 }
 
-vector<float> rt_triangle::get_normal()
-{
-	return m_normal;
-}
+
 
 vector<float> rt_triangle::get_max()
 {

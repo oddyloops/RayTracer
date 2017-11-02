@@ -14,7 +14,7 @@ namespace rt_support
 		private:
 
 			float_3 point_0;
-			float_3 m_normal;
+			float_3 m_true_normal;
 			float md;
 
 

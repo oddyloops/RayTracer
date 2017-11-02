@@ -32,7 +32,7 @@ namespace rt
 		float m_ambient_intensity;
 		vector<float> m_view_dir;
 
-		vector<float> compute_ambience(rt_material& mat);
+		vector<float> compute_ambience(rt_material& mat,intersection_record& rec);
 
 		vector<float> compute_diffuse(intersection_record& rec, rt_material& mat);
 

@@ -14,8 +14,9 @@ namespace rt_support
 		private:
 			
 			vector<float> point_0;
-			vector<float> m_normal;
-			float md;
+			vector<float> m_true_normal;
+			float md, m_map_width, m_map_height;
+			vector<float> m_u_vec, m_v_vec;
 
 			
 
@@ -25,10 +26,10 @@ namespace rt_support
 
 
 			/// <summary>
-			/// Construting a plane from three non co-linear points
+			/// Construting a plane from three non co-linear points (had to explicity specify a map dimension because a plane is infinite
 			/// </summary>
 			/// <param name="v"></param>
-			__declspec(dllexport) rt_plane(vector<float> points[]);
+			__declspec(dllexport) rt_plane(vector<float> points[], float map_width, float map_height);
 
 
 			/// <summary>
@@ -58,7 +59,6 @@ namespace rt_support
 			/// <returns>A position that cooresponds to (u,v) on the geometry </returns>
 			vector<float> get_position(float u, float v);
 
-			vector<float> get_normal();
 
 		};
 	}

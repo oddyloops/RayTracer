@@ -16,13 +16,13 @@ rt_plane::rt_plane(float_3 points[]) restrict(amp,cpu)
 	float_3 v1 = points[1] - points[0];
 	float_3 v2 = points[2] - points[0];
 
-	m_normal = vector_amp::normalize(vector_amp::cross(v1, v2));
-	md = -vector_amp::dot(v1, m_normal);
+	m_true_normal = vector_amp::normalize(vector_amp::cross(v1, v2));
+	md = -vector_amp::dot(v1, m_true_normal);
 }
 
 int rt_plane::intersect(ray& ray, intersection_record& record) restrict(amp)
 {
-	float_3 n = m_normal;
+	float_3 n = m_true_normal;
 	float dist = 0;
 	int intersects = ray_plane_intersection(ray, n, md, dist, point_0);
 	float_3 hitPt = ray.get_origin() + dist * ray.get_direction();
@@ -48,5 +48,5 @@ float_3 rt_plane::get_position(float u, float v) restrict(amp)
 
 float_3 rt_plane::get_normal() restrict(amp)
 {
-	return m_normal;
+	return m_true_normal;
 }

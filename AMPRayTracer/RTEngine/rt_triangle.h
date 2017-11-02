@@ -13,7 +13,7 @@ namespace rt_support
 		{
 		private:
 			float_3 m_vertices[3];
-			float_3 m_normal;
+			float_3 m_true_normal;
 			float_3 m_u_vec, m_v_vec;
 			float md;
 

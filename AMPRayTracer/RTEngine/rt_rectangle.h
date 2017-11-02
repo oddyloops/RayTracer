@@ -17,7 +17,7 @@ namespace rt_support
 			int m_u_axis_index, m_v_axis_index; // 0 is X, 1 is Y, and 2 is Z
 			float ma, mb, mc;
 			float md;   // AX + BY + CZ + D = 0, this is the D
-			float_3 m_normal; // normal to the polygon
+			float_3 m_normal_map; // normal to the polygon
 
 									 // for texture mapping
 			float_3 m_u_vec, m_v_vec; // Normalized vector in the U and V direction

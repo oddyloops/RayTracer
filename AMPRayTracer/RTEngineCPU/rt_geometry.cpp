@@ -14,6 +14,16 @@ void rt_geometry::set_material_index(int index)
 }
 
 
+void rt_geometry::set_normal_map(vector_map n_map)
+{
+	m_normal_map = n_map;
+}
+
+void rt_geometry::set_bump_map(float_map b_map)
+{
+	m_bump_map = b_map;
+}
+
 float rt_geometry::plane_point_dist(vector<float> pt,vector<float> norm, vector<float> plane_point)
 {
 	vector<float> v = pt - plane_point;
@@ -85,17 +95,23 @@ int rt_geometry::get_material_index()
 	return m_material_index;
 }
 
-matrix rt_geometry::parse_xform(vector<float> translation, float rx, float ry, float rz, vector<float> scale)
+matrix<float> rt_geometry::parse_xform(vector<float> translation, float rx, float ry, float rz, vector<float> scale)
 {
 	
-	matrix init(3, 3, 0);
+	matrix<float> init(3, 3, 0);
 
-	if(rx > FLT_EPSILON)
-		init = init * matrix::rotate_x(math_util::deg_to_rad(rx));
-	if(ry > FLT_EPSILON)
-		init = init * matrix::rotate_y(math_util::deg_to_rad(ry));
-	if (rz > FLT_EPSILON)
-		init = init * matrix::rotate_z(math_util::deg_to_rad(rz));
-	return matrix::scale(scale) * init * matrix::translate_from_vector(translation);
+	if(abs(rx) > FLT_EPSILON)
+		init = init * matrix<float>::rotate_x(math_util::deg_to_rad(rx));
+	if(abs(ry) > FLT_EPSILON)
+		init = init * matrix<float>::rotate_y(math_util::deg_to_rad(ry));
+	if (abs(rz) > FLT_EPSILON)
+		init = init * matrix<float>::rotate_z(math_util::deg_to_rad(rz));
+	return matrix<float>::scale(scale) * init * matrix<float>::translate_from_vector(translation);
 
+}
+
+
+vector<float>  rt_geometry::get_normal(float u, float v)
+{
+	return m_normal_map.get_value(u, v);
 }

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-
+#include "vector_map.h"
+#include "float_map.h"
 #include "ray.h"
 #include "intersection_record.h"
 #include "indexed_resource.h"
@@ -35,6 +36,8 @@ namespace rt_support
 		protected:
 			int m_type;
 			int m_material_index;
+			vector_map m_normal_map;
+			float_map m_bump_map;
 
 
 		
@@ -44,11 +47,18 @@ namespace rt_support
 		public:
 			
 			__declspec(dllexport) void set_material_index(int index);
+
+
+			__declspec(dllexport) void set_normal_map(vector_map n_map);
+
+			__declspec(dllexport) void set_bump_map(float_map b_map);
 			/// <summary>
 			/// Parse command line for <xform> </xform> that is embedeed inside 
 			/// Geometry.
 			/// </summary>
-			static matrix parse_xform(vector<float> translation, float rx, float ry, float rz, vector<float> scale);
+
+
+			static matrix<float> parse_xform(vector<float> translation, float rx, float ry, float rz, vector<float> scale);
 
 			/// <summary>
 			/// Returns status of if Ray intersects with this Geom. If so, details of intersection
@@ -92,6 +102,8 @@ namespace rt_support
 			int get_type();
 
 			int get_material_index();
+
+			vector<float>  get_normal(float u, float v);
 
 
 		};

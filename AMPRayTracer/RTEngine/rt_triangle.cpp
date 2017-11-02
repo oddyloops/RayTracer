@@ -44,8 +44,8 @@ void rt_triangle::initialize_triangle() restrict(amp,cpu)
 {
 	m_u_vec = m_vertices[1] - m_vertices[0];
 	m_v_vec = m_vertices[2] - m_vertices[0];
-	m_normal = vector_amp::normalize(vector_amp::cross(m_u_vec, m_v_vec));
-	md = -vector_amp::dot(m_normal, m_vertices[0]);
+	m_true_normal = vector_amp::normalize(vector_amp::cross(m_u_vec, m_v_vec));
+	md = -vector_amp::dot(m_true_normal, m_vertices[0]);
 }
 
 
@@ -54,7 +54,7 @@ int rt_triangle::intersect(ray& ray, intersection_record& record) restrict(amp)
 	float dist = 0;
 	float_3 hitPt, n;
 
-	n = m_normal;    // because ray/plane intersection may flip the normal!
+	n = m_true_normal;    // because ray/plane intersection may flip the normal!
 	if (!ray_plane_intersection(ray, n, md, dist, m_vertices[0]))
 		return false;
 
@@ -119,7 +119,7 @@ float_3 rt_triangle::get_center() restrict(amp)
 
 float_3 rt_triangle::get_normal() restrict(amp)
 {
-	return m_normal;
+	return m_true_normal;
 }
 
 float_3 rt_triangle::get_max() restrict(amp)

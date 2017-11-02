@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include "indexed_resource.h"
+#include "float_map.h"
+#include "vector_map.h"
 using namespace std;
 
 namespace rt_support
@@ -13,44 +15,44 @@ namespace rt_support
 		class rt_material : public indexed_resource
 		{
 		private:
-			vector<float> m_ambient_color;
-			vector<float> m_diffuse_color;
-			vector<float> m_specular_color;
-			float m_specularity = -1;
-			float m_refractive_index = -1;
-			float m_transparency = -1;
-			float m_reflectivity = -1;
+			vector_map m_ambient_color;
+			vector_map m_diffuse_color;
+			vector_map m_specular_color;
+			float_map m_specularity;
+			float_map m_refractive_index;
+			float_map m_transparency;
+			float_map m_reflectivity;
 		public:
 			__declspec(dllexport) rt_material();
 
-			__declspec(dllexport) rt_material(vector<float> ambient_color, vector<float> diffuse_color);
+			__declspec(dllexport) rt_material(vector_map ambient_color, vector_map diffuse_color);
 
-			__declspec(dllexport) rt_material(vector<float> ambient_color, vector<float> diffuse_color, vector<float> specular_color, float specularity);
+			__declspec(dllexport) rt_material(vector_map ambient_color, vector_map diffuse_color, vector_map specular_color, float_map specularity);
 
-			__declspec(dllexport) void set_ref_properties(float ref_index,float transparency,float reflectivity);
+			__declspec(dllexport) void set_ref_properties(float_map ref_index,float_map transparency,float_map reflectivity);
 
 
-			void set_diffuse(vector<float> color);
+			void set_diffuse(vector_map color);
 
-			void set_ambience(vector<float> color);
+			void set_ambience(vector_map color);
 
-			void set_specular(vector<float> color);
+			void set_specular(vector_map color);
 
-			void set_specular(vector<float> color, float specularity);
+			void set_specular(vector_map color, float_map specularity);
 
-			vector<float> get_ambient_color() const;
+			vector<float> get_ambient_color(float u, float v);
 
-			vector<float> get_diffuse_color() const;
+			vector<float> get_diffuse_color(float u, float v);
 
-			vector<float> get_specular_color() const;
+			vector<float> get_specular_color(float u, float v);
 
-			float get_specularity() const;
+			float get_specularity(float u, float v);
 
-			float get_refractive_index() const;
+			float get_refractive_index(float u, float v);
 
-			float get_transparency() const;
+			float get_transparency(float u, float v);
 
-			float get_reflectivity() const;
+			float get_reflectivity(float u, float v);
 
 			bool get_is_specular();
 

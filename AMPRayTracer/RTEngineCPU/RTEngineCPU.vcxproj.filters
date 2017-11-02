@@ -147,12 +147,18 @@
     <ClInclude Include="rt_cylinder.h">
       <Filter>Header Files\rt_support\geometries</Filter>
     </ClInclude>
+    <ClInclude Include="float_map.h">
+      <Filter>Header Files\rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="all_map.h">
+      <Filter>Header Files\rt_support\scene_resource_support</Filter>
+    </ClInclude>
+    <ClInclude Include="vector_map.h">
+      <Filter>Header Files\rt_support\scene_resource_support</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="math_util.cpp">
-      <Filter>Source Files\utils</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="vector_util.cpp">
@@ -235,6 +241,15 @@
     </ClCompile>
     <ClCompile Include="rt_cylinder.cpp">
       <Filter>Source Files\rt_support\geometries</Filter>
+    </ClCompile>
+    <ClCompile Include="all_map.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="float_map.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
+    </ClCompile>
+    <ClCompile Include="vector_map.cpp">
+      <Filter>Source Files\rt_support\scene_resource_support</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #pragma once
 #include "rt_geometry.h"
 
+
 namespace rt_support
 {
 	namespace geometries
@@ -13,7 +14,8 @@ namespace rt_support
 		{
 		private:
 			vector<float> m_vertices[3];
-			vector<float> m_normal;
+			vector<float> m_true_normal; //true normal to the polygon
+			
 			vector<float> m_u_vec, m_v_vec;
 			float md;
 
@@ -24,7 +26,7 @@ namespace rt_support
 			/// </summary>
 			/// <param name="pt"></param>
 			/// <returns></returns>
-			bool inside_polygon(vector<float> pt);
+			bool inside_polygon(vector<float> pt, float& u, float& v);
 
 		public:
 			__declspec(dllexport) rt_triangle();
@@ -34,7 +36,7 @@ namespace rt_support
 			/// Construting a triangle from given vertices.
 			/// </summary>
 			/// <param name="v"></param>
-			__declspec(dllexport) rt_triangle(vector<float> vertices[], matrix xform);
+			__declspec(dllexport) rt_triangle(vector<float> vertices[], matrix<float> xform);
 
 
 			/// <summary>
@@ -77,7 +79,7 @@ namespace rt_support
 			vector<float> get_center();
 
 			
-			vector<float> get_normal();
+			
 
 			vector<float> get_max();
 			vector<float> get_min();

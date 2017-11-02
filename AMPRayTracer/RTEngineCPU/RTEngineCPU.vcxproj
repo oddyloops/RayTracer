@@ -146,6 +146,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="all_map.h" />
+    <ClInclude Include="float_map.h" />
     <ClInclude Include="image_spec.h" />
     <ClInclude Include="indexed_resource.h" />
     <ClInclude Include="intersection_record.h" />
@@ -174,15 +176,17 @@
     <ClInclude Include="rt_visibility.h" />
     <ClInclude Include="rt_wave_props.h" />
     <ClInclude Include="scene_database.h" />
+    <ClInclude Include="vector_map.h" />
     <ClInclude Include="vector_util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="all_map.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="float_map.cpp" />
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
     <ClCompile Include="math_util.cpp" />
-    <ClCompile Include="matrix.cpp" />
     <ClCompile Include="pixel_data.cpp" />
     <ClCompile Include="ray.cpp" />
     <ClCompile Include="rt_area_light.cpp" />
@@ -205,6 +209,7 @@
     <ClCompile Include="rt_visibility.cpp" />
     <ClCompile Include="rt_wave_props.cpp" />
     <ClCompile Include="scene_database.cpp" />
+    <ClCompile Include="vector_map.cpp" />
     <ClCompile Include="vector_util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

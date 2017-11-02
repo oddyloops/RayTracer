@@ -53,18 +53,18 @@ void rt_rectangle::initialize_rectangle() restrict(amp,cpu)
 	m_u_vec = vector_amp::normalize(m_u_vec);
 	m_v_vec = vector_amp::normalize(m_v_vec);
 
-	m_normal = vector_amp::cross(v1, v2);
-	m_normal = vector_amp::normalize(m_normal);
-	ma = m_normal.x;
-	mb = m_normal.y;
-	mc = m_normal.z;
+	m_normal_map = vector_amp::cross(v1, v2);
+	m_normal_map = vector_amp::normalize(m_normal_map);
+	ma = m_normal_map.x;
+	mb = m_normal_map.y;
+	mc = m_normal_map.z;
 
-	md = -vector_amp::dot(m_normal, m_vertices[0]);
+	md = -vector_amp::dot(m_normal_map, m_vertices[0]);
 
-	if (math_util::abs(m_normal.x) > math_util::abs(m_normal.y))
+	if (math_util::abs(m_normal_map.x) > math_util::abs(m_normal_map.y))
 	{
 		/*normal x > normal y*/
-		if (math_util::abs(m_normal.x) > math_util::abs(m_normal.z))
+		if (math_util::abs(m_normal_map.x) > math_util::abs(m_normal_map.z))
 		{
 			/*normal x > both y and z*/
 			m_u_axis_index = 1;
@@ -79,7 +79,7 @@ void rt_rectangle::initialize_rectangle() restrict(amp,cpu)
 	else
 	{
 		/* y > x*/
-		if (math_util::abs(m_normal.y) > math_util::abs(m_normal.z))
+		if (math_util::abs(m_normal_map.y) > math_util::abs(m_normal_map.z))
 		{
 			/* y  > x and z*/
 			m_u_axis_index = 0;
@@ -104,8 +104,8 @@ int rt_rectangle::inside_polygon(float_3 pt) restrict(amp)
 	v4 = vector_amp::normalize(v4);
 	v5 = vector_amp::normalize(v5);
 
-	float v1v4 = math_util::clock_wise_angle(v1, v4, m_normal); 
-	float v3v5 = math_util::clock_wise_angle(v3, v5, m_normal);
+	float v1v4 = math_util::clock_wise_angle(v1, v4, m_normal_map); 
+	float v3v5 = math_util::clock_wise_angle(v3, v5, m_normal_map);
 	float angle90 = 0.5f * PI;
 	return (v1v4 < angle90 && v1v4 > 0) && (v3v5 < angle90 && v3v5 > 0); //clockwise angle between v1 and v4, AND between v3 and v5 must be within 0-90deg
 
@@ -116,7 +116,7 @@ int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)
 	float dist = 0;
 	float_3 hitPt, n;
 
-	n = m_normal;    // because ray/plane intersection may flip the normal!
+	n = m_normal_map;    // because ray/plane intersection may flip the normal!
 	if (!ray_plane_intersection(ray, n, md, dist,m_vertices[0]))
 		return false;
 
@@ -173,7 +173,7 @@ float rt_rectangle::get_v_size() restrict(amp)
 
 float_3 rt_rectangle::get_normal() restrict(amp)
 {
-	return m_normal;
+	return m_normal_map;
 }
 
 float_3 rt_rectangle::get_max() restrict(amp)

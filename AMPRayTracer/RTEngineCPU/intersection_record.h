@@ -18,6 +18,7 @@ namespace rt_support
 		{
 		private:
 			vector<float> m_point;     // Interseciton position
+			float m_u, m_v; //U-V at intersection
 			vector<float> m_bc;        // Barry centric coordinate for triangle
 			vector<float> m_normal;    // Normal at the intersection position
 			vector<float> m_ray_dir;    // ray direciton that caused the intesection
@@ -52,7 +53,7 @@ namespace rt_support
 			/// <param name="ray">ray that caused the intersection</param>
 			/// <param name="matIndex">material index at the intersection point</param>
 			/// <param name="geomIndex">geometry index at the interesection point</param>
-			void update_record(float dist, vector<float> intersection_pt, vector<float> normal, ray ray, int mat_index, int geom_index, int type);
+			void update_record(float dist, vector<float> intersection_pt, vector<float> normal, ray ray, int mat_index, int geom_index, int type,float u, float v);
 
 			void update_bc(float u, float v, float w);
 
@@ -83,6 +84,12 @@ namespace rt_support
 			int get_type();
 
 			void set_type(int type);
+
+			void set_uv(float u, float v);
+
+			float get_u() const;
+
+			float get_v() const;
 
 
 
