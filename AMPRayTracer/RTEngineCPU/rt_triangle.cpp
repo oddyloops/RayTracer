@@ -45,6 +45,7 @@ void rt_triangle::initialize_triangle()
 	m_v_vec = m_vertices[2] - m_vertices[0];
 	m_true_normal = vector_util::normalize(vector_util::cross(m_u_vec,m_v_vec));
 	md = -vector_util::dot(m_true_normal, m_vertices[0]);
+	m_apex_u = vector_util::dot(m_v_vec, vector_util::normalize(m_u_vec)) / vector_util::magnitude(m_v_vec);
 }
 
 
@@ -65,12 +66,12 @@ bool rt_triangle::intersect(ray& ray, intersection_record& record)
 	* Now need to decide inside or outside
 	*/
 	float u, v =-1;
-	if (!inside_polygon(hitPt,u,v))
+	if (!inside_polygon(hitPt))
 		return false;
 
 	vector<float> normal = n;
-
-	get_uv(hitPt, { 0 }, u, v);
+	vector<float> bc = get_bc(hitPt);
+	get_uv(hitPt,bc, u, v);
 	if (!m_normal_map.is_null())
 	{
 
@@ -97,7 +98,22 @@ bool rt_triangle::intersect(ray& ray, intersection_record& record)
 	return true;
 }
 
-bool rt_triangle::inside_polygon(vector<float> pt,float& u, float& v)
+
+vector<float> rt_triangle::get_bc(vector<float> pt)
+{
+	vector<float> p0 = pt - m_vertices[0];
+	vector<float> p1 = pt - m_vertices[1];
+	vector<float> p2 = pt - m_vertices[2];
+	float a = vector_util::magnitude(vector_util::cross(p1 - p0, p2 - p0));
+	float a1 = vector_util::magnitude(vector_util::cross(p2, p1)) /a;
+	float a2 = vector_util::magnitude(vector_util::cross(p1, p0)) /a;
+	float a3 = vector_util::magnitude(vector_util::cross(p0, p2)) /a;
+	return { a1,a3,a2 };
+
+
+}
+
+bool rt_triangle::inside_polygon(vector<float> pt)
 {
 	vector<float> w = pt - m_vertices[0];  // w = rU + tV where r + t <= 1 (barycentric coordinates)
 	
@@ -122,21 +138,16 @@ bool rt_triangle::inside_polygon(vector<float> pt,float& u, float& v)
 	float r = vw_size / uv_size;
 	float t = uw_size / uv_size;
 	vector<float> bc = { r, 1 - (r + t), t };
-	bool inside = r + t <= 1;
-	if (inside)
-	{
-		get_uv(pt, bc, u, v);
-	}
-
-	return inside;
+	return r + t <= 1;
 
 }
 
 
 void rt_triangle::get_uv(vector<float> pt, vector<float> bc, float& u, float& v)
 {
-	u = bc[1] * 1 + bc[2] * 0.5;
-	v = bc[2] * 1;
+	//uv at v0 is 0,0  at v1 is 1,0 at v2 is m_apex_u,1
+	u = bc[1] + bc[2] * m_apex_u;
+	v = bc[2];
 }
 
 vector<float> rt_triangle::get_position(float u, float v)

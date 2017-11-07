@@ -19,6 +19,8 @@ rt_plane::rt_plane(vector<float> points[], float map_width, float map_height)
 	m_true_normal = vector_util::normalize(vector_util::cross(v1, v2));
 	m_u_vec = vector_util::normalize(v1);
 	m_v_vec = vector_util::normalize(v2);
+	m_map_width = map_width;
+	m_map_height = map_height;
 
 	md = -vector_util::dot(v1, m_true_normal);
 }

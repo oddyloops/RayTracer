@@ -96,17 +96,6 @@ public:
 		}
 		return result;
 	}
-
-
-
-	
-
-
-
-	
-
-
-
 };
 
 
@@ -114,13 +103,10 @@ public:
 template<typename T>
 matrix<T>::matrix(int row, int col, T init)
 {
+	
 	for (int i = 0; i < row; i++)
 	{
-		vector<float> row_vec(col);
-		for (int j = 0; j < col; j++)
-		{
-			row_vec.push_back(init);
-		}
+		vector<T> row_vec(col,init);
 		_mat.push_back(row_vec);
 	}
 }

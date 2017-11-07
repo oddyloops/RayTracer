@@ -18,15 +18,18 @@ namespace rt_support
 			
 			vector<float> m_u_vec, m_v_vec;
 			float md;
-
+			float m_apex_u; //u value at apex for u-v texture mapping
 			void initialize_triangle();
+
+			//computes bary-centric coordinates
+			vector<float> get_bc(vector<float> pt);
 
 			/// <summary>
 			/// Returns if the given pt is inside(true) or outside(false) of the polygon.
 			/// </summary>
 			/// <param name="pt"></param>
 			/// <returns></returns>
-			bool inside_polygon(vector<float> pt, float& u, float& v);
+			bool inside_polygon(vector<float> pt);
 
 		public:
 			__declspec(dllexport) rt_triangle();

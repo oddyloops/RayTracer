@@ -516,15 +516,15 @@ void JsonParser::render()
 
 	BMP input;
 	input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
-	for (int x = 0; x < _specs.get_x_resolution(); x++)
+	for (int y = 0; y < _specs.get_y_resolution(); y++)
 	{
-		for (int y = 0; y < _specs.get_y_resolution(); y++)
+		for (int x = 0; x < _specs.get_x_resolution(); x++)
 		{
-			int index = x * _specs.get_y_resolution() + y;
-			input(x, y)->Alpha = 255;
-			input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(image[index].r * 255));
-			input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(image[index].g * 255));
-			input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(image[index].b * 255));
+			int index = y * _specs.get_y_resolution() + x;
+			input(y, x)->Alpha = 255;
+			input(y, x)->Red = static_cast<unsigned char>(static_cast<int>(image[index].r * 255));
+			input(y, x)->Green = static_cast<unsigned char>(static_cast<int>(image[index].g * 255));
+			input(y, x)->Blue = static_cast<unsigned char>(static_cast<int>(image[index].b * 255));
 
 		}
 	}
@@ -535,15 +535,15 @@ void JsonParser::render()
 
 
 	input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
-	for (int x = 0; x < _specs.get_x_resolution(); x++)
+	for (int y = 0; y < _specs.get_y_resolution(); y++)
 	{
-		for (int y = 0; y < _specs.get_y_resolution(); y++)
+		for (int x = 0; x < _specs.get_y_resolution(); x++)
 		{
-			int index = x * _specs.get_y_resolution() + y;
-			input(x, y)->Alpha = 255;
-			input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
-			input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
-			input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
+			int index = y * _specs.get_y_resolution() + x;
+			input(y, x)->Alpha = 255;
+			input(y, x)->Red = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
+			input(y, x)->Green = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
+			input(y, x)->Blue = static_cast<unsigned char>(static_cast<int>(cvg[index] * 255));
 
 		}
 	}
@@ -552,15 +552,15 @@ void JsonParser::render()
 	auto dpt = results.depth;
 
 	input.SetSize(_specs.get_x_resolution(), _specs.get_y_resolution());
-	for (int x = 0; x < _specs.get_x_resolution(); x++)
+	for (int y = 0; y < _specs.get_y_resolution(); y++)
 	{
-		for (int y = 0; y < _specs.get_y_resolution(); y++)
+		for (int x = 0; x < _specs.get_x_resolution(); x++)
 		{
-			int index = x * _specs.get_y_resolution() + y;
-			input(x, y)->Alpha = 255;
-			input(x, y)->Red = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
-			input(x, y)->Green = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
-			input(x, y)->Blue = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
+			int index = y * _specs.get_y_resolution() + x;
+			input(y, x)->Alpha = 255;
+			input(y, x)->Red = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
+			input(y, x)->Green = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
+			input(y, x)->Blue = static_cast<unsigned char>(static_cast<int>(dpt[index] * 255));
 
 		}
 	}
