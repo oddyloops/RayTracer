@@ -26,7 +26,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 
 
 	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel(),db,ambience_color,ambience_intensity);
-
+	int index = 0;
 
 	for (int i = 0; i < spec.get_x_resolution(); i++)
 	{
@@ -34,10 +34,10 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 		{
 			
 			pixel_data data = ray_tracer.compute_pixel_data(i, j);
-			int index = i * spec.get_y_resolution() + j;
+			
 			image_view[index] = data.get_color();
 			coverage_mask_view[index] = { data.get_coverage() };
-			depth_map_view[index] = { data.get_depth() };
+			depth_map_view[index++] = { data.get_depth() };
 		}
 	}
 

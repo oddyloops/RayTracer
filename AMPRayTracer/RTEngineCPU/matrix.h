@@ -9,14 +9,17 @@ template <typename T>
 class matrix
 {
 private: 
-	vector<vector<T>> _mat;
+	T** _mat;
+
+	int _row_size;
+	int _col_size;
 public:
 
 
 	__declspec(dllexport) matrix(int row,int col, T init);
 
 
-	__declspec(dllexport) matrix(vector<vector<T>> mat);
+	__declspec(dllexport) matrix(T** mat,int row, int col);
 
 
 	int get_row_length();
@@ -27,11 +30,10 @@ public:
 
 	T at(int row, int col);
 
-	__declspec(dllexport) vector<T> get_row(int row);
-
-	__declspec(dllexport) vector<T> get_col(int col);
 
 	__declspec(dllexport) void set(int row, int col, T val);
+
+	~matrix();
 
 
 	static bool equal_dimensions(matrix<float>& lhs, matrix<float>& rhs)
@@ -76,7 +78,7 @@ public:
 	static matrix<float> translate_from_vector(vector<float> translate)
 	{
 		//using a 3x3 matrix instead of a 4x4 homogeinuous matrix using a systematic division to reduce z(1),z(2),x(3) to 1 respectively
-		matrix<float> xform({ { 1,0,translate[0] },{ 0,1,translate[1] },{ translate[2],0,1 } });
+		matrix<float> xform({ { 1,0,translate[0] },{ 0,1,translate[1] },{ translate[2],0,1 } },3,3);
 		return xform;
 	}
 
@@ -103,16 +105,27 @@ public:
 template<typename T>
 matrix<T>::matrix(int row, int col, T init)
 {
-	
+	_row_size = row;
+	_col_size = col;
+	_mat = new T*[row];
 	for (int i = 0; i < row; i++)
 	{
-		vector<T> row_vec(col,init);
-		_mat.push_back(row_vec);
+		_mat[i] = new T[col];
 	}
 }
 
 template<typename T>
-matrix<T>::matrix(vector<vector<T>> mat) : _mat(mat) {}
+matrix<T>::matrix(T** mat,int row, int col) : _mat(mat),_row_size(row),_col_size(col) {}
+
+template<typename T>
+matrix<T>::~matrix()
+{
+	for (int i = 0; i < _row_size; i++)
+	{
+		delete[] _mat[i];
+	}
+}
+
 
 template<typename T>
 T matrix<T>::at(int row, int col)
@@ -120,23 +133,7 @@ T matrix<T>::at(int row, int col)
 	return _mat[row][col];
 }
 
-template<typename T>
-vector<T> matrix<T>::get_row(int row)
-{
-	return _mat[row];
-}
 
-template<typename T>
-vector<T> matrix<T>::get_col(int col)
-{
-
-	vector<T> col_vec;
-	for (int i = 0; i < _mat.size(); i++)
-	{
-		col_vec.push_back(_mat[i][col]);
-	}
-	return col_vec;
-}
 
 template<typename T>
 void matrix<T>::set(int row, int col, T val)
@@ -147,13 +144,13 @@ void matrix<T>::set(int row, int col, T val)
 template <typename T>
 int matrix<T>::get_row_length()
 {
-	return _mat.size();
+	return _row_size;
 }
 
 template <typename T>
 int matrix<T>::get_col_length()
 {
-	return _mat[0].size();
+	return _col_size;
 }
 
 

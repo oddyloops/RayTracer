@@ -103,8 +103,8 @@ vector<float> vector_map::get_value_plain(float u, float v)
 {
 	if (m_is_file_source)
 	{
-		int r = m_bitmap_source[0].get_row_length() - 1 - static_cast<int>(v * m_bitmap_source[0].get_row_length());
-		int c = static_cast<int>(u * m_bitmap_source[0].get_col_length());
+		int r = ((m_bitmap_source[0].get_row_length()-1)  - static_cast<int>(v * (m_bitmap_source[0].get_row_length()-1)));
+		int c = static_cast<int>(u * (m_bitmap_source[0].get_col_length()-1));
 		return m_bitmap_source[0].at(r, c);
 	}
 	else {
