@@ -15,6 +15,7 @@ private:
 	int _col_size;
 public:
 
+	__declspec(dllexport) matrix() {}
 
 	__declspec(dllexport) matrix(int row,int col, T init);
 

@@ -9,7 +9,7 @@ namespace rt_support
 		class vector_map : public all_map
 		{
 		private:
-			vector<matrix<vector<float>>> m_bitmap_source; //for file sources
+			vector<matrix<vector<float>>*> m_bitmap_source; //for file sources
 			vector<vector<float>> m_scalar_source; //for scalar sources
 
 
@@ -28,7 +28,7 @@ namespace rt_support
 
 			__declspec(dllexport) vector_map(bool is_file_source, int map_type);
 
-			__declspec(dllexport) void set_bitmap_source(vector<matrix<vector<float>>> bitmap_source);
+			__declspec(dllexport) void set_bitmap_source(vector<matrix<vector<float>>*> bitmap_source);
 
 			__declspec(dllexport) void set_scalar_source(vector<vector<float>> scalar_source);
 

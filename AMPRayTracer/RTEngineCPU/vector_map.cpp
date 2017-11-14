@@ -15,7 +15,7 @@ vector_map::vector_map(bool is_file_source, int map_type) : all_map(is_file_sour
 
 }
 
-void vector_map::set_bitmap_source(vector<matrix<vector<float>>> bitmap_source)
+void vector_map::set_bitmap_source(vector<matrix<vector<float>>*> bitmap_source)
 {
 	m_bitmap_source = bitmap_source;
 }
@@ -55,15 +55,15 @@ vector<float> vector_map::get_value_stripes(float u, float v)
 	stripe_index = static_cast<int>(dir_index / m_stripe_width_perc);
 	if (m_is_file_source)
 	{
-		matrix<vector<float>>& bmp = m_bitmap_source[stripe_index % m_bitmap_source.size()];
+		matrix<vector<float>>* bmp = m_bitmap_source[stripe_index % m_bitmap_source.size()];
 		//compute horizontal and vertical indices in the bitmap
 		//horizontal index  starting from bottom left hence the substraction
 		vector<float> perp_direction = { m_direction[1], -m_direction[0] };
 		float v_run = vector_util::dot(uv, perp_direction);
-		int r = bmp.get_row_length() - 1 - static_cast<int>(v_run * bmp.get_row_length());
+		int r = bmp->get_row_length() - 1 - static_cast<int>(v_run * bmp->get_row_length());
 		//vertical index
-		int c = static_cast<int>((u - (m_x_no * dir_index)) * bmp.get_col_length());
-		return bmp.at(r, c);
+		int c = static_cast<int>((u - (m_x_no * dir_index)) * bmp->get_col_length());
+		return bmp->at(r, c);
 	}
 	else {
 		return m_scalar_source[stripe_index % m_scalar_source.size()];
@@ -85,13 +85,13 @@ vector<float> vector_map::get_value_checkered(float u, float v)
 
 	if (m_is_file_source)
 	{
-		matrix<vector<float>>& bmp = m_bitmap_source[tile_index % source_size];
+		matrix<vector<float>>* bmp = m_bitmap_source[tile_index % source_size];
 		//compute horizontal and vertical indices in the bitmap
 		//horizontal index starting from bottom left hence the substraction
-		int r = bmp.get_row_length() - 1 - static_cast<int>((v - (m_y_no * y_index)) * bmp.get_row_length());
+		int r = bmp->get_row_length() - 1 - static_cast<int>((v - (m_y_no * y_index)) * bmp->get_row_length());
 		//vertical index
-		int c = static_cast<int>((u - (m_x_no * x_index)) * bmp.get_col_length());
-		return bmp.at(r, c);
+		int c = static_cast<int>((u - (m_x_no * x_index)) * bmp->get_col_length());
+		return bmp->at(r, c);
 	}
 	else {
 
@@ -103,9 +103,9 @@ vector<float> vector_map::get_value_plain(float u, float v)
 {
 	if (m_is_file_source)
 	{
-		int r = ((m_bitmap_source[0].get_row_length()-1)  - static_cast<int>(v * (m_bitmap_source[0].get_row_length()-1)));
-		int c = static_cast<int>(u * (m_bitmap_source[0].get_col_length()-1));
-		return m_bitmap_source[0].at(r, c);
+		int r = ((m_bitmap_source[0]->get_row_length()-1)  - static_cast<int>(v * (m_bitmap_source[0]->get_row_length()-1)));
+		int c = static_cast<int>(u * (m_bitmap_source[0]->get_col_length()-1));
+		return m_bitmap_source[0]->at(r, c);
 	}
 	else {
 		return m_scalar_source[0];
@@ -132,18 +132,18 @@ vector<float> vector_map::get_value_wavy(float u, float v)
 
 	if (m_is_file_source)
 	{
-		matrix<vector<float>>& bmp1 = m_bitmap_source[stripe_index % m_bitmap_source.size()];
-		matrix<vector<float>>& bmp2 = m_bitmap_source[(stripe_index + 1) % m_bitmap_source.size()];
+		matrix<vector<float>>* bmp1 = m_bitmap_source[stripe_index % m_bitmap_source.size()];
+		matrix<vector<float>>* bmp2 = m_bitmap_source[(stripe_index + 1) % m_bitmap_source.size()];
 		//compute horizontal and vertical indices in the bitmap
 		//horizontal index  starting from bottom left hence the substraction
 		vector<float> perp_direction = { m_direction[1], -m_direction[0] };
 		float v_run = vector_util::dot(uv, perp_direction);
-		int r1 = bmp1.get_row_length() - 1 - static_cast<int>(v_run * bmp1.get_row_length());
-		int r2 = bmp2.get_row_length() - 1 - static_cast<int>(v_run * bmp2.get_row_length());
+		int r1 = bmp1->get_row_length() - 1 - static_cast<int>(v_run * bmp1->get_row_length());
+		int r2 = bmp2->get_row_length() - 1 - static_cast<int>(v_run * bmp2->get_row_length());
 		//vertical index
-		int c1 = static_cast<int>((u - (m_x_no * dir_index)) * bmp1.get_col_length());
-		int c2 = static_cast<int>((u - (m_x_no * dir_index)) * bmp2.get_col_length());
-		return color1_frac * bmp1.at(r1, c1) + color2_frac * bmp1.at(r2, c2);
+		int c1 = static_cast<int>((u - (m_x_no * dir_index)) * bmp1->get_col_length());
+		int c2 = static_cast<int>((u - (m_x_no * dir_index)) * bmp2->get_col_length());
+		return color1_frac * bmp1->at(r1, c1) + color2_frac * bmp1->at(r2, c2);
 	}
 	else {
 		return color1_frac * m_scalar_source[stripe_index % m_scalar_source.size()] +
