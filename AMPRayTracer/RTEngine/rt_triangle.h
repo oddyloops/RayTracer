@@ -16,6 +16,7 @@ namespace rt_support
 			float_3 m_true_normal;
 			float_3 m_u_vec, m_v_vec;
 			float md;
+			float m_apex_u;
 
 			void initialize_triangle() restrict(amp,cpu);
 
@@ -25,6 +26,9 @@ namespace rt_support
 			/// <param name="pt"></param>
 			/// <returns></returns>
 			int inside_polygon(float_3 pt) restrict(amp);
+
+			//computes bary-centric coordinates
+			float_3 get_bc(float_3 pt)  restrict(amp);
 
 		public:
 			__declspec(dllexport) rt_triangle() restrict(amp,cpu);
@@ -50,7 +54,8 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
-			int intersect(ray& ray, intersection_record& record) restrict(amp);
+			int intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
 
 			/// <summary>
 			/// pt is a position on in the rectangle, returns the normalized U/V value (between 0 to 1)
@@ -77,7 +82,7 @@ namespace rt_support
 			float_3 get_center() restrict(amp);
 
 
-			float_3 get_normal() restrict(amp);
+			
 
 			float_3 get_max() restrict(amp);
 			float_3 get_min() restrict(amp);

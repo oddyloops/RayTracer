@@ -46,29 +46,68 @@ void rt_triangle::initialize_triangle() restrict(amp,cpu)
 	m_v_vec = m_vertices[2] - m_vertices[0];
 	m_true_normal = vector_amp::normalize(vector_amp::cross(m_u_vec, m_v_vec));
 	md = -vector_amp::dot(m_true_normal, m_vertices[0]);
+	m_apex_u = vector_amp::dot(m_v_vec, vector_amp::normalize(m_u_vec)) / vector_amp::magnitude(m_v_vec);
 }
 
+float_3 rt_triangle::get_bc(float_3 pt) restrict(amp)
+{
+	float_3 p0 = pt - m_vertices[0];
+	float_3 p1 = pt - m_vertices[1];
+	float_3 p2 = pt - m_vertices[2];
+	float a = vector_amp::magnitude(vector_amp::cross(p1 - p0, p2 - p0));
+	float a1 = vector_amp::magnitude(vector_amp::cross(p2, p1)) / a;
+	float a2 = vector_amp::magnitude(vector_amp::cross(p1, p0)) / a;
+	float a3 = vector_amp::magnitude(vector_amp::cross(p0, p2)) / a;
+	return float_3( a1,a3,a2 );
+}
 
-int rt_triangle::intersect(ray& ray, intersection_record& record) restrict(amp)
+int rt_triangle::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	float dist = 0;
 	float_3 hitPt, n;
 
 	n = m_true_normal;    // because ray/plane intersection may flip the normal!
-	if (!ray_plane_intersection(ray, n, md, dist, m_vertices[0]))
+	if (!ray_plane_intersection(r, n, md, dist, m_vertices[0]))
 		return false;
 
 
 
-	hitPt = ray.get_origin() + (ray.get_direction() * dist);
+	hitPt = r.get_origin() + (r.get_direction() * dist);
 
 	/*
 	* Now need to decide inside or outside
 	*/
+	float u, v = -1;
 	if (!inside_polygon(hitPt))
 		return false;
 
-	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index(), m_type);
+	float_3 normal = n;
+	float_3 bc = get_bc(hitPt);
+	get_uv(hitPt, bc, u, v);
+	if (!m_normal_map.is_null())
+	{
+
+		normal = vector_amp::normalize(get_normal(u, v, bitmaps,scalars));
+
+		if (vector_amp::is_mirror_of(n, m_true_normal))
+		{
+			normal = -normal;
+		}
+
+	}
+
+	if (!m_bump_map.is_null())
+	{
+		//bump the point by a height b along the normal
+		float b = m_bump_map.get_value(u, v,f_bitmaps,f_scalars);
+		float_3 old_hit_point = hitPt;
+		hitPt = old_hit_point + b * normal;
+		float dist_diff = vector_amp::magnitude(hitPt - old_hit_point);
+		dist += dist_diff;
+	}
+
+	record.update_record(dist, hitPt, n, r, m_material_index, get_resource_index(), m_type);
 	return true;
 }
 
@@ -104,7 +143,9 @@ int rt_triangle::inside_polygon(float_3 pt) restrict(amp)
 
 void rt_triangle::get_uv(float_3 pt, float_3 bc, float& u, float& v) restrict(amp)
 {
-
+	//uv at v0 is 0,0  at v1 is 1,0 at v2 is m_apex_u,1
+	u = bc.y + bc.z * m_apex_u;
+	v = bc.z;
 }
 
 float_3 rt_triangle::get_position(float u, float v) restrict(amp)
@@ -117,10 +158,6 @@ float_3 rt_triangle::get_center() restrict(amp)
 	return  (m_vertices[0] + m_vertices[1] + m_vertices[2]) / 3;
 }
 
-float_3 rt_triangle::get_normal() restrict(amp)
-{
-	return m_true_normal;
-}
 
 float_3 rt_triangle::get_max() restrict(amp)
 {

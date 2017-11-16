@@ -140,6 +140,7 @@
     <ClInclude Include="rt_triangle.h" />
     <ClInclude Include="rt_visibility.h" />
     <ClInclude Include="rt_wave_props.h" />
+    <ClInclude Include="texture_map.h" />
     <ClInclude Include="vector_amp.h" />
   </ItemGroup>
   <ItemGroup>

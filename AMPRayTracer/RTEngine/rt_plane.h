@@ -15,7 +15,8 @@ namespace rt_support
 
 			float_3 point_0;
 			float_3 m_true_normal;
-			float md;
+			float md, m_map_width, m_map_height;
+			float_3 m_u_vec, m_v_vec;;
 
 
 
@@ -28,7 +29,7 @@ namespace rt_support
 			/// Construting a plane from three non co-linear points
 			/// </summary>
 			/// <param name="v"></param>
-			__declspec(dllexport) rt_plane(float_3 points[]) restrict(amp,cpu);
+			__declspec(dllexport) rt_plane(float_3 points[], float map_width, float map_height) restrict(amp,cpu);
 
 
 			/// <summary>
@@ -38,7 +39,8 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
-			int intersect(ray& ray, intersection_record& record) restrict(amp);
+			int intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
 
 			/// <summary>
 			/// pt is a position on in the rectangle, returns the normalized U/V value (between 0 to 1)
@@ -58,7 +60,7 @@ namespace rt_support
 			/// <returns>A position that cooresponds to (u,v) on the geometry </returns>
 			float_3 get_position(float u, float v) restrict(amp);
 
-			float_3 get_normal() restrict(amp);
+			
 
 		};
 	}

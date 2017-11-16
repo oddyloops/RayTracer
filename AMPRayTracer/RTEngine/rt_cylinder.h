@@ -14,7 +14,11 @@ namespace rt_support
 			float_3 m_top_center;
 			float_3 m_base_center;
 			float_3 m_axis_dir;
+			float_3 m_hor_axis_dir;
+			float_3 m_hor_axis_dir_perp;
 			float m_orth_d; //d for orthogonal plane
+			float m_curve_section; //the section of v occupied by curved surface for u-v mapping
+			float m_flat_section; //the section of v occupied by a single flat circular surface
 
 			int inside_circle(float_3 point, int is_top_circle) restrict(amp);
 		public:
@@ -29,7 +33,8 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
-			int intersect(ray& ray, intersection_record& record) restrict(amp);
+			int intersect(ray& ray, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
 
 			/// <summary>
 			/// pt is a position on in the rectangle, returns the normalized U/V value (between 0 to 1)
@@ -37,9 +42,11 @@ namespace rt_support
 			/// </summary>
 			/// <param name="pt">position inside the rectangle (no error checking!)</param>
 			/// <param name="bc">barrycentric coordinate of hit point (for triangle only)</param>
+			/// <param name="n">normal at intersection point</param>
+			/// <param name="dist_index">determines if the intersection is on the circle ends or the side curves </param>
 			/// <param name="u">returned normalized u value</param>
 			/// <param name="v">returned normalized v value</param>
-			void get_uv(float_3 pt, float_3 bc, float& u, float& v) restrict(amp);
+			void get_uv(float_3 pt, float_3 bc, float_3 n, int dist_index, float& u, float& v) restrict(amp);
 
 			/// <summary>
 			/// recreives (u,v) and returns the object position that corresponds to the (u,v) coordinate.

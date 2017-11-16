@@ -53,18 +53,18 @@ void rt_rectangle::initialize_rectangle() restrict(amp,cpu)
 	m_u_vec = vector_amp::normalize(m_u_vec);
 	m_v_vec = vector_amp::normalize(m_v_vec);
 
-	m_normal_map = vector_amp::cross(v1, v2);
-	m_normal_map = vector_amp::normalize(m_normal_map);
-	ma = m_normal_map.x;
-	mb = m_normal_map.y;
-	mc = m_normal_map.z;
+	m_true_normal = vector_amp::cross(v1, v2);
+	m_true_normal = vector_amp::normalize(m_true_normal);
+	ma = m_true_normal.x;
+	mb = m_true_normal.y;
+	mc = m_true_normal.z;
 
-	md = -vector_amp::dot(m_normal_map, m_vertices[0]);
+	md = -vector_amp::dot(m_true_normal, m_vertices[0]);
 
-	if (math_util::abs(m_normal_map.x) > math_util::abs(m_normal_map.y))
+	if (math_util::abs(m_true_normal.x) > math_util::abs(m_true_normal.y))
 	{
 		/*normal x > normal y*/
-		if (math_util::abs(m_normal_map.x) > math_util::abs(m_normal_map.z))
+		if (math_util::abs(m_true_normal.x) > math_util::abs(m_true_normal.z))
 		{
 			/*normal x > both y and z*/
 			m_u_axis_index = 1;
@@ -79,7 +79,7 @@ void rt_rectangle::initialize_rectangle() restrict(amp,cpu)
 	else
 	{
 		/* y > x*/
-		if (math_util::abs(m_normal_map.y) > math_util::abs(m_normal_map.z))
+		if (math_util::abs(m_true_normal.y) > math_util::abs(m_true_normal.z))
 		{
 			/* y  > x and z*/
 			m_u_axis_index = 0;
@@ -104,20 +104,21 @@ int rt_rectangle::inside_polygon(float_3 pt) restrict(amp)
 	v4 = vector_amp::normalize(v4);
 	v5 = vector_amp::normalize(v5);
 
-	float v1v4 = math_util::clock_wise_angle(v1, v4, m_normal_map); 
-	float v3v5 = math_util::clock_wise_angle(v3, v5, m_normal_map);
+	float v1v4 = math_util::clock_wise_angle(v1, v4, m_true_normal); 
+	float v3v5 = math_util::clock_wise_angle(v3, v5, m_true_normal);
 	float angle90 = 0.5f * PI;
 	return (v1v4 < angle90 && v1v4 > 0) && (v3v5 < angle90 && v3v5 > 0); //clockwise angle between v1 and v4, AND between v3 and v5 must be within 0-90deg
 
 }
 
-int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)
+int rt_rectangle::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	float dist = 0;
 	float_3 hitPt, n;
 
-	n = m_normal_map;    // because ray/plane intersection may flip the normal!
-	if (!ray_plane_intersection(ray, n, md, dist,m_vertices[0]))
+	n = m_true_normal;    // because ray/plane intersection may flip the normal!
+	if (!ray_plane_intersection(r, n, md, dist,m_vertices[0]))
 		return false;
 
 	/*
@@ -126,23 +127,51 @@ int rt_rectangle::intersect(ray& ray, intersection_record& record) restrict(amp)
 	if ((dist < 0) || (dist > record.get_hit_distance()))
 		return false;
 
-	hitPt = ray.get_origin() + (ray.get_direction() * dist);
+	hitPt = r.get_origin() + (r.get_direction() * dist);
 
 	/*
 	* Now need to decide inside or outside
 	*/
 	if (!inside_polygon(hitPt))
 		return false;
+	float_3 normal = n;
+	float u, v;
+	get_uv(hitPt, { 0 }, u, v);
 
-	record.update_record(dist, hitPt, n, ray, m_material_index, get_resource_index(),m_type);
+
+
+	if (!m_normal_map.is_null())
+	{
+
+		normal = vector_amp::normalize(get_normal(u, v,bitmaps,scalars));
+
+		if (vector_amp::is_mirror_of(n, m_true_normal))
+		{
+			normal = -normal;
+		}
+
+	}
+
+	if (!m_bump_map.is_null())
+	{
+		//bump the point by a height b along the normal
+		float b = m_bump_map.get_value(u, v,f_bitmaps,f_scalars);
+		float_3 old_hit_point = hitPt;
+		hitPt = old_hit_point + b * normal;
+
+		float dist_diff = vector_amp::magnitude(hitPt - old_hit_point);
+		dist += dist_diff;
+	}
+	record.update_record(dist, hitPt, n, r, m_material_index, get_resource_index(),m_type);
 	return true;
 
 }
 
 void rt_rectangle::get_uv(float_3 pt, float_3 bc, float& u, float& v) restrict(amp)
 {
-	//stubbed
-	u = v = 0;
+	float_3 pt_norm = pt - m_vertices[0];
+	u = vector_amp::dot(pt_norm, m_u_vec) / m_u_size; //project vec on u dir
+	v = vector_amp::dot(pt_norm, m_v_vec) / m_v_size; // project vec on v dir
 }
 
 float_3 rt_rectangle::get_position(float u, float v) restrict(amp)
@@ -171,10 +200,6 @@ float rt_rectangle::get_v_size() restrict(amp)
 	return m_v_size;
 }
 
-float_3 rt_rectangle::get_normal() restrict(amp)
-{
-	return m_normal_map;
-}
 
 float_3 rt_rectangle::get_max() restrict(amp)
 {

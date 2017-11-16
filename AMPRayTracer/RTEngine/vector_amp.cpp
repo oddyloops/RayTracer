@@ -55,6 +55,18 @@ float_3 vector_amp::cross(float_3 lhs, float_3 rhs) restrict(amp, cpu)
 	return result;
 }
 
+int vector_amp::is_zero(float_3 v) restrict(amp, cpu)
+{
+	return fabsf(v.x) <= FLT_EPSILON && fabs(v.y) <= FLT_EPSILON && fabsf(v.z) <= FLT_EPSILON;
+}
+
+
+int vector_amp::is_mirror_of(float_3 lhs, float_3 rhs) restrict(amp, cpu)
+{
+	return ((fabsf(lhs.x) - fabs(rhs.x) <= FLT_EPSILON) && (lhs.x - rhs.x > FLT_EPSILON))
+		&& ((fabsf(lhs.y) - fabs(rhs.y) <= FLT_EPSILON) && (lhs.y - rhs.y > FLT_EPSILON))
+		&& ((fabsf(lhs.z) - fabs(rhs.z) <= FLT_EPSILON) && (lhs.z - rhs.z > FLT_EPSILON));
+}
 
 float vector_amp::point_line_distance(float_3 pt, float_3 ln_start, float_3 ln_end) restrict(amp, cpu)
 {

@@ -41,7 +41,8 @@ int rt_geometry::ray_plane_intersection(ray& r, float_3& norm, float d, float& d
 
 }
 
-int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
+int rt_geometry::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars, 
+	array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	//stub since virtual methods are not allowed
 	return false;
@@ -92,4 +93,19 @@ array<float,2> rt_geometry::parse_xform(float_3 translation, float rx, float ry,
 		rotation = rotation * matrix_amp::create_rotation_z(math_util::deg_to_rad(rz));
 	return matrix_amp::create_scale_from_vector(scale) * rotation * matrix_amp::create_translation_from_vector(translation);
 
+}
+
+void rt_geometry::set_normal_map(texture_map<float_3> normal_map) restrict(amp, cpu)
+{
+	m_normal_map = normal_map;
+}
+
+void rt_geometry::set_bump_map(texture_map<float> bump_map) restrict(amp, cpu)
+{
+	m_bump_map = bump_map;
+}
+
+float_3 rt_geometry::get_normal(float u, float v, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars) restrict(amp)
+{
+	return m_normal_map.get_value(u, v, bitmaps, scalars);
 }

@@ -14,9 +14,17 @@ namespace rt_support
 			vector<float> m_center;
 			float m_radius;
 			float m_radius_squared;
+
+			//to allow non-axis aligned spheres
+			vector<float> m_vertical_axis;
+			vector<float> m_hor_axis_1;
+			vector<float> m_hor_axis_2; //perp to axis 1 
+			vector<float> m_base_point; //bottom of the sphere
 		
 		public:
 			__declspec(dllexport) rt_sphere(vector<float> center, float radius);
+
+			__declspec(dllexport) rt_sphere(vector<float> center, float radius, vector<float> vertical_axis);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,
@@ -33,10 +41,9 @@ namespace rt_support
 			/// </summary>
 			/// <param name="pt">position inside the rectangle (no error checking!)</param>
 			/// <param name="bc">barrycentric coordinate of hit point (for triangle only)</param>
-			/// <param name="n">normal at the point</param>
 			/// <param name="u">returned normalized u value</param>
 			/// <param name="v">returned normalized v value</param>
-			void get_uv(vector<float> pt,vector<float> n, vector<float> bc, float& u, float& v);
+			void get_uv(vector<float> pt, vector<float> bc, float& u, float& v);
 
 			/// <summary>
 			/// recreives (u,v) and returns the object position that corresponds to the (u,v) coordinate.

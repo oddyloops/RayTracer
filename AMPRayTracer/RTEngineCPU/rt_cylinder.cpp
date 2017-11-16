@@ -24,10 +24,11 @@ rt_cylinder::rt_cylinder(float radius, vector<float> top_center, vector<float> b
 	if (vector_util::is_zero(m_hor_axis_dir))
 	{
 		m_hor_axis_dir = { 1,0,0 }; //x axis
+		m_hor_axis_dir_perp = { 0,0,1 }; //z axis
 	}
-
-	m_hor_axis_dir_perp = vector_util::normalize(vector_util::cross(m_hor_axis_dir, m_axis_dir));
-
+	else {
+		m_hor_axis_dir_perp = vector_util::normalize(vector_util::cross(m_hor_axis_dir, m_axis_dir));
+	}
 
 }
 

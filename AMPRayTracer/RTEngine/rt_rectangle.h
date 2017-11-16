@@ -17,7 +17,7 @@ namespace rt_support
 			int m_u_axis_index, m_v_axis_index; // 0 is X, 1 is Y, and 2 is Z
 			float ma, mb, mc;
 			float md;   // AX + BY + CZ + D = 0, this is the D
-			float_3 m_normal_map; // normal to the polygon
+			float_3 m_true_normal; // normal to the polygon
 
 									 // for texture mapping
 			float_3 m_u_vec, m_v_vec; // Normalized vector in the U and V direction
@@ -62,7 +62,8 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
-			int intersect(ray& ray,intersection_record& record) restrict(amp);
+			int intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
 
 			/// <summary>
 			/// pt is a position on in the rectangle, returns the normalized U/V value (between 0 to 1)
@@ -93,7 +94,6 @@ namespace rt_support
 			/// </summary>
 			float get_u_size() restrict(amp);
 			float get_v_size() restrict(amp);
-			float_3 get_normal() restrict(amp);
 
 			float_3 get_max() restrict(amp);
 			float_3 get_min() restrict(amp);

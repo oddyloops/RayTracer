@@ -29,6 +29,9 @@ public:
 
 	static float_3 cross(float_3 lhs, float_3 rhs) restrict(amp, cpu);
 
+	static int is_zero(float_3 v) restrict(amp, cpu);
+
+	static int is_mirror_of(float_3 lhs, float_3 rhs) restrict(amp,cpu);
 
 	///<summary>
 	///computes distance between a point and a line assuming they are on the same plane
