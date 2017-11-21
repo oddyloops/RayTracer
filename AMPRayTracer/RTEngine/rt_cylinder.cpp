@@ -36,9 +36,7 @@ rt_cylinder::rt_cylinder(float radius, float_3 top_center, float_3 base_center) 
 
 }
 
-
-int rt_cylinder::intersect(ray& ray, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+int rt_cylinder::intersect(ray& ray, intersection_record& record) restrict(amp)
 {
 
 
@@ -195,8 +193,24 @@ int rt_cylinder::intersect(ray& ray, intersection_record& record, array_view<flo
 		normal = -m_axis_dir;
 	}
 
+	record.update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(), m_type);
+	m_dist_index = dist_index;
+	return true;
+
+}
+
+int rt_cylinder::intersect(ray& ray, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+{
+	if (intersect(ray, record) == false)
+	{
+		return false;
+    }
 	float u, v = 0;
-	get_uv(hitPt, { 0 }, normal, dist_index, u, v);
+	float_3 hitPt = record.get_intersection_position();
+	float_3 normal = record.get_normal_at_intersect();
+	float dist = record.get_hit_distance();
+	get_uv(hitPt, { 0 }, normal, m_dist_index, u, v);
 	if (!m_normal_map.is_null())
 	{
 		normal = vector_amp::normalize(get_normal(u, v,bitmaps,scalars));
@@ -212,7 +226,7 @@ int rt_cylinder::intersect(ray& ray, intersection_record& record, array_view<flo
 		float dist_diff = vector_amp::magnitude(hitPt - old_hit_point);
 		dist += dist_diff;
 	}
-	record.update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(), m_type);
+	record.force_update_record(dist, hitPt, normal, ray, m_material_index, get_resource_index(), m_type);
 	return true;
 
 }

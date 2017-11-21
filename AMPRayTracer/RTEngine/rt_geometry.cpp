@@ -41,6 +41,12 @@ int rt_geometry::ray_plane_intersection(ray& r, float_3& norm, float d, float& d
 
 }
 
+int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
+{
+	//stub since virtual methods are not allowed
+	return false;
+}
+
 int rt_geometry::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars, 
 	array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {

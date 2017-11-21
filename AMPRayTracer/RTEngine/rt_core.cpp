@@ -19,7 +19,8 @@ rt_core::rt_core(rt_camera camera, image_spec spec, int seed, int no_of_samples,
 pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<rt_sphere, 1> spheres,array_view<rt_rectangle> rectangles,
 	array_view<rt_triangle, 1> triangles, array_view<rt_plane, 1> planes, array_view<rt_cylinder, 1> cylinders, 
 	array_view<rt_directional_light, 1> dir_lights, array_view<rt_point_light, 1> point_lights, array_view<rt_area_light, 1> area_lights,
-	array_view<rt_spot_light, 1> spot_lights, array_view<rt_material, 1> materials) restrict(amp)
+	array_view<rt_spot_light, 1> spot_lights, array_view<rt_material, 1> materials, array_view<float_3, 3> bitmaps, array_view<float_3, 1> scalars
+	, array_view<float, 3> f_bitmaps, array_view<float, 1> f_scalars) restrict(amp)
 {
 	ray r;
 	float_3 sample_position = m_camera.get_pixel_position(current_x, current_y);
@@ -58,8 +59,9 @@ pixel_data rt_core::compute_pixel_data(int current_x, int current_y, array_view<
 
 		intersection_record rec;
 		//compute visibility
-		m_visibility.compute_visibility(r, INVALID_INDEX, rec,&spheres,&rectangles,&triangles,&planes,&cylinders);
-		color = color + m_shader.compute_shade(rec, m_camera.get_generation(),&dir_lights,&point_lights, &area_lights, &spot_lights,&materials,&rectangles,&spheres, &triangles, &planes, &cylinders);
+		m_visibility.compute_visibility(r, INVALID_INDEX, rec,&spheres,&rectangles,&triangles,&planes,&cylinders, &bitmaps, &scalars, &f_bitmaps, &f_scalars);
+		color = color + m_shader.compute_shade(rec, m_camera.get_generation(),&dir_lights,&point_lights, &area_lights, &spot_lights,&materials,&rectangles,&spheres, &triangles, &planes, &cylinders,
+			&bitmaps,&scalars,&f_bitmaps,&f_scalars);
 		coverage_mask = coverage_mask + ((rec.get_geom_index() == INVALID_INDEX) ? 0 : 1);
 		depth_map = depth_map + (1.0f - fminf(1.0f, rec.get_hit_distance() / FAR_PLANE_DIST));
 	}

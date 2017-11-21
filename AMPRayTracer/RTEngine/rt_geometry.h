@@ -80,6 +80,15 @@ namespace rt_support
 			/// <param name="r">Incoming ray.</param>
 			/// <param name="record">If intersect, this record has the details.</param>
 			/// <returns>T/F: intersect or not.</returns>
+			int intersect(ray& r, intersection_record& record) restrict(amp);
+
+			/// <summary>
+			/// Returns status of if Ray intersects with this Geom. If so, details of intersection
+			/// is returned in the IntersectionRecord.
+			/// </summary>
+			/// <param name="r">Incoming ray.</param>
+			/// <param name="record">If intersect, this record has the details.</param>
+			/// <returns>T/F: intersect or not.</returns>
 			int intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
 				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
 
@@ -117,9 +126,9 @@ namespace rt_support
 
 			int get_material_index() restrict(amp,cpu);
 
-			void set_normal_map(texture_map<float_3> normal_map) restrict(amp, cpu);
+			__declspec(dllexport) void set_normal_map(texture_map<float_3> normal_map) restrict(amp, cpu);
 
-			void set_bump_map(texture_map<float> bump_map) restrict(amp, cpu);
+			__declspec(dllexport) void set_bump_map(texture_map<float> bump_map) restrict(amp, cpu);
 
 			float_3 get_normal(float u, float v,array_view<float_3,3>* bitmaps,array_view<float_3,1>* scalars) restrict(amp);
 

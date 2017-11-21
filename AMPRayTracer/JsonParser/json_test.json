@@ -1,10 +1,45 @@
 {
+  "textures": {
+    "max_bmp_width": 1920,
+    "max_bmp_height":  1080,
+    "vector_bitmaps": [
+      {
+    
+        "file": "horizontal.bmp"
+      },
+      {
+       
+        "file": "green_slime.BMP"
+      },
+      {
+        
+        "file": "Shred-Paper.bmp"
+      }
+    ],
+    "float_bitmaps": [
+      {
+       
+        "file": "Shred-Paper.bmp"
+      }
+    ],
+    "vector_scalars": [
+      [ 0.9, 0.3, 0.4 ],
+      [ 0.2, 0.1, 0.5 ],
+      [ 0.5, 0.5, 0.5 ],
+      [ 0.2, 0.3, 0.4 ],
+      [ 0.1, 0.1, 0.1 ],
+      [ 0.9, 0.9, 0.9 ]
+    ],
+    "float_scalars": [ 5, 10, 15, 0.2, 0.1, 0.7, 0.8, 0.5, 0.7 ]
+
+  },
   "geometries": {
     "spheres": [
 
       {
         "radius": 1.0,
         "center": [ -4, 0, 2 ],
+        "vertical_axis" :  [0,1,1],
         "resource_index": 0,
         "material_index": 0
       },
@@ -37,7 +72,15 @@
           [ 0, 1, 2 ]
         ],
         "resource_index": 4,
-        "material_index": 0
+        "material_index": 0,
+        "normal_map": {
+          "is_bitmap": true,
+          "index": 0,
+          "hor_offset": 0,
+          "ver_offset": 0,
+          "hor_unit_length" : 1,
+          "ver_unit_length" :  1
+        }
       },
       {
         "vertices": [
@@ -65,7 +108,7 @@
         "vertices": [
           [ -4, -2, 5 ],
           [ 4, -2, 5 ],
-          [ 0, 4, 5]
+          [ 0, 4, 5 ]
         ],
         "resource_index": 7,
         "material_index": 1
@@ -93,29 +136,138 @@
         "material_index": 2
       }
     ]
-    
+
   },
-"materials" :
-	{"solids":
-		[
-			{"ambient_color" : [0.9,0.9,0.9], "diffuse_color":[0.1,0.1,0.1], "specular_color":[0.8,0.8,0.8],
-				"specularity":10, "resource_index" : 0, "reflectivity" :  0.8, "transparency" : 0, "refractive_index":  1},
-			{"ambient_color" : [0.9,0.9,0.3], "diffuse_color":[0.2,0.8,0.9], "specular_color":[0.4,0.9,0.9],
-        "specularity": 5,
-        "resource_index": 1,
-         "reflectivity" :  0.2, "transparency" : 0.5, "refractive_index":  2},
+  "materials": {
+    "solids": [
       {
-        "ambient_color": [ 0.7, 0.3, 0.2 ],
-        "diffuse_color": [ 0.5, 0.2, 0.1 ],
-        "resource_index": 2,
-         "reflectivity" :  0, "transparency" : 0, "refractive_index":  1}
-		]
-	}
-,
-"lights" :
-	[
-		{"type" : "directional", "direction" : [8,0,0], "color" : [1,1,1]},
-		{"type" : "point", "origin" : [0,10,0]},
+        "ambient_color": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "color_offset": 4,
+          "colors_length" :  1
+        },
+        "diffuse_color": {
+          "is_bitmap": true,
+          "index": 0,
+          "hor_offset": 0,
+          "ver_offset": 0,
+          "hor_unit_length": 1,
+          "ver_unit_length" : 1
+        },
+        "specular_color": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "color_offset": 5,
+          "colors_length": 1
+        },
+        "specularity": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 0,
+          "floats_length" :  1
+        },
+        "resource_index": 0,
+        "reflectivity": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 6,
+          "floats_length": 1
+        },
+        "transparency": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 9,
+          "floats_length": 1
+        },
+        "refractive_index": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 10,
+          "floats_length": 1
+        }
+      },
+      {
+        "ambient_color": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "color_offset": 4,
+          "colors_length": 1
+        },
+        "diffuse_color": {
+          "is_bitmap": false,
+          "mapping": "checkered",
+          "color_offset": 0,
+          "colors_length": 3,
+          "unit_check_width": 0.1,
+          "unit_check_height": 0.1
+        },
+        "specular_color": {
+          "is_bitmap": false,
+          "mapping": "checkered",
+          "color_offset": 4,
+          "colors_length": 2,
+          "unit_check_width": 0.05,
+          "unit_check_height": 0.05
+        },
+        "specularity": {
+          "is_bitmap": false,
+          "mapping": "checkered",
+          "float_offset": 0,
+          "floats_length": 3,
+          "unit_check_width": 0.1,
+          "unit_check_height": 0.1
+        },
+        "resource_index": 1,
+        "reflectivity": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 4,
+          "floats_length": 1
+        },
+        "transparency": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 8,
+          "floats_length": 1
+        },
+        "refractive_index": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "float_offset": 10,
+          "floats_length": 1
+        }
+      },
+      {
+        "ambient_color": {
+          "is_bitmap": false,
+          "mapping": "plain",
+          "color_offset": 4,
+          "colors_length": 1
+        },
+        "diffuse_color": {
+          "is_bitmap": true,
+          "index": 2,
+          "hor_offset": 0,
+          "ver_offset": 0,
+          "hor_unit_length": 1,
+          "ver_unit_length": 1
+        },
+        "resource_index": 2
+       
+      }
+    ]
+  },
+  "lights": [
+    {
+      "type": "directional",
+      "direction": [ 8, 0, 0 ],
+      "color": [ 1, 1, 1 ]
+    },
+    {
+      "type": "point",
+      "origin": [ 0, 10, 0 ]
+    },
     {
       "type": "spot",
       "origin": [ 0, 10, 0 ],
@@ -129,19 +281,29 @@
       "type": "area",
       "direction": [ 0, -1, 0 ],
       "vertices": [
-        [ -1,5,1 ],
-        [ 1,5,1 ],
-        [ 1,5,-1 ],
-        [ -1,5,-1 ]
+        [ -1, 5, 1 ],
+        [ 1, 5, 1 ],
+        [ 1, 5, -1 ],
+        [ -1, 5, -1 ]
       ],
       "padding": 1.0,
-		"drop_constant" : 2.0}
-	]
-,
-"camera":
-	{ "eye" : [-8,5,-8], "at": [0,0,0], "up": [0,1,0], "fov" : 45,"focus" : 2, "is_orthographic" : false, "generation":  1},
-"specs" :
-	{ "x_res" : 3840, "y_res" : 2160, "samples_per_pixel" : 1},
-"ambient_color" : [0.2,0.2,0.2],
+      "drop_constant": 2.0
+    }
+  ],
+  "camera": {
+    "eye": [ -8, 5, -8 ],
+    "at": [ 0, 0, 0 ],
+    "up": [ 0, 1, 0 ],
+    "fov": 45,
+    "focus": 2,
+    "is_orthographic": false,
+    "generation": 1
+  },
+  "specs": {
+    "x_res": 3840,
+    "y_res": 2160,
+    "samples_per_pixel": 1
+  },
+  "ambient_color": [ 0.2, 0.2, 0.2 ],
   "ambient_intensity": 0.2
 }

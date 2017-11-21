@@ -111,14 +111,13 @@ int rt_rectangle::inside_polygon(float_3 pt) restrict(amp)
 
 }
 
-int rt_rectangle::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+int rt_rectangle::intersect(ray& r, intersection_record& record) restrict(amp)
 {
 	float dist = 0;
 	float_3 hitPt, n;
 
 	n = m_true_normal;    // because ray/plane intersection may flip the normal!
-	if (!ray_plane_intersection(r, n, md, dist,m_vertices[0]))
+	if (!ray_plane_intersection(r, n, md, dist, m_vertices[0]))
 		return false;
 
 	/*
@@ -134,7 +133,24 @@ int rt_rectangle::intersect(ray& r, intersection_record& record, array_view<floa
 	*/
 	if (!inside_polygon(hitPt))
 		return false;
+	
+	record.update_record(dist, hitPt, n, r, m_material_index, get_resource_index(), m_type);
+	return true;
+
+}
+
+int rt_rectangle::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+{
+	if (intersect(r, record) == false)
+	{
+		return false;
+	}
+
+	float_3 n = record.get_normal_at_intersect();
 	float_3 normal = n;
+	float_3 hitPt = record.get_intersection_position();
+	float dist = record.get_hit_distance();
 	float u, v;
 	get_uv(hitPt, { 0 }, u, v);
 
@@ -162,7 +178,7 @@ int rt_rectangle::intersect(ray& r, intersection_record& record, array_view<floa
 		float dist_diff = vector_amp::magnitude(hitPt - old_hit_point);
 		dist += dist_diff;
 	}
-	record.update_record(dist, hitPt, n, r, m_material_index, get_resource_index(),m_type);
+	record.force_update_record(dist, hitPt, n, r, m_material_index, get_resource_index(),m_type);
 	return true;
 
 }

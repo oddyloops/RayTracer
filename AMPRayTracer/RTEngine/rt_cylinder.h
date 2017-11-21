@@ -19,12 +19,23 @@ namespace rt_support
 			float m_orth_d; //d for orthogonal plane
 			float m_curve_section; //the section of v occupied by curved surface for u-v mapping
 			float m_flat_section; //the section of v occupied by a single flat circular surface
+			int m_dist_index; //used to determine which part of the cylinder was hit
 
 			int inside_circle(float_3 point, int is_top_circle) restrict(amp);
 		public:
 			__declspec(dllexport) rt_cylinder() restrict(amp,cpu);
 
 			__declspec(dllexport) rt_cylinder(float radius, float_3 top_center, float_3 base_center) restrict(amp,cpu);
+
+
+			/// <summary>
+			/// Intersects the ray, if intersection is closer than the one inside the record,
+			/// sets the records with intersection information.
+			/// </summary>
+			/// <param name="ray"></param>
+			/// <param name="record"></param>
+			/// <returns></returns>
+			int intersect(ray& ray, intersection_record& record)  restrict(amp);
 
 			/// <summary>
 			/// Intersects the ray, if intersection is closer than the one inside the record,

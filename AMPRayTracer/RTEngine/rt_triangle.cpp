@@ -61,8 +61,8 @@ float_3 rt_triangle::get_bc(float_3 pt) restrict(amp)
 	return float_3( a1,a3,a2 );
 }
 
-int rt_triangle::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+
+int rt_triangle::intersect(ray& r, intersection_record& record) restrict(amp)
 {
 	float dist = 0;
 	float_3 hitPt, n;
@@ -78,11 +78,27 @@ int rt_triangle::intersect(ray& r, intersection_record& record, array_view<float
 	/*
 	* Now need to decide inside or outside
 	*/
-	float u, v = -1;
+	
 	if (!inside_polygon(hitPt))
 		return false;
 
+	record.update_record(dist, hitPt, n, r, m_material_index, get_resource_index(), m_type);
+	return true;
+}
+
+int rt_triangle::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+{
+	if (intersect(r, record) == false)
+	{
+		return false;
+	}
+
+	float_3 n = record.get_normal_at_intersect();
 	float_3 normal = n;
+	float_3 hitPt = record.get_intersection_position();
+	float dist = record.get_hit_distance();
+	float u, v = -1;
 	float_3 bc = get_bc(hitPt);
 	get_uv(hitPt, bc, u, v);
 	if (!m_normal_map.is_null())
@@ -107,7 +123,7 @@ int rt_triangle::intersect(ray& r, intersection_record& record, array_view<float
 		dist += dist_diff;
 	}
 
-	record.update_record(dist, hitPt, n, r, m_material_index, get_resource_index(), m_type);
+	record.force_update_record(dist, hitPt, n, r, m_material_index, get_resource_index(), m_type);
 	return true;
 }
 

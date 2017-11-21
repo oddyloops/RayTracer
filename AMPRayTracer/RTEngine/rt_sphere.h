@@ -32,6 +32,15 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
+			int intersect(ray& r, intersection_record& record)  restrict(amp);
+
+			/// <summary>
+			/// Intersects the ray, if intersection is closer than the one inside the record,
+			/// sets the records with intersection information.
+			/// </summary>
+			/// <param name="ray"></param>
+			/// <param name="record"></param>
+			/// <returns></returns>
 			int intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
 				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
 

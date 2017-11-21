@@ -8,8 +8,10 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	vector<rt_material> materials, vector<rt_directional_light> d_lights,
 	vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
 	vector<rt_area_light> a_lights, float_3 ambience_color, float ambience_intensity,
-	rt_camera camera, image_spec spec)
+	rt_camera camera, image_spec spec, vector<float_3>* bitmaps, int no_of_bitmaps, vector<float_3> scalars,
+	vector<float>* f_bitmaps, int no_of_f_bitmaps, vector<float> f_scalars, int max_bmp_width, int max_bmp_height)
 {
+
 	camera.initialize_image(spec);
 	int no_of_pixels = camera.get_image_spec().get_x_resolution() * camera.get_image_spec().get_y_resolution();
 	scene_results results;
@@ -34,6 +36,12 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	array_view<float, 2> coverage_mask_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results.coverage);
 	array_view<float, 2> depth_map_view(camera.get_image_spec().get_x_resolution(), camera.get_image_spec().get_y_resolution(), results.depth);
 
+	array_view<float_3, 3> bitmaps_view(max_bmp_width, max_bmp_height, no_of_bitmaps, *bitmaps);
+	array_view<float_3, 1> scalars_view(scalars);
+
+	array_view<float, 3> f_bitmaps_view(max_bmp_width, max_bmp_height, no_of_f_bitmaps, *f_bitmaps);
+	array_view<float, 1> f_scalars_view(f_scalars);
+
 	
 	rt_core ray_tracer = rt_core(camera,spec, static_cast<int>(time(NULL)),spec.get_samples_per_pixel(),ambience_color,ambience_intensity);
 	bool tile = true;
@@ -44,7 +52,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 		parallel_for_each(image_view.extent.tile<tile_x, tile_y>(), [=](tiled_index<tile_x, tile_y> t_idx) mutable restrict(amp) {
 			
 			pixel_data data = ray_tracer.compute_pixel_data(t_idx.global[0], t_idx.global[1], sphere_view, rectangle_view, triangle_view,
-				plane_view,cylinder_view,d_lights_view, p_lights_view, a_lights_view, s_lights_view,materials_view);
+				plane_view,cylinder_view,d_lights_view, p_lights_view, a_lights_view, s_lights_view,materials_view,bitmaps_view,scalars_view,f_bitmaps_view,f_scalars_view);
 					image_view[t_idx] = data.get_pixel_color();
 					coverage_mask_view[t_idx] = data.get_pixel_coverage();
 					depth_map_view[t_idx] = data.get_pixel_depth();
@@ -54,7 +62,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	else {
 		parallel_for_each(image_view.extent, [=](index<2> idx) mutable restrict(amp) {
 			pixel_data data = ray_tracer.compute_pixel_data(idx[0], idx[1], sphere_view, rectangle_view,
-				triangle_view,plane_view, cylinder_view,d_lights_view, p_lights_view, a_lights_view, s_lights_view, materials_view);
+				triangle_view,plane_view, cylinder_view,d_lights_view, p_lights_view, a_lights_view, s_lights_view, materials_view, bitmaps_view, scalars_view, f_bitmaps_view, f_scalars_view);
 			image_view[idx] = data.get_pixel_color();
 			coverage_mask_view[idx] = data.get_pixel_coverage();
 			depth_map_view[idx] = data.get_pixel_depth();

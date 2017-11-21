@@ -43,8 +43,10 @@ rt_sphere::rt_sphere(float_3 center, float radius, float_3 vertical_axis)
 
 }
 
-int rt_sphere::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+
+
+
+int rt_sphere::intersect(ray& r, intersection_record& record) restrict(amp)
 {
 	float_3 l = m_center - r.get_origin();
 	float l_size = vector_amp::magnitude(l);
@@ -61,6 +63,23 @@ int rt_sphere::intersect(ray& r, intersection_record& record, array_view<float_3
 	float_3 pt = r.get_origin() + (ca - hc)*r.get_direction(); //adding ca and hc will give exit intersection
 	float_3 n = vector_amp::normalize(pt - m_center); //normal at entry intersection
 	float dist = ca - hc;
+
+	record.update_record(dist, pt, n, r, m_material_index, get_resource_index(), m_type);
+	return true;
+
+}
+
+
+int rt_sphere::intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+{
+	if (intersect(r, record) == false)
+	{
+		return false;
+	}
+	float_3 pt = record.get_intersection_position();
+	float_3 n = record.get_normal_at_intersect();
+	float dist = record.get_hit_distance();
 
 	float u, v = 0;
 	get_uv(pt, { 0 }, u, v);
@@ -85,7 +104,7 @@ int rt_sphere::intersect(ray& r, intersection_record& record, array_view<float_3
 		dist += dist_diff;
 	}
 
-	record.update_record(dist, pt, n, r, m_material_index, get_resource_index(),m_type);
+	record.force_update_record(dist, pt, n, r, m_material_index, get_resource_index(),m_type);
 	return true;
 
 }

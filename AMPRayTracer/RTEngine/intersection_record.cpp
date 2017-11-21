@@ -45,6 +45,20 @@ void intersection_record::update_record(float dist, float_3 intersection_pt, flo
 	}
 }
 
+
+void intersection_record::force_update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index, int type) restrict(amp)
+{
+	m_hit_distance = dist;
+	m_point = intersection_pt;
+	m_normal = normal;
+	m_normal = vector_amp::normalize(m_normal);
+	m_material_index = mat_index;
+	m_geom_index = geom_index;
+	m_ray_dir = ray.get_direction();
+	m_type = type;
+	
+}
+
 void intersection_record::update_bc(float u, float v, float w) restrict(amp)
 {
 	m_bc.r = u;
@@ -97,3 +111,18 @@ int intersection_record::get_type() restrict(amp)
 	return m_type;
 }
 
+void intersection_record::set_uv(float u, float v) restrict(amp)
+{
+	m_u = u;
+	m_v = v;
+}
+
+float intersection_record::get_u() restrict(amp)
+{
+	return m_u;
+}
+
+float intersection_record::get_v() restrict(amp)
+{
+	return m_v;
+}

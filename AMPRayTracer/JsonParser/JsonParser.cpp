@@ -4,8 +4,20 @@
 
 void JsonParser::parse_helper(json& j)
 {
-	/*extract geometries*/
+	/*extract textures*/
+	json j_vec_bmps = j["textures"]["vector_bitmaps"];
+	parse_vector_bmps(j_vec_bmps);
 
+	json j_flt_bmps = j["textures"]["float_bitmaps"];
+	parse_float_bmps(j_flt_bmps);
+
+	json j_vec_scalars = j["textures"]["vector_scalars"];
+	parse_vector_scalars(j_vec_scalars);
+
+	json j_flt_scalars = j["textures"]["float_scalars"];
+	parse_float_scalars(j_flt_scalars);
+
+	/*extract geometries*/
 	json j_sphs = j["geometries"]["spheres"];
 	parse_spheres(j_sphs);
 
@@ -42,6 +54,127 @@ void JsonParser::parse_helper(json& j)
 	_ambient_intensity = j["ambient_intensity"].get<float>();
 
 
+}
+
+void JsonParser::parse_texture_dims(json& j_tex)
+{
+	if (j_tex.find("max_bmp_width") != j_tex.end() && j_tex.find("max_bmp_height") != j_tex.end())
+	{
+		_max_bmp_width = j_tex["max_bmp_width"].get<int>();
+		_max_bmp_height = j_tex["max_bmp_height"].get<int>();
+		_max_texel_count = _max_bmp_height * _max_bmp_width;
+	}
+}
+
+void JsonParser::parse_vector_bmps(json& j_vec_bmps)
+{
+
+
+	if (j_vec_bmps.size() > 0)
+	{
+		_vec_bmps = vector<float_3>(j_vec_bmps.size() * _max_texel_count);
+	}
+
+	int texel_index = 0;
+	int read_texel_index = 0;
+	int bmp_index = 0;
+
+	for (auto itr = j_vec_bmps.begin(); itr != j_vec_bmps.end(); itr++)
+	{
+		texel_index += (_max_texel_count - read_texel_index);
+		read_texel_index = 0;
+		json bmp = *itr;
+		if (bmp.find("file") == bmp.end())
+		{
+			throw exception("Invalid bitmap structure");
+		}
+
+
+		BMP bmp_file;
+		bmp_file.ReadFromFile(bmp["file"].get<string>().c_str());
+
+		int width = min(_max_bmp_width, bmp_file.TellWidth());
+		int height = min(_max_bmp_height, bmp_file.TellHeight());
+		_vec_bmp_dims.insert(pair<int, pair<int, int>>(bmp_index++, pair<int, int>(width, height)));
+
+#pragma omp parallel for
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				float_3 texel;
+				auto pixel = bmp_file(x, y);
+				texel.r = static_cast<float>(pixel->Red) / 255;
+				texel.g = static_cast<float>(pixel->Green) / 255;
+				texel.b = static_cast<float>(pixel->Blue) / 255;
+				_vec_bmps[texel_index++] = texel;
+				read_texel_index++;
+			}
+		}
+
+	}
+}
+
+void JsonParser::parse_float_bmps(json& j_flt_bmps)
+{
+	if (j_flt_bmps.size() > 0)
+	{
+		_flt_bmps = vector<float>(j_flt_bmps.size() * _max_texel_count);
+	}
+
+	int texel_index = 0;
+	int read_texel_index = 0;
+	int bmp_index = 0;
+	for (auto itr = j_flt_bmps.begin(); itr != j_flt_bmps.end(); itr++)
+	{
+		texel_index += (_max_texel_count - read_texel_index);
+		read_texel_index = 0;
+		json bmp = *itr;
+		if (bmp.find("file") == bmp.end() || bmp.find("index") == bmp.end())
+		{
+			throw exception("Invalid bitmap structure");
+		}
+
+
+		BMP bmp_file;
+		bmp_file.ReadFromFile(bmp["file"].get<string>().c_str());
+
+		int width = min(_max_bmp_width, bmp_file.TellWidth());
+		int height = min(_max_bmp_height, bmp_file.TellHeight());
+		_flt_bmp_dims.insert(pair<int, pair<int, int>>(bmp_index++, pair<int, int>(width, height)));
+
+#pragma omp parallel for
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
+			{
+				float texel;
+				auto pixel = bmp_file(x, y);
+				texel = (static_cast<float>(pixel->Red) + static_cast<float>(pixel->Green) + static_cast<float>(pixel->Blue)) / 765;
+				_flt_bmps[texel_index++] = texel;
+				read_texel_index++;
+			}
+		}
+
+	}
+}
+
+void JsonParser::parse_vector_scalars(json& j_vec_scalars)
+{
+	for (auto itr = j_vec_scalars.begin(); itr != j_vec_scalars.end(); itr++)
+	{
+		float_3 texel = json_to_vector(*itr);
+		_vec_scalars.push_back(texel);
+	}
+}
+
+void JsonParser::parse_float_scalars(json& j_flt_scalars)
+{
+	for (auto itr = j_flt_scalars.begin(); itr != j_flt_scalars.end(); itr++)
+	{
+		json j_tex = *itr;
+		_flt_scalars.push_back(j_tex.get<float>());
+	}
 }
 
 
@@ -229,13 +362,13 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 			throw exception("Incorrect diffuse material structure");
 		}
 
-		float_3 diffuse_color = json_to_vector(mat["diffuse_color"]);
-		float_3 ambient_color = json_to_vector(mat["ambient_color"]);
+		texture_map<float_3> diffuse_color = json_to_map<float_3>(mat["diffuse_color"]);
+		texture_map<float_3> ambient_color = json_to_map<float_3>(mat["ambient_color"]);
 		rt_material m;
 		if (mat.find("specular_color") != mat.end() && mat.find("specularity") != mat.end())
 		{
-			float_3 specular_color = json_to_vector(mat["specular_color"]);
-			float specularity = mat["specularity"].get<float>();
+			texture_map<float_3> specular_color = json_to_map<float_3>(mat["specular_color"]);
+			texture_map<float> specularity = json_to_map<float>(mat["specularity"]);
 			m = rt_material(ambient_color, diffuse_color, specular_color, specularity);
 
 		}
@@ -243,7 +376,7 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 		{
 			m = rt_material(ambient_color, diffuse_color);
 		}
-		m.set_ref_properties(mat["refractive_index"].get<float>(), mat["transparency"].get<float>(), mat["reflectivity"].get<float>());
+		m.set_ref_properties(json_to_map<float>(mat["refractive_index"]), json_to_map<float>(mat["transparency"]), json_to_map<float>(mat["reflectivity"]));
 		m.set_resource_index(mat["resource_index"].get<int>());
 		_mats.push_back(m);
 	}
@@ -264,11 +397,29 @@ void JsonParser::parse_spheres(json& j_sphs)
 		float radius = sph["radius"].get<float>();
 		float_3 center = json_to_vector(sph["center"]);
 		rt_sphere s = rt_sphere(center, radius);
+
+		if (sph.find("vertical_axis") != sph.end())
+		{
+			float_3 vertical_axis = json_to_vector(sph["vertical_axis"]);
+			s = rt_sphere(center, radius, vertical_axis);
+		}
 		s.set_resource_index(sph["resource_index"].get<int>());
 		if (sph.find("material_index") != sph.end())
 		{
 			s.set_material_index(sph["material_index"].get<int>());
 		}
+		if (sph.find("normal_map") != sph.end())
+		{
+			texture_map<float_3> norm_map = json_to_map<float_3>(sph["normal_map"]);
+			s.set_normal_map(norm_map);
+		}
+
+		if (sph.find("bump_map") != sph.end())
+		{
+			texture_map<float> bump_map = json_to_map<float>(sph["bump_map"]);
+			s.set_bump_map(bump_map);
+		}
+
 		_spheres.push_back(s);
 	}
 }
@@ -329,6 +480,18 @@ void JsonParser::parse_rects(json& j_rects)
 		{
 			r.set_material_index(rect["material_index"].get<int>());
 		}
+
+		if (rect.find("normal_map") != rect.end())
+		{
+			texture_map<float_3> norm_map = json_to_map<float_3>(rect["normal_map"]);
+			r.set_normal_map(norm_map);
+		}
+
+		if (rect.find("bump_map") != rect.end())
+		{
+			texture_map<float> bump_map = json_to_map<float>(rect["bump_map"]);
+			r.set_bump_map(bump_map);
+		}
 		_rects.push_back(r);
 	}
 }
@@ -388,6 +551,17 @@ void JsonParser::parse_triangles(json& j_triangles)
 		{
 			t.set_material_index(tri["material_index"].get<int>());
 		}
+		if (tri.find("normal_map") != tri.end())
+		{
+			texture_map<float_3> norm_map = json_to_map<float_3>(tri["normal_map"]);
+			t.set_normal_map(norm_map);
+		}
+
+		if (tri.find("bump_map") != tri.end())
+		{
+			texture_map<float> bump_map = json_to_map<float>(tri["bump_map"]);
+			t.set_bump_map(bump_map);
+		}
 		_triangles.push_back(t);
 	}
 }
@@ -396,7 +570,8 @@ void JsonParser::parse_planes(json& j_planes)
 	for (auto itr = j_planes.begin(); itr != j_planes.end(); itr++)
 	{
 		json plane = *itr;
-		if (plane.find("points") == plane.end() || plane.find("resource_index") == plane.end())
+		if (plane.find("points") == plane.end() || plane.find("resource_index") == plane.end() || plane.find("texture_unit_width") == plane.end()
+			|| plane.find("texture_unit_height") == plane.end())
 		{
 			throw exception("Incorrect plane structure");
 		}
@@ -411,12 +586,25 @@ void JsonParser::parse_planes(json& j_planes)
 		{
 			points_vector[i++] = json_to_vector(*p_itr);
 		}
-
-		rt_plane p = rt_plane(points_vector);
+		float unit_width = plane["texture_unit_width"].get<float>();
+		float unit_height = plane["texture_unit_height"].get<float>();
+		rt_plane p = rt_plane(points_vector, unit_width, unit_height);
 		p.set_resource_index(plane["resource_index"].get<int>());
 		if (plane.find("material_index") != plane.end())
 		{
 			p.set_material_index(plane["material_index"].get<int>());
+		}
+
+		if (plane.find("normal_map") != plane.end())
+		{
+			texture_map<float_3> norm_map = json_to_map<float_3>(plane["normal_map"]);
+			p.set_normal_map(norm_map);
+		}
+
+		if (plane.find("bump_map") != plane.end())
+		{
+			texture_map<float> bump_map = json_to_map<float>(plane["bump_map"]);
+			p.set_bump_map(bump_map);
 		}
 		_planes.push_back(p);
 
@@ -445,6 +633,17 @@ void JsonParser::parse_cylinders(json& j_cylinders)
 		if (cylinder.find("material_index") != cylinder.end())
 		{
 			c.set_material_index(cylinder["material_index"].get<int>());
+		}
+		if (cylinder.find("normal_map") != cylinder.end())
+		{
+			texture_map<float_3> norm_map = json_to_map<float_3>(cylinder["normal_map"]);
+			c.set_normal_map(norm_map);
+		}
+
+		if (cylinder.find("bump_map") != cylinder.end())
+		{
+			texture_map<float> bump_map = json_to_map<float>(cylinder["bump_map"]);
+			c.set_bump_map(bump_map);
 		}
 		_cylinders.push_back(c);
 	}
@@ -499,6 +698,17 @@ float_3 JsonParser::json_to_vector(json& v)
 	return result;
 }
 
+float_2 JsonParser::json_to_vector_2d(json& v)
+{
+	float_2 result;
+	result.x = v.at(0).get<float>();
+	result.y = v.at(1).get<float>();
+
+	return result;
+}
+
+
+
 void JsonParser::parse(const char* input)
 {
 	json j = json::parse(input);
@@ -509,8 +719,8 @@ void JsonParser::parse(const char* input)
 
 void JsonParser::render()
 {
-	auto results = rt_gateway::ray_trace(_spheres, _rects,_triangles,_planes,_cylinders, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
-		_camera, _specs);
+	auto results = rt_gateway::ray_trace(_spheres, _rects, _triangles, _planes, _cylinders, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
+		_camera, _specs, &_vec_bmps, _vec_bmp_dims.size(), _vec_scalars, &_flt_bmps, _flt_bmp_dims.size(), _flt_scalars, _max_bmp_width, _max_bmp_height);
 
 	auto image = results.color;
 

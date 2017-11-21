@@ -26,6 +26,7 @@ namespace rt_support
 			int m_geom_index;     // index into the geometry (of the global geometry) array
 			int m_material_index; // index into the material array (of the global material) array
 			int m_type; //type of geometry intersected
+			float m_u, m_v; //u-v coordinates
 
 		public:
 			/// <summary>
@@ -55,6 +56,17 @@ namespace rt_support
 			/// <param name="geomIndex">geometry index at the interesection point</param>
 			void update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index,int type) restrict(amp);
 
+			/// <summary>
+			/// Sets the record with new data from an valid intersection.
+			/// </summary>
+			/// <param name="dist">distance to the intersection</param>
+			/// <param name="intersectionPt">the visible (intersection) point</param>
+			/// <param name="normal">normal vector at the visible point</param>
+			/// <param name="ray">ray that caused the intersection</param>
+			/// <param name="matIndex">material index at the intersection point</param>
+			/// <param name="geomIndex">geometry index at the interesection point</param>
+			void force_update_record(float dist, float_3 intersection_pt, float_3 normal, ray ray, int mat_index, int geom_index, int type) restrict(amp);
+
 			void update_bc(float u, float v, float w) restrict(amp);
 
 
@@ -79,7 +91,11 @@ namespace rt_support
 
 			int get_type() restrict(amp);
 
+			void set_uv(float u, float v) restrict(amp);
 
+			float get_u() restrict(amp);
+
+			float get_v() restrict(amp);
 
 
 		};

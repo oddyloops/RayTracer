@@ -21,6 +21,7 @@ rt_shader::rt_shader(float_3 ambient_light, float ambient_intensity, float_3 vie
 	m_ambient_light = ambient_light;
 	m_ambient_intensity = ambient_intensity;
 	m_view_dir = view_dir;
+
 }
 
 rt_material rt_shader::get_material_from_rec(intersection_record& rec, array_view<rt_material, 1>* materials) restrict(amp)
@@ -40,25 +41,26 @@ rt_material rt_shader::get_material_from_rec(intersection_record& rec, array_vie
 
 float_3 rt_shader::compute_shade(intersection_record& rec, int generation, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	float_3 shade = float_3(0, 0, 0);
 	if (rec.get_geom_index() != -1)
 	{
-		shade = compute_shade_helper(rec, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders);
+		shade = compute_shade_helper(rec, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders,bitmaps,scalars,f_bitmaps,f_scalars);
 		rt_material mat = get_material_from_rec(rec, m_materials);
 		if (generation > 0 && mat.get_is_reflective_refractive())
 		{
 			if (generation > 1)
 				generation = 1; //cap it at one for now
 			float_3 refl_dir = rt_wave_props::reflect(rec.get_normal_at_intersect(), rec.get_ray_direction());
-			float_3 refr_dir = rt_wave_props::refract(rec.get_normal_at_intersect(), rec.get_ray_direction(), 1, get_material_from_rec(rec, m_materials).get_refractive_index());
+			float_3 refr_dir = rt_wave_props::refract(rec.get_normal_at_intersect(), rec.get_ray_direction(), 1, get_material_from_rec(rec, m_materials).get_refractive_index(rec.get_u(), rec.get_v(), f_bitmaps, f_scalars));
 			float_3 refl_color = compute_shade_from_ray_dir(rec.get_geom_index(), rec.get_intersection_position(), refl_dir,
-				m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres,m_triangles,m_planes,m_cylinders);
+				m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres,m_triangles,m_planes,m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars);
 			float_3 refr_color = compute_shade_from_ray_dir(rec.get_geom_index(), rec.get_intersection_position(), refr_dir,
-				m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders);
+				m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars);
 			
-			shade = shade * (1 - mat.get_reflectivity() - mat.get_transparency()) + mat.get_reflectivity() * refl_color + mat.get_transparency() * refr_color;
+			shade = shade * (1 - mat.get_reflectivity(rec.get_u(),rec.get_v(),f_bitmaps,f_scalars) - mat.get_transparency(rec.get_u(), rec.get_v(), f_bitmaps, f_scalars)) + mat.get_reflectivity(rec.get_u(), rec.get_v(), f_bitmaps, f_scalars) * refl_color + mat.get_transparency(rec.get_u(), rec.get_v(), f_bitmaps, f_scalars) * refr_color;
 		}
 		
 		return vector_amp::clip_color(shade);
@@ -71,12 +73,13 @@ float_3 rt_shader::compute_shade(intersection_record& rec, int generation, array
 
 float_3 rt_shader::compute_shade_from_ray_dir(int exceptIndex, float_3 origin, float_3 dir, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres, 
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 
 {
 	ray r = ray::create_ray_from_pt_dir(origin, dir);
 	intersection_record rec;
-	m_visibility.compute_visibility(r, exceptIndex, rec, m_spheres, m_rectangles,m_triangles,m_planes,m_cylinders);
+	m_visibility.compute_visibility(r, exceptIndex, rec, m_spheres, m_rectangles,m_triangles,m_planes,m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars);
 
 	float_3 color = float_3(0, 0, 0);
 	float_3 refr_color = float_3(0, 0, 0);
@@ -84,7 +87,7 @@ float_3 rt_shader::compute_shade_from_ray_dir(int exceptIndex, float_3 origin, f
 	if (rec.get_geom_index() != -1)
 	{
 		//there was a hit
-		color = compute_shade_helper(rec, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders);
+		color = compute_shade_helper(rec, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars);
 	}
 
 	return color;
@@ -92,24 +95,28 @@ float_3 rt_shader::compute_shade_from_ray_dir(int exceptIndex, float_3 origin, f
 
 float_3 rt_shader::compute_shade_helper(intersection_record& rec, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	rt_material mat = get_material_from_rec(rec, m_materials);
-	float_3 color = compute_ambience(mat) + compute_diffuse(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders)
-		+ compute_specular(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders);
+	float_3 color = compute_ambience(mat, bitmaps, scalars, f_bitmaps, f_scalars,rec) + compute_diffuse(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars)
+		+ compute_specular(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars);
 	return color;
 }
 
-float_3 rt_shader::compute_ambience(rt_material& mat) restrict(amp)
+float_3 rt_shader::compute_ambience(rt_material& mat, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars, intersection_record& rec) restrict(amp)
 {
-	return m_ambient_intensity * m_ambient_light * mat.get_ambient_color();
+	return m_ambient_intensity * m_ambient_light * mat.get_ambient_color(rec.get_u(),rec.get_v(),bitmaps,scalars);
 }
 
 float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	float_3 diffuse_color = float_3(0, 0, 0);
+	float_3 mat_diff = mat.get_diffuse_color(rec.get_u(), rec.get_v(), bitmaps, scalars);
 	float nDotL;
 	//directional lights
 	for (int i = 0; i < m_dir_lights->extent.size(); i++)
@@ -121,7 +128,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 			diffuse_color = diffuse_color + (
 				light.percent_light(*m_rectangles, *m_spheres, *m_triangles, *m_planes, *m_cylinders, rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diff *
 				light.get_color()
 				);
 		}
@@ -138,7 +145,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 			diffuse_color = diffuse_color + (
 				light.percent_light(*m_rectangles, *m_spheres, *m_triangles, *m_planes, *m_cylinders, rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diff *
 				light.get_color()
 				);
 		}
@@ -154,7 +161,7 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 			diffuse_color = diffuse_color + (
 				light.percent_light(*m_rectangles, *m_spheres, *m_triangles, *m_planes, *m_cylinders,rec.get_intersection_position(), rec.get_geom_index())*
 				nDotL *
-				mat.get_diffuse_color() *
+				mat_diff *
 				light.get_color()
 				);
 		}
@@ -185,13 +192,16 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 
 float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
+	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
 {
 	if (mat.get_is_specular())
 	{ //flag for checking if specular color was set
 		float_3 specular_color = float_3(0, 0, 0);
 		float_3 reflected;
 		float vDotR;
+		float_3 mat_spec = mat.get_specular_color(rec.get_u(), rec.get_v(), bitmaps, scalars);
+		float mat_spx = mat.get_specularity(rec.get_u(), rec.get_v(), f_bitmaps, f_scalars);
 		for (int i = 0; i < m_dir_lights->extent.size(); i++)
 		{
 			rt_directional_light& light = (*m_dir_lights)(index<1>(i));
@@ -202,8 +212,8 @@ float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, 
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(*m_rectangles, *m_spheres, *m_triangles, *m_planes, *m_cylinders, rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spx) *
+					mat_spec * light.get_color()
 					);
 			}
 		}
@@ -220,8 +230,8 @@ float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, 
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(*m_rectangles, *m_spheres, *m_triangles, *m_planes, *m_cylinders, rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spx) *
+					mat_spec * light.get_color()
 					);
 			}
 		}
@@ -238,8 +248,8 @@ float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, 
 			if (vDotR > 0) {
 				specular_color = specular_color + (
 					light.percent_light(*m_rectangles, *m_spheres, *m_triangles, *m_planes, *m_cylinders, rec.get_intersection_position(), rec.get_geom_index())*
-					powf(vDotR, mat.get_specularity()) *
-					mat.get_specular_color() * light.get_color()
+					powf(vDotR, mat_spx) *
+					mat_spec * light.get_color()
 					);
 			}
 		}
