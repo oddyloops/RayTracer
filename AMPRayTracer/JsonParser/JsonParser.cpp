@@ -5,11 +5,14 @@
 void JsonParser::parse_helper(json& j)
 {
 	/*extract textures*/
+	json j_dim = j["textures"];
+	parse_max_bmp_dim(j_dim);
+
 	json j_vec_bmps = j["textures"]["vector_bitmaps"];
-	parse_vector_bmps(j_vec_bmps);
+	parse_bmps(j_vec_bmps,true);
 
 	json j_flt_bmps = j["textures"]["float_bitmaps"];
-	parse_float_bmps(j_flt_bmps);
+	parse_bmps(j_flt_bmps, false);
 
 	json j_vec_scalars = j["textures"]["vector_scalars"];
 	parse_vector_scalars(j_vec_scalars);
@@ -56,108 +59,30 @@ void JsonParser::parse_helper(json& j)
 
 }
 
-void JsonParser::parse_texture_dims(json& j_tex)
+void JsonParser::parse_max_bmp_dim(json& j_dim)
 {
-	if (j_tex.find("max_bmp_width") != j_tex.end() && j_tex.find("max_bmp_height") != j_tex.end())
-	{
-		_max_bmp_width = j_tex["max_bmp_width"].get<int>();
-		_max_bmp_height = j_tex["max_bmp_height"].get<int>();
-		_max_texel_count = _max_bmp_height * _max_bmp_width;
-	}
+	_max_bmp_width = j_dim["max_bmp_width"].get<float>();
+	_max_bmp_height = j_dim["max_bmp_height"].get<float>();
 }
 
-void JsonParser::parse_vector_bmps(json& j_vec_bmps)
+void JsonParser::parse_bmps(json& j_vec_bmps, bool is_vector)
 {
-
-
-	if (j_vec_bmps.size() > 0)
+	map<int, tuple<string, int, int>>* bmp_details = is_vector ? &_vec_bmps : &_flt_bmps;
+	
+	int index = 0;
+	for (auto vec_bmp : j_vec_bmps)
 	{
-		_vec_bmps = vector<float_3>(j_vec_bmps.size() * _max_texel_count);
+		string f_name = vec_bmp["file"].get<string>();
+		BMP input;
+		input.ReadFromFile(f_name.c_str());
+		int width = min(_max_bmp_width, input.TellWidth());
+		int height = min(_max_bmp_height,input.TellHeight());
+		bmp_details->insert(pair<int,tuple<string,int,int>>(index,make_tuple(f_name,width,height)));
 	}
-
-	int texel_index = 0;
-	int read_texel_index = 0;
-	int bmp_index = 0;
-
-	for (auto itr = j_vec_bmps.begin(); itr != j_vec_bmps.end(); itr++)
-	{
-		texel_index += (_max_texel_count - read_texel_index);
-		read_texel_index = 0;
-		json bmp = *itr;
-		if (bmp.find("file") == bmp.end())
-		{
-			throw exception("Invalid bitmap structure");
-		}
-
-
-		BMP bmp_file;
-		bmp_file.ReadFromFile(bmp["file"].get<string>().c_str());
-
-		int width = min(_max_bmp_width, bmp_file.TellWidth());
-		int height = min(_max_bmp_height, bmp_file.TellHeight());
-		_vec_bmp_dims.insert(pair<int, pair<int, int>>(bmp_index++, pair<int, int>(width, height)));
-
-#pragma omp parallel for
-		for (int y = 0; y < height; y++)
-		{
-			for (int x = 0; x < width; x++)
-			{
-				float_3 texel;
-				auto pixel = bmp_file(x, y);
-				texel.r = static_cast<float>(pixel->Red) / 255;
-				texel.g = static_cast<float>(pixel->Green) / 255;
-				texel.b = static_cast<float>(pixel->Blue) / 255;
-				_vec_bmps[texel_index++] = texel;
-				read_texel_index++;
-			}
-		}
-
-	}
+	
 }
 
-void JsonParser::parse_float_bmps(json& j_flt_bmps)
-{
-	if (j_flt_bmps.size() > 0)
-	{
-		_flt_bmps = vector<float>(j_flt_bmps.size() * _max_texel_count);
-	}
 
-	int texel_index = 0;
-	int read_texel_index = 0;
-	int bmp_index = 0;
-	for (auto itr = j_flt_bmps.begin(); itr != j_flt_bmps.end(); itr++)
-	{
-		texel_index += (_max_texel_count - read_texel_index);
-		read_texel_index = 0;
-		json bmp = *itr;
-		if (bmp.find("file") == bmp.end() || bmp.find("index") == bmp.end())
-		{
-			throw exception("Invalid bitmap structure");
-		}
-
-
-		BMP bmp_file;
-		bmp_file.ReadFromFile(bmp["file"].get<string>().c_str());
-
-		int width = min(_max_bmp_width, bmp_file.TellWidth());
-		int height = min(_max_bmp_height, bmp_file.TellHeight());
-		_flt_bmp_dims.insert(pair<int, pair<int, int>>(bmp_index++, pair<int, int>(width, height)));
-
-#pragma omp parallel for
-		for (int y = 0; y < height; y++)
-		{
-			for (int x = 0; x < width; x++)
-			{
-				float texel;
-				auto pixel = bmp_file(x, y);
-				texel = (static_cast<float>(pixel->Red) + static_cast<float>(pixel->Green) + static_cast<float>(pixel->Blue)) / 765;
-				_flt_bmps[texel_index++] = texel;
-				read_texel_index++;
-			}
-		}
-
-	}
-}
 
 void JsonParser::parse_vector_scalars(json& j_vec_scalars)
 {
@@ -312,6 +237,8 @@ void JsonParser::parse_area_light(json& j_alight)
 	{
 		throw exception("Incorrect area light structure");
 	}
+
+
 
 	if (j_alight["vertices"].size() != 4)
 	{
@@ -720,7 +647,7 @@ void JsonParser::parse(const char* input)
 void JsonParser::render()
 {
 	auto results = rt_gateway::ray_trace(_spheres, _rects, _triangles, _planes, _cylinders, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
-		_camera, _specs, &_vec_bmps, _vec_bmp_dims.size(), _vec_scalars, &_flt_bmps, _flt_bmp_dims.size(), _flt_scalars, _max_bmp_width, _max_bmp_height);
+		_camera, _specs, _vec_bmps, _vec_scalars, _flt_bmps, _flt_scalars, _max_bmp_width, _max_bmp_height);
 
 	auto image = results.color;
 

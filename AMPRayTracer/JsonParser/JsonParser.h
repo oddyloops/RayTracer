@@ -2,16 +2,14 @@
 #include "../RTEngine/rt_gateway.h"
 #include"../RTEngine/IParser.h"
 #include "json.hpp"
-
+#include <tuple>
 
 using namespace nlohmann;
 
 class JsonParser : public IParser
 {
 private:
-	int _max_bmp_width = 1920;
-	int _max_bmp_height = 1080;
-	int _max_texel_count = 1920 * 1080;
+
 
 	vector<rt_sphere> _spheres;
 	vector<rt_rectangle> _rects;
@@ -23,10 +21,9 @@ private:
 	vector<rt_point_light> _point_lights;
 	vector<rt_spot_light> _spot_lights;
 	vector <rt_area_light > _area_lights;
-	vector<float_3> _vec_bmps;
-	map<int, pair<int, int>> _vec_bmp_dims; //an index - dimensions mapping for each loaded bitmap
-	vector<float> _flt_bmps;
-	map<int, pair<int, int>> _flt_bmp_dims; //an index - dimensions mapping for each loaded bitmap
+	map<int, tuple<string,int,int>> _vec_bmps; //a mapping of bitmap filename to its dimensions
+	map<int, tuple<string,int, int>> _flt_bmps;
+	float _max_bmp_width, _max_bmp_height;  //maximum dimension of a bitmap
 	vector<float_3> _vec_scalars;
 	vector<float> _flt_scalars;
 
@@ -38,11 +35,9 @@ private:
 
 	void parse_helper(json& j);
 
-	void parse_texture_dims(json& j_tex);
+	void parse_max_bmp_dim(json& j_dim);
 
-	void parse_vector_bmps(json& j_vec_bmps);
-
-	void parse_float_bmps(json& j_flt_bmps);
+	void parse_bmps(json& j_vec_bmps,bool is_vector);
 
 	void parse_vector_scalars(json& j_vec_scalars);
 
@@ -115,8 +110,8 @@ texture_map<T> JsonParser::json_to_map(json& j)
 		{
 			throw exception("Mapping out of bounds");
 		}
-		int width = (typeid(T) == typeid(float_3)) ? _vec_bmp_dims[index].first : _flt_bmp_dims[index].first;
-		int height = (typeid(T) == typeid(float_3)) ? _vec_bmp_dims[index].second : _flt_bmp_dims[index].second;
+		int width = (typeid(T) == typeid(float_3)) ? get<1>(_vec_bmps[index] ): get<1>(_flt_bmps[index]);
+		int height = (typeid(T) == typeid(float_3)) ? get<2>(_vec_bmps[index]) : get<2>(_flt_bmps[index]);
 
 		int i_hor_offset = static_cast<int>(hor_offset * width);
 		int i_ver_offset = static_cast<int>(ver_offset * height);
@@ -184,3 +179,6 @@ texture_map<T> JsonParser::json_to_map(json& j)
 		return map;
 	}
 }
+
+
+

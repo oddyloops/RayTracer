@@ -34,9 +34,13 @@ public:
 		vector<rt_material> materials, vector<rt_directional_light> d_lights,
 		vector<rt_point_light> p_lights, vector<rt_spot_light> s_lights,
 		vector<rt_area_light> a_lights, float_3 ambience_color, float ambience_intensity,
-		rt_camera camera, image_spec spec, vector<float_3>* bitmaps, int no_of_bitmaps, vector<float_3> scalars,
-		vector<float>* f_bitmaps, int no_of_f_bitmaps, vector<float> f_scalars, int max_bmp_width = 1920, int max_bmp_height = 1080);
+		rt_camera camera, image_spec spec, map<int, tuple<string, int, int>> _vec_bmps , vector<float_3> scalars,
+		map<int, tuple<string, int, int>> _flt_bmps , vector<float> f_scalars, int max_bmp_width = 1920, int max_bmp_height = 1080);
 
+	
+	static void load_vec_bmps(vector<float_3>& buffer, map<int, tuple<string, int, int>>& bmps, int max_width, int max_height);
+
+	static void load_flt_bmps(vector<float>& buffer, map<int, tuple<string, int, int>>& bmps, int max_width, int max_height);
 };
 
 
