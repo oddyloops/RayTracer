@@ -289,13 +289,13 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 			throw exception("Incorrect diffuse material structure");
 		}
 
-		texture_map<float_3> diffuse_color = json_to_map<float_3>(mat["diffuse_color"]);
-		texture_map<float_3> ambient_color = json_to_map<float_3>(mat["ambient_color"]);
+		vector_map diffuse_color = json_to_vector_map(mat["diffuse_color"]);
+		vector_map ambient_color = json_to_vector_map(mat["ambient_color"]);
 		rt_material m;
 		if (mat.find("specular_color") != mat.end() && mat.find("specularity") != mat.end())
 		{
-			texture_map<float_3> specular_color = json_to_map<float_3>(mat["specular_color"]);
-			texture_map<float> specularity = json_to_map<float>(mat["specularity"]);
+			vector_map specular_color = json_to_vector_map(mat["specular_color"]);
+			float_map specularity = json_to_float_map(mat["specularity"]);
 			m = rt_material(ambient_color, diffuse_color, specular_color, specularity);
 
 		}
@@ -303,7 +303,7 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 		{
 			m = rt_material(ambient_color, diffuse_color);
 		}
-		m.set_ref_properties(json_to_map<float>(mat["refractive_index"]), json_to_map<float>(mat["transparency"]), json_to_map<float>(mat["reflectivity"]));
+		m.set_ref_properties(json_to_float_map(mat["refractive_index"]), json_to_float_map(mat["transparency"]), json_to_float_map(mat["reflectivity"]));
 		m.set_resource_index(mat["resource_index"].get<int>());
 		_mats.push_back(m);
 	}
@@ -337,13 +337,13 @@ void JsonParser::parse_spheres(json& j_sphs)
 		}
 		if (sph.find("normal_map") != sph.end())
 		{
-			texture_map<float_3> norm_map = json_to_map<float_3>(sph["normal_map"]);
+			vector_map norm_map = json_to_map<vector_map>(sph["normal_map"]);
 			s.set_normal_map(norm_map);
 		}
 
 		if (sph.find("bump_map") != sph.end())
 		{
-			texture_map<float> bump_map = json_to_map<float>(sph["bump_map"]);
+			float_map bump_map = json_to_float_map(sph["bump_map"]);
 			s.set_bump_map(bump_map);
 		}
 
@@ -410,13 +410,13 @@ void JsonParser::parse_rects(json& j_rects)
 
 		if (rect.find("normal_map") != rect.end())
 		{
-			texture_map<float_3> norm_map = json_to_map<float_3>(rect["normal_map"]);
+			vector_map norm_map = json_to_vector_map(rect["normal_map"]);
 			r.set_normal_map(norm_map);
 		}
 
 		if (rect.find("bump_map") != rect.end())
 		{
-			texture_map<float> bump_map = json_to_map<float>(rect["bump_map"]);
+			float_map bump_map = json_to_float_map(rect["bump_map"]);
 			r.set_bump_map(bump_map);
 		}
 		_rects.push_back(r);
@@ -480,13 +480,13 @@ void JsonParser::parse_triangles(json& j_triangles)
 		}
 		if (tri.find("normal_map") != tri.end())
 		{
-			texture_map<float_3> norm_map = json_to_map<float_3>(tri["normal_map"]);
+			vector_map norm_map = json_to_vector_map(tri["normal_map"]);
 			t.set_normal_map(norm_map);
 		}
 
 		if (tri.find("bump_map") != tri.end())
 		{
-			texture_map<float> bump_map = json_to_map<float>(tri["bump_map"]);
+			float_map bump_map = json_to_float_map(tri["bump_map"]);
 			t.set_bump_map(bump_map);
 		}
 		_triangles.push_back(t);
@@ -524,13 +524,13 @@ void JsonParser::parse_planes(json& j_planes)
 
 		if (plane.find("normal_map") != plane.end())
 		{
-			texture_map<float_3> norm_map = json_to_map<float_3>(plane["normal_map"]);
+			vector_map norm_map = json_to_vector_map(plane["normal_map"]);
 			p.set_normal_map(norm_map);
 		}
 
 		if (plane.find("bump_map") != plane.end())
 		{
-			texture_map<float> bump_map = json_to_map<float>(plane["bump_map"]);
+			float_map bump_map = json_to_float_map(plane["bump_map"]);
 			p.set_bump_map(bump_map);
 		}
 		_planes.push_back(p);
@@ -563,13 +563,13 @@ void JsonParser::parse_cylinders(json& j_cylinders)
 		}
 		if (cylinder.find("normal_map") != cylinder.end())
 		{
-			texture_map<float_3> norm_map = json_to_map<float_3>(cylinder["normal_map"]);
+			vector_map norm_map = json_to_vector_map(cylinder["normal_map"]);
 			c.set_normal_map(norm_map);
 		}
 
 		if (cylinder.find("bump_map") != cylinder.end())
 		{
-			texture_map<float> bump_map = json_to_map<float>(cylinder["bump_map"]);
+			float_map bump_map = json_to_float_map(cylinder["bump_map"]);
 			c.set_bump_map(bump_map);
 		}
 		_cylinders.push_back(c);

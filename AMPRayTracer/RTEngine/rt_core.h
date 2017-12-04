@@ -46,8 +46,8 @@ namespace rt
 		pixel_data compute_pixel_data(int current_x, int current_y, array_view<rt_sphere, 1> spheres,array_view<rt_rectangle,1> rectangles,
 			array_view<rt_triangle, 1> triangles, array_view<rt_plane, 1> planes, array_view<rt_cylinder, 1> cylinders,
 			array_view<rt_directional_light, 1> dir_lights, array_view<rt_point_light, 1> point_lights, array_view<rt_area_light, 1> area_lights,
-			array_view<rt_spot_light, 1> spot_lights, array_view<rt_material, 1> materials,  array_view<float_3, 3> bitmaps, array_view<float_3, 1> scalars
-			, array_view<float, 3> f_bitmaps, array_view<float, 1> f_scalars) restrict(amp);
+			array_view<rt_spot_light, 1> spot_lights, array_view<rt_material, 1> materials,  texture<float_3, 3> bitmaps, texture<float_3, 1> scalars
+			, texture<float, 3> f_bitmaps, texture<float, 1> f_scalars) restrict(amp);
 
 		
 	};

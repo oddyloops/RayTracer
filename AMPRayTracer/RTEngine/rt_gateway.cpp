@@ -41,11 +41,15 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	load_vec_bmps(bitmaps, _vec_bmps, max_bmp_width, max_bmp_height);
 	load_flt_bmps(f_bitmaps, _flt_bmps, max_bmp_width, max_bmp_height);
 
-	array_view<float_3, 3> bitmaps_view(max_bmp_width, max_bmp_height, _vec_bmps.size(), bitmaps);
-	array_view<float_3, 1> scalars_view(scalars);
+	texture<float_3, 3> bitmaps_txt(max_bmp_width, max_bmp_height, _vec_bmps.size(), bitmaps.begin(),bitmaps.end());
+	texture<float_3, 1> scalars_txt(scalars.size(),scalars.begin(),scalars.end());
 
-	array_view<float, 3> f_bitmaps_view(max_bmp_width, max_bmp_height, _flt_bmps.size(), f_bitmaps);
-	array_view<float, 1> f_scalars_view(f_scalars);
+	texture<float, 3> f_bitmaps_txt(max_bmp_width, max_bmp_height, _flt_bmps.size(), f_bitmaps.begin(),f_bitmaps.end());
+	texture<float, 1> f_scalars_txt(f_scalars.size(),f_scalars.begin(),f_scalars.end());
+
+	texture_view<float_3, 3> bitmaps_view(bitmaps_txt);
+	texture_view<float_3, 1> scalars_view(scalars_txt);
+	texture_view<float_3,
 
 
 	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)), spec.get_samples_per_pixel(), ambience_color, ambience_intensity);

@@ -4,7 +4,8 @@
 #include "ray.h"
 #include "intersection_record.h"
 #include "indexed_resource.h"
-#include "texture_map.h"
+#include "vector_map.h"
+#include "float_map.h"
 
 
 using namespace concurrency;
@@ -38,8 +39,8 @@ namespace rt_support
 		protected:
 			int m_type;
 			int m_material_index;
-			texture_map<float_3> m_normal_map;
-			texture_map<float> m_bump_map;
+			vector_map m_normal_map;
+			float_map m_bump_map;
 
 
 			/// <summary>
@@ -89,8 +90,8 @@ namespace rt_support
 			/// <param name="r">Incoming ray.</param>
 			/// <param name="record">If intersect, this record has the details.</param>
 			/// <returns>T/F: intersect or not.</returns>
-			int intersect(ray& r, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-				, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp);
+			int intersect(ray& r, intersection_record& record, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+				, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp);
 
 			/// <summary>
 			/// Min point
@@ -126,11 +127,11 @@ namespace rt_support
 
 			int get_material_index() restrict(amp,cpu);
 
-			__declspec(dllexport) void set_normal_map(texture_map<float_3> normal_map) restrict(amp, cpu);
+			__declspec(dllexport) void set_normal_map(vector_map normal_map) restrict(amp, cpu);
 
-			__declspec(dllexport) void set_bump_map(texture_map<float> bump_map) restrict(amp, cpu);
+			__declspec(dllexport) void set_bump_map(float_map bump_map) restrict(amp, cpu);
 
-			float_3 get_normal(float u, float v,array_view<float_3,3>* bitmaps,array_view<float_3,1>* scalars) restrict(amp);
+			float_3 get_normal(float u, float v,texture<float_3,3>* bitmaps,texture<float_3,1>* scalars) restrict(amp);
 
 		};
 	}

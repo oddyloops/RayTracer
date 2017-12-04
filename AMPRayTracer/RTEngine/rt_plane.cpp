@@ -36,8 +36,8 @@ int rt_plane::intersect(ray& ray, intersection_record& record) restrict(amp)
 }
 
 
-int rt_plane::intersect(ray& ray, intersection_record& record, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+int rt_plane::intersect(ray& ray, intersection_record& record, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 {
 	if (intersect(ray, record) == false)
 	{

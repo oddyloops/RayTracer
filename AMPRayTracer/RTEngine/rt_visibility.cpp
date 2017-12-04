@@ -8,8 +8,8 @@ rt_visibility::rt_visibility() restrict(amp,cpu)
 }
 
 void rt_visibility::compute_visibility(ray r, int except_geom_index, intersection_record& rec, array_view<rt_sphere, 1>* spheres, array_view<rt_rectangle, 1>* rects,
-	array_view<rt_triangle, 1>* triangles, array_view<rt_plane, 1>* planes, array_view<rt_cylinder, 1>* cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+	array_view<rt_triangle, 1>* triangles, array_view<rt_plane, 1>* planes, array_view<rt_cylinder, 1>* cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 {
 	for (int i = 0; i < spheres->extent.size(); i++)
 	{

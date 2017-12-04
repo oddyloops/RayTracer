@@ -41,8 +41,8 @@ rt_material rt_shader::get_material_from_rec(intersection_record& rec, array_vie
 
 float_3 rt_shader::compute_shade(intersection_record& rec, int generation, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 {
 	float_3 shade = float_3(0, 0, 0);
 	if (rec.get_geom_index() != -1)
@@ -73,8 +73,8 @@ float_3 rt_shader::compute_shade(intersection_record& rec, int generation, array
 
 float_3 rt_shader::compute_shade_from_ray_dir(int exceptIndex, float_3 origin, float_3 dir, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres, 
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 
 {
 	ray r = ray::create_ray_from_pt_dir(origin, dir);
@@ -95,8 +95,8 @@ float_3 rt_shader::compute_shade_from_ray_dir(int exceptIndex, float_3 origin, f
 
 float_3 rt_shader::compute_shade_helper(intersection_record& rec, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 {
 	rt_material mat = get_material_from_rec(rec, m_materials);
 	float_3 color = compute_ambience(mat, bitmaps, scalars, f_bitmaps, f_scalars,rec) + compute_diffuse(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres, m_triangles, m_planes, m_cylinders, bitmaps, scalars, f_bitmaps, f_scalars)
@@ -104,16 +104,16 @@ float_3 rt_shader::compute_shade_helper(intersection_record& rec, array_view<rt_
 	return color;
 }
 
-float_3 rt_shader::compute_ambience(rt_material& mat, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars, intersection_record& rec) restrict(amp)
+float_3 rt_shader::compute_ambience(rt_material& mat, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars, intersection_record& rec) restrict(amp)
 {
 	return m_ambient_intensity * m_ambient_light * mat.get_ambient_color(rec.get_u(),rec.get_v(),bitmaps,scalars);
 }
 
 float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 {
 	float_3 diffuse_color = float_3(0, 0, 0);
 	float_3 mat_diff = mat.get_diffuse_color(rec.get_u(), rec.get_v(), bitmaps, scalars);
@@ -192,8 +192,8 @@ float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, a
 
 float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
 	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
-	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, array_view<float_3, 3>* bitmaps, array_view<float_3, 1>* scalars
-	, array_view<float, 3>* f_bitmaps, array_view<float, 1>* f_scalars) restrict(amp)
+	array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
+	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
 {
 	if (mat.get_is_specular())
 	{ //flag for checking if specular color was set
