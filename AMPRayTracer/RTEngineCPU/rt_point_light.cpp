@@ -29,6 +29,7 @@ rt_point_light::rt_point_light(vector<float> origin, vector<float> color, float 
 ///</summary>
 float rt_point_light::percent_light(vector<rt_rectangle>& rects, vector<rt_sphere>& spheres, vector<rt_triangle>& triangles, vector<rt_plane>& planes, vector<rt_cylinder>& cylinders,  vector<float> geomPoint, int exceptGeomIndex)
 {
+
 	ray r(geomPoint, m_origin);
 	intersection_record rec;
 

@@ -17,13 +17,17 @@ namespace rt_support
 		class vector_map : public texture_map
 		{
 
-			float_3 get_value_plain(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp);
+			float_3 get_value_plain(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp);
 
-			float_3 get_value_checkered(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp);
+			float_3 get_value_checkered(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp);
 
-			float_3 get_value_stripes(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp);
+			float_3 get_value_stripes(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp);
 
-			float_3 get_value_wavy(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp);
+			float_3 get_value_wavy(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp);
+
+			static float_3 get_bitmap_color(int map_index, int width, int height, int hor_offset, int ver_offset, float u, float v, texture_view<const float_3, 3> bitmaps) restrict(amp);
+
+			static float_3 get_scalar_color(int color_offset, int color_index, texture_view<const float_3, 1> scalar_colors) restrict(amp);
 		public:
 
 
@@ -35,11 +39,9 @@ namespace rt_support
 
 
 
-			float_3 get_value(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors) restrict(amp); //get value based on supplied u-v coordinates
+			float_3 get_value(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors) restrict(amp); //get value based on supplied u-v coordinates
 
-			static float_3 get_bitmap_color(int map_index, int width, int height, int hor_offset, int ver_offset, float u, float v, texture<float_3, 3>* bitmaps) restrict(amp);
-
-			static float_3 get_scalar_color(int color_offset, int color_index, texture<float_3, 1>* scalar_colors) restrict(amp);
+		
 
 
 		};

@@ -199,8 +199,8 @@ int rt_cylinder::intersect(ray& ray, intersection_record& record) restrict(amp)
 
 }
 
-int rt_cylinder::intersect(ray& ray, intersection_record& record, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
-	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
+int rt_cylinder::intersect(ray& ray, intersection_record& record, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
+	, texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp)
 {
 	if (intersect(ray, record) == false)
 	{
@@ -254,7 +254,7 @@ void rt_cylinder::get_uv(float_3 pt, float_3 bc, float_3 n, int dist_index, floa
 
 		
 		//around the curves 
-		u = atan2(a2, a1) / (2 * 3.142f) + 0.5f; //https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for-sphere-cylindrical-projection
+		u = (atan2(a2, a1) + PI) / (2 * PI); //https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for-sphere-cylindrical-projection
 
 											 //project p on the axis to get vertical distance
 		float v_dist = vector_amp::dot(p, m_axis_dir);
@@ -271,7 +271,7 @@ void rt_cylinder::get_uv(float_3 pt, float_3 bc, float_3 n, int dist_index, floa
 			//project p1 on both horizontal axes
 			float a1 = vector_amp::dot(p, m_hor_axis_dir);
 			float a2 = vector_amp::dot(p, m_hor_axis_dir_perp);
-			u = atan2(a2, a1) / (2 * PI) + 0.5f;
+			u = (atan2(a2, a1) + PI) / (2 * PI);
 			v = ((1 - p_size / m_radius) * m_flat_section) + m_curve_section + m_flat_section;
 		}
 		else
@@ -281,7 +281,7 @@ void rt_cylinder::get_uv(float_3 pt, float_3 bc, float_3 n, int dist_index, floa
 			//project p1 on both horizontal axes
 			float a1 = vector_amp::dot(p, m_hor_axis_dir);
 			float a2 = vector_amp::dot(p, m_hor_axis_dir_perp);
-			u = atan2(a2, a1) / (2 * PI) + 0.5f;
+			u = (atan2(a2, a1) + PI) / (2 * PI);
 			v = p_size / m_radius * m_flat_section;
 		}
 	}

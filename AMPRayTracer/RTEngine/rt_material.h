@@ -39,19 +39,19 @@ namespace rt_support
 
 			void set_specular(vector_map  color, float_map  specularity)  restrict(amp, cpu);
 
-			float_3 get_ambient_color(float u, float v, texture<float_3,3>* bitmaps, texture<float_3,1>* scalars) restrict(amp);
+			float_3 get_ambient_color(float u, float v, texture_view<const float_3,3> bitmaps, texture_view<const float_3,1> scalars) restrict(amp);
 
-			float_3 get_diffuse_color(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars) restrict(amp);
+			float_3 get_diffuse_color(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars) restrict(amp);
 			
-			float_3 get_specular_color(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars) restrict(amp);
+			float_3 get_specular_color(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars) restrict(amp);
 
-			float get_specularity(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp);
+			float get_specularity(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp);
 
-			float get_refractive_index(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp);
+			float get_refractive_index(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp);
 
-			float get_transparency(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp);
+			float get_transparency(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp);
 
-			float get_reflectivity(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp);
+			float get_reflectivity(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp);
 
 			int get_is_specular() restrict(amp);
 

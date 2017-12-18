@@ -47,9 +47,10 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 	texture<float, 3> f_bitmaps_txt(max_bmp_width, max_bmp_height, _flt_bmps.size(), f_bitmaps.begin(),f_bitmaps.end());
 	texture<float, 1> f_scalars_txt(f_scalars.size(),f_scalars.begin(),f_scalars.end());
 
-	texture_view<float_3, 3> bitmaps_view(bitmaps_txt);
-	texture_view<float_3, 1> scalars_view(scalars_txt);
-	texture_view<float_3,
+	texture_view<const float_3, 3> bitmaps_view(bitmaps_txt);
+	texture_view<const float_3, 1> scalars_view(scalars_txt);
+	texture_view<const float, 3> f_bitmaps_view(f_bitmaps_txt);
+	texture_view<const float, 1> f_scalars_view(f_scalars_txt);
 
 
 	rt_core ray_tracer = rt_core(camera, spec, static_cast<int>(time(NULL)), spec.get_samples_per_pixel(), ambience_color, ambience_intensity);
@@ -59,7 +60,7 @@ scene_results rt_gateway::ray_trace(vector<rt_sphere> spheres, vector<rt_rectang
 		const int tile_x = 8;
 		const int tile_y = 8;
 		parallel_for_each(image_view.extent.tile<tile_x, tile_y>(), [=](tiled_index<tile_x, tile_y> t_idx) mutable restrict(amp) {
-
+			
 			pixel_data data = ray_tracer.compute_pixel_data(t_idx.global[0], t_idx.global[1], sphere_view, rectangle_view, triangle_view,
 				plane_view, cylinder_view, d_lights_view, p_lights_view, a_lights_view, s_lights_view, materials_view, bitmaps_view, scalars_view, f_bitmaps_view, f_scalars_view);
 			image_view[t_idx] = data.get_pixel_color();

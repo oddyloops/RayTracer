@@ -45,37 +45,37 @@ void rt_material::set_specular(vector_map  color, float_map  specularity)  restr
 	m_specularity = specularity;
 }
 
-float_3 rt_material::get_ambient_color(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars) restrict(amp)
+float_3 rt_material::get_ambient_color(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars) restrict(amp)
 {
 	return m_ambient_color.get_value(u,v,bitmaps,scalars);
 }
 
-float_3 rt_material::get_diffuse_color(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars) restrict(amp)
+float_3 rt_material::get_diffuse_color(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars) restrict(amp)
 {
 	return m_diffuse_color.get_value(u, v, bitmaps, scalars);
 }
 
-float_3 rt_material::get_specular_color(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars) restrict(amp)
+float_3 rt_material::get_specular_color(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars) restrict(amp)
 {
 	return m_specular_color.get_value(u, v, bitmaps, scalars);
 }
 
-float rt_material::get_specularity(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp)
+float rt_material::get_specularity(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp)
 {
 	return m_specularity.get_value(u, v, bitmaps, scalars);
 }
 
-float rt_material::get_refractive_index(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp)
+float rt_material::get_refractive_index(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp)
 {
 	return m_refractive_index.get_value(u, v, bitmaps, scalars);
 }
 
-float rt_material::get_transparency(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp)
+float rt_material::get_transparency(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp)
 {
 	return m_transparency.get_value(u, v, bitmaps, scalars);
 }
 
-float rt_material::get_reflectivity(float u, float v, texture<float, 3>* bitmaps, texture<float, 1>* scalars) restrict(amp)
+float rt_material::get_reflectivity(float u, float v, texture_view<const float, 3> bitmaps, texture_view<const float, 1> scalars) restrict(amp)
 {
 	return m_reflectivity.get_value(u, v, bitmaps, scalars);
 }

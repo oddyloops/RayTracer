@@ -3,7 +3,7 @@
 using namespace rt_support::scene_resource_support;
 
 
-float_3 vector_map::get_value_plain(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp)
+float_3 vector_map::get_value_plain(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp)
 {
 	if (m_is_bitmap)
 	{
@@ -14,7 +14,7 @@ float_3 vector_map::get_value_plain(float u, float v, texture<float_3, 3>* bitma
 	}
 }
 
-float_3  vector_map::get_value_checkered(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp)
+float_3  vector_map::get_value_checkered(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp)
 {
 	if (m_is_bitmap)
 	{ //it complicate things in the GPU model to have multiple bitmaps
@@ -34,7 +34,7 @@ float_3  vector_map::get_value_checkered(float u, float v, texture<float_3, 3>* 
 	return  get_scalar_color(m_color_offset, tile_index % source_size, scalar_colors);
 }
 
-float_3 vector_map::get_value_stripes(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp)
+float_3 vector_map::get_value_stripes(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp)
 {
 	if (m_is_bitmap)
 	{ //it complicate things in the GPU model to have multiple bitmaps
@@ -50,7 +50,7 @@ float_3 vector_map::get_value_stripes(float u, float v, texture<float_3, 3>* bit
 	return get_scalar_color(m_color_offset, stripe_index % m_colors_length, scalar_colors);
 }
 
-float_3 vector_map::get_value_wavy(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors)  restrict(amp)
+float_3 vector_map::get_value_wavy(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors)  restrict(amp)
 {
 	if (m_is_bitmap)
 	{ //it complicate things in the GPU model to have multiple bitmaps
@@ -87,7 +87,7 @@ vector_map::vector_map(int m_is_bitmap, int map_type) restrict(amp, cpu) : textu
 
 }
 
-float_3 vector_map::get_value(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalar_colors) restrict(amp) //get value based on supplied u-v coordinates
+float_3 vector_map::get_value(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalar_colors) restrict(amp) //get value based on supplied u-v coordinates
 {
 	switch (m_map_type)
 	{
@@ -108,16 +108,18 @@ float_3 vector_map::get_value(float u, float v, texture<float_3, 3>* bitmaps, te
 	}
 }
 
-float_3 vector_map::get_bitmap_color(int map_index, int width, int height, int hor_offset, int ver_offset, float u, float v, texture<float_3, 3>* bitmaps) restrict(amp)
+float_3 vector_map::get_bitmap_color(int map_index, int width, int height, int hor_offset, int ver_offset, float u, float v, texture_view<const float_3, 3> bitmaps) restrict(amp)
 {
 	int r = height - 1 - static_cast<int>(v * height);
 	int c = static_cast<int>(u * width);
 	index<3> idx(map_index, r + ver_offset, c + hor_offset);
-	return (*bitmaps)(idx);
+	return bitmaps(idx);
+	
 }
 
-float_3 vector_map::get_scalar_color(int color_offset, int color_index, texture<float_3, 1>* scalar_colors) restrict(amp)
+float_3 vector_map::get_scalar_color(int color_offset, int color_index, texture_view<const float_3, 1> scalar_colors) restrict(amp)
 {
 	index<1> idx(color_offset + color_index);
-	return (*scalar_colors)(idx);
+	return scalar_colors(idx);
+	
 }

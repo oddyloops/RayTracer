@@ -90,8 +90,8 @@ namespace rt_support
 			/// <param name="r">Incoming ray.</param>
 			/// <param name="record">If intersect, this record has the details.</param>
 			/// <returns>T/F: intersect or not.</returns>
-			int intersect(ray& r, intersection_record& record, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
-				, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp);
+			int intersect(ray& r, intersection_record& record, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
+				, texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp);
 
 			/// <summary>
 			/// Min point
@@ -131,7 +131,7 @@ namespace rt_support
 
 			__declspec(dllexport) void set_bump_map(float_map bump_map) restrict(amp, cpu);
 
-			float_3 get_normal(float u, float v,texture<float_3,3>* bitmaps,texture<float_3,1>* scalars) restrict(amp);
+			float_3 get_normal(float u, float v,texture_view<const float_3,3> bitmaps,texture_view<const float_3,1> scalars) restrict(amp);
 
 		};
 	}

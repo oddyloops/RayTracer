@@ -40,9 +40,9 @@ namespace rt_support
 			float m_stripe_width_perc; //stripes and waves
 			float m_x_no, m_y_no; //checkers dimensions
 		public:
-			texture_map() restrict(amp,cpu);
+			__declspec(dllexport) texture_map() restrict(amp,cpu);
 
-			texture_map(int is_bitmap, int map_type) restrict(amp, cpu);
+			__declspec(dllexport) texture_map(int is_bitmap, int map_type) restrict(amp, cpu);
 
 			int is_null() restrict(amp);
 

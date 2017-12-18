@@ -70,8 +70,8 @@ int rt_sphere::intersect(ray& r, intersection_record& record) restrict(amp)
 }
 
 
-int rt_sphere::intersect(ray& r, intersection_record& record, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
-	, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
+int rt_sphere::intersect(ray& r, intersection_record& record, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
+	, texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp)
 {
 	if (intersect(r, record) == false)
 	{
@@ -115,7 +115,7 @@ void rt_sphere::get_uv(float_3 pt, float_3 bc, float& u, float& v) restrict(amp)
 	float_3 pt_base = pt - m_base_point;
 	float_3 axis_point = m_base_point + (vector_amp::dot(pt_base, m_vertical_axis) * m_vertical_axis);
 	float_3 p = pt - axis_point;
-	u = atan2(vector_amp::dot(p, m_hor_axis_1), vector_amp::dot(p, m_hor_axis_2)) / (2 * PI) + 0.5f; //https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for-sphere-cylindrical-projection
+	u = (atan2(vector_amp::dot(p, m_hor_axis_1), vector_amp::dot(p, m_hor_axis_2)) + PI) / (2 * PI); //https://gamedev.stackexchange.com/questions/114412/how-to-get-uv-coordinates-for-sphere-cylindrical-projection
 	v = vector_amp::dot(pt_base, m_vertical_axis) / (2 * m_radius);
 }
 

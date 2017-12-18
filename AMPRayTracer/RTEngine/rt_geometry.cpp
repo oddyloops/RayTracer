@@ -47,8 +47,8 @@ int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
 	return false;
 }
 
-int rt_geometry::intersect(ray& r, intersection_record& record, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars, 
-	texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp)
+int rt_geometry::intersect(ray& r, intersection_record& record, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars, 
+	texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp)
 {
 	//stub since virtual methods are not allowed
 	return false;
@@ -111,7 +111,7 @@ void rt_geometry::set_bump_map(float_map bump_map) restrict(amp, cpu)
 	m_bump_map = bump_map;
 }
 
-float_3 rt_geometry::get_normal(float u, float v, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars) restrict(amp)
+float_3 rt_geometry::get_normal(float u, float v, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars) restrict(amp)
 {
 	return m_normal_map.get_value(u, v, bitmaps, scalars);
 }

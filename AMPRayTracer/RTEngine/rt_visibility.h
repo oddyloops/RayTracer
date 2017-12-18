@@ -28,7 +28,7 @@ namespace rt
 		rt_visibility() restrict(amp, cpu);
 
 		void compute_visibility(ray r, int except_geom_index, intersection_record& rec, array_view<rt_sphere,1>* spheres, array_view<rt_rectangle,1>* rects,
-			array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture<float_3, 3>* bitmaps, texture<float_3, 1>* scalars
-			, texture<float, 3>* f_bitmaps, texture<float, 1>* f_scalars) restrict(amp);
+			array_view<rt_triangle, 1>* m_triangles, array_view<rt_plane, 1>* m_planes, array_view<rt_cylinder, 1>* m_cylinders, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
+			, texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp);
 	};
 }
