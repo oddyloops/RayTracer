@@ -33,9 +33,46 @@ namespace rt_support
 		class rt_geometry  : public indexed_resource
 		{
 		private:
+			//rt-geometry
 			float_3 m_min;
 			float_3 m_max;
 			
+			//rt-cylinder/sphere
+			float m_radius;
+			float m_radius_sq;
+			float m_height;
+			float_3 m_top_center;
+			float_3 m_base_center;
+			float_3 m_axis_dir;
+			float_3 m_hor_axis_dir;
+			float_3 m_hor_axis_dir_perp;
+			float m_orth_d; //d for orthogonal plane
+			float m_curve_section; //the section of v occupied by curved surface for u-v mapping
+			float m_flat_section; //the section of v occupied by a single flat circular surface
+			int m_dist_index; //used to determine which part of the cylinder was hit
+			int inside_circle(float_3 point, int is_top_circle) restrict(amp);
+
+			//rt-plane/rectangle/triangle
+			float_3 point_0;
+			float_3 m_true_normal;
+			float md, m_map_width, m_map_height;
+			float_3 m_u_vec, m_v_vec;
+			float_3 m_vertices[4];    // max of 4 vertices
+			int m_u_axis_index, m_v_axis_index; // 0 is X, 1 is Y, and 2 is Z
+			float ma, mb, mc;
+			float md;   // AX + BY + CZ + D = 0, this is the D
+			
+			//rt-triangle
+			float m_apex_u;
+
+			void initialize_triangle();
+
+			void initialize_rectangle();
+
+
+
+			
+
 		protected:
 			int m_type;
 			int m_material_index;
