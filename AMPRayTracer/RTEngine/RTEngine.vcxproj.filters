@@ -153,13 +153,7 @@
     <ClInclude Include="EasyBMP_VariousBMPutilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="float_map.h">
-      <Filter>Header Files\rt_support\scene_resource_support</Filter>
-    </ClInclude>
     <ClInclude Include="texture_map.h">
-      <Filter>Header Files\rt_support\scene_resource_support</Filter>
-    </ClInclude>
-    <ClInclude Include="vector_map.h">
       <Filter>Header Files\rt_support\scene_resource_support</Filter>
     </ClInclude>
   </ItemGroup>
@@ -250,15 +244,6 @@
     </ClCompile>
     <ClCompile Include="EasyBMP.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="texture_map.cpp">
-      <Filter>Source Files\rt_support\scene_resource_support</Filter>
-    </ClCompile>
-    <ClCompile Include="float_map.cpp">
-      <Filter>Source Files\rt_support\scene_resource_support</Filter>
-    </ClCompile>
-    <ClCompile Include="vector_map.cpp">
-      <Filter>Source Files\rt_support\scene_resource_support</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

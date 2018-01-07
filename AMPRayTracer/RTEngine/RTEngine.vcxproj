@@ -144,16 +144,13 @@
     <ClInclude Include="rt_triangle.h" />
     <ClInclude Include="rt_visibility.h" />
     <ClInclude Include="rt_wave_props.h" />
-    <ClInclude Include="float_map.h" />
     <ClInclude Include="texture_map.h" />
     <ClInclude Include="vector_amp.h" />
-    <ClInclude Include="vector_map.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="amp_lcg_rand.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="EasyBMP.cpp" />
-    <ClCompile Include="float_map.cpp" />
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
@@ -179,9 +176,7 @@
     <ClCompile Include="rt_material.cpp" />
     <ClCompile Include="rt_rectangle.cpp" />
     <ClCompile Include="rt_sphere.cpp" />
-    <ClCompile Include="texture_map.cpp" />
     <ClCompile Include="vector_amp.cpp" />
-    <ClCompile Include="vector_map.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ShaderBackupGpu.txt" />
