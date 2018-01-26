@@ -53,7 +53,7 @@ namespace rt_support
 			
 		
 
-			int inside_circle(float_3 point, int is_top_circle) restrict(amp);
+			
 
 			//rt-plane/rectangle/triangle
 			float_3 point_0;
@@ -84,25 +84,9 @@ namespace rt_support
 			texture_map<float> m_bump_map;
 
 
-			/// <summary>
-			/// Dot(norm, P) + d = 0 is the plane equation
-			/// Intersects the ray with the plane returns T/F
-			/// if T 
-			///     dist is the distance between the ray and the plane (may be negative)
-			/// if F
-			///     dist is undefined. Ray and Plane is parallel
-			///  
-			/// **WARNING**: this function flips the norm vector if the plane is facing
-			///              away from the ray directoin!!
-			/// </summary>
-			/// <param name="r">Ray to intersect the plane</param>
-			/// <param name="norm">Normal (normalized) vector of the plane</param>
-			/// <param name="d">Dot(norm, P) + d = 0.</param>
-			/// <param name="dist">Returned: Distance between the ray to the plane if the ray is not paralle with the plane</param>
-			/// <returns>True, if there is an interesection, False, if ray is parallel to the plane</returns>
-			int ray_plane_intersection(ray& r, float_3& norm, float d, float& dist,float_3 plane_point) restrict(amp);
+			
 
-			float plane_point_dist(float_3 pt, float_3 norm, float_3 plane_point) restrict(amp);
+			
 		public:
 
 			__declspec(dllexport) rt_geometry();
@@ -184,7 +168,7 @@ namespace rt_support
 			/// <param name="bc">barrycentric coordinate of hit point (for triangle only)</param>
 			/// <param name="u">returned normalized u value</param>
 			/// <param name="v">returned normalized v value</param>
-			void get_uv(float_3 pt, float_3 bc, float& u, float& v) restrict(amp);
+			void get_uv(float_3 pt, float_3 bc, float& u, float& v, int dist_index =-1) restrict(amp);
 
 			/// <summary>
 			/// recreives (u,v) and returns the object position that corresponds to the (u,v) coordinate.

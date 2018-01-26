@@ -6,6 +6,8 @@
 #include "math_util.h"
 
 #include "rt_sphere.h"
+#include "rt_cylinder.h"
+#include "rt_rectangle.h"
 
 
 
@@ -286,32 +288,8 @@ void rt_geometry::set_material_index(int index)
 	m_material_index = index;
 }
 
-float rt_geometry::plane_point_dist(float_3 pt, float_3 norm, float_3 plane_point) restrict(amp)
-{
-	float_3 v = pt - plane_point;
-	return vector_amp::dot(v, norm);
 
-}
 
-int rt_geometry::ray_plane_intersection(ray& r, float_3& norm, float d, float& dist, float_3 plane_point) restrict(amp)
-{
-	float denomenator = vector_amp::dot(norm, r.get_direction());
-
-	/*
-	* Ray perpendicular to normal
-	*/
-	if (fabs(denomenator) < FLT_EPSILON)
-		return false;
-
-	float numerator = vector_amp::dot(norm, (plane_point - r.get_origin())); 
-	dist = numerator / denomenator;
-
-	if (denomenator > 0)
-		norm = -1 * norm;
-
-	return true;
-
-}
 
 int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
 {
@@ -324,7 +302,17 @@ int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
 	case rt_geometry_type::sphere:
 		intersects = rt_sphere::intersect(r, record, dist, pt, n, m_center, m_radius);
 		break;
+	case rt_geometry_type::cylinder:
+		int dist_index = -1;
+		intersects = rt_cylinder::intersect(r, record,dist,pt,n, dist_index, m_height, m_axis_dir, m_base_center,
+			m_top_center, m_radius_sq, m_orth_d);
+		break;
+	case rt_geometry_type::rectangle:
+		intersects = rt_rectangle::intersect(r, record, dist, pt, n, m_true_normal, m_vertices, md, m_u_vec);
+		break;
 	}
+	
+
 
 	if (intersects == true)
 	{
@@ -380,13 +368,20 @@ float_3 rt_geometry::get_max() restrict(amp,cpu)
 	return m_max;
 }
 
-void rt_geometry::get_uv(float_3 pt, float_3 bc, float& u, float& v) restrict(amp)
+void rt_geometry::get_uv(float_3 pt, float_3 bc, float& u, float& v, int dist_index =-1) restrict(amp)
 {
 
 	switch (m_type)
 	{
 	case rt_geometry_type::sphere:
 		rt_sphere::get_uv(pt, bc, u, v, m_radius, m_base_center, m_axis_dir, m_hor_axis_dir, m_hor_axis_dir_perp);
+		break;
+	case rt_geometry_type::cylinder:
+		rt_cylinder::get_uv(pt, bc, u, v, dist_index, m_base_center, m_top_center, m_axis_dir, m_hor_axis_dir, m_hor_axis_dir_perp, m_curve_section,
+			m_flat_section, m_height, m_radius);
+		break;
+	case rt_geometry_type::rectangle:
+		rt_rectangle::get_uv(pt, bc, u, v, m_vertices[0], m_u_vec, m_v_vec, m_u_size, m_v_size);
 		break;
 	}
 
