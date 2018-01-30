@@ -10,7 +10,7 @@ namespace rt_support
 		/// A Rectangle
 		/// </summary>
 
-		class rt_rectangle : public rt_geometry
+		class rt_rectangle
 		{
 		public:
 
@@ -23,7 +23,7 @@ namespace rt_support
 			/// <param name="ray"></param>
 			/// <param name="record"></param>
 			/// <returns></returns>
-			static int intersect(ray& r, intersection_record& record, float& dist, float_3& hitPt, float_3& normal, float_3& true_normal, float_3 vertices[4], float& d, float_3& u_vec)  restrict(amp);
+			static int intersect(ray& r, intersection_record& record, float& dist, float_3& hitPt, float_3& normal, float_3& true_normal, float_3 vertices[], float& d, float_3& u_vec)  restrict(amp);
 
 		
 			/// <summary>

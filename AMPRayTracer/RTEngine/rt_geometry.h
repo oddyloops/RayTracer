@@ -148,6 +148,9 @@ namespace rt_support
 			int intersect(ray& r, intersection_record& record, texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
 				, texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp);
 
+			//get barry-centric coordinates for triangles
+			float_3 get_bc(float_3 pt) restrict(amp);
+
 			/// <summary>
 			/// Min point
 			/// </summary>

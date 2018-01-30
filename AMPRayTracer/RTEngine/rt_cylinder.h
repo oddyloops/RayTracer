@@ -5,7 +5,7 @@ namespace rt_support
 {
 	namespace geometries
 	{
-		class rt_cylinder : public rt_geometry
+		class rt_cylinder
 		{
 		public:
 

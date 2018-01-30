@@ -72,7 +72,7 @@ int math_util::inside_circle(float_3 point, float_3 center, float radius_sq) res
 }
 
 
-int math_util::inside_polygon(float_3& pt, float_3 vertices[4], float_3& u_vec, float_3& true_normal) restrict(amp)
+int math_util::inside_polygon(float_3& pt, float_3 vertices[], float_3& u_vec, float_3& true_normal) restrict(amp)
 {
 	float_3 v3 = vertices[3] - vertices[2];
 	float_3 v4 = pt - vertices[0];
@@ -87,4 +87,33 @@ int math_util::inside_polygon(float_3& pt, float_3 vertices[4], float_3& u_vec, 
 	float angle90 = 0.5f * PI;
 	return (v1v4 < angle90 && v1v4 > 0) && (v3v5 < angle90 && v3v5 > 0); //clockwise angle between v1 and v4, AND between v3 and v5 must be within 0-90deg
 
+}
+
+
+int math_util::inside_triangle(float_3& pt, float_3 vertices[], float_3& u_vec, float_3& v_vec, float_3& true_normal) restrict(amp)
+{
+	float_3 w = pt - vertices[0];  // w = rU + tV where r + t <= 1 (barycentric coordinates)
+
+									 //after crossing both sides of the equation with v, we eliminate t and vice-versa for u
+
+									 //check if r is positive by using the dot product to see if the quotient vectors point in opposite directions
+	float_3 vw = vector_amp::cross(v_vec, w);
+	float_3 vu = vector_amp::cross(v_vec, u_vec);
+	float_3 uw = vector_amp::cross(u_vec, w);
+	float_3 uv = vector_amp::cross(u_vec, v_vec);
+	bool positive_r = vector_amp::dot(vw, vu) >= 0;
+	bool positive_t = vector_amp::dot(uw, uv) >= 0;
+
+	if (!positive_r || !positive_t)
+		return false;
+
+	//check if r+t <= 1
+	float uv_size = vector_amp::magnitude(uv);
+	float uw_size = vector_amp::magnitude(uw);
+	float vw_size = vector_amp::magnitude(vw);
+
+	float r = vw_size / uv_size;
+	float t = uw_size / uv_size;
+
+	return r + t <= 1;
 }

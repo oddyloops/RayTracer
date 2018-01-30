@@ -9,7 +9,7 @@ using namespace rt_support::geometries;
 
 
 
-int rt_rectangle::intersect(ray& r, intersection_record& record, float& dist, float_3& hitPt, float_3& normal, float_3& true_normal, float_3 vertices[4], float& d, float_3& u_vec) restrict(amp)
+int rt_rectangle::intersect(ray& r, intersection_record& record, float& dist, float_3& hitPt, float_3& normal, float_3& true_normal, float_3 vertices[], float& d, float_3& u_vec) restrict(amp)
 {
 	
 

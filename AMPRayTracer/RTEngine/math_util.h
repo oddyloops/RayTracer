@@ -51,6 +51,9 @@ public:
 	//determine if a point is within a circle
 	static int inside_circle(float_3 point, float_3 center, float radius_sq) restrict(amp);
 
-	static int inside_polygon(float_3& pt, float_3 vertices[4], float_3& u_vec, float_3& true_normal) restrict(amp);
+	static int inside_polygon(float_3& pt, float_3 vertices[], float_3& u_vec, float_3& true_normal) restrict(amp);
+
+
+	static int inside_triangle(float_3& pt, float_3 vertices[], float_3& u_vec,float_3& v_vec, float_3& true_normal) restrict(amp);
 
 };

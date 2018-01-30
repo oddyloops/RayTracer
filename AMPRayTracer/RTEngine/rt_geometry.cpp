@@ -8,6 +8,8 @@
 #include "rt_sphere.h"
 #include "rt_cylinder.h"
 #include "rt_rectangle.h"
+#include "rt_plane.h"
+#include "rt_triangle.h"
 
 
 
@@ -310,6 +312,13 @@ int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
 	case rt_geometry_type::rectangle:
 		intersects = rt_rectangle::intersect(r, record, dist, pt, n, m_true_normal, m_vertices, md, m_u_vec);
 		break;
+	case rt_geometry_type::plane:
+		intersects = rt_plane::intersect(r, record, pt, dist,n, m_true_normal, point_0, md);
+		break;
+	case rt_geometry_type::triangle:
+		intersects = rt_triangle::intersect(r, record, pt, dist, n, m_true_normal, m_vertices, m_u_vec, m_v_vec, md);
+		
+		break;
 	}
 	
 
@@ -358,6 +367,19 @@ int rt_geometry::intersect(ray& r, intersection_record& record, texture_view<con
 	return intersects;
 }
 
+
+float_3 rt_geometry::get_bc(float_3 pt) restrict(amp)
+{
+	float_3 p0 = pt - m_vertices[0];
+	float_3 p1 = pt - m_vertices[1];
+	float_3 p2 = pt - m_vertices[2];
+	float a = vector_amp::magnitude(vector_amp::cross(p1 - p0, p2 - p0));
+	float a1 = vector_amp::magnitude(vector_amp::cross(p2, p1)) / a;
+	float a2 = vector_amp::magnitude(vector_amp::cross(p1, p0)) / a;
+	float a3 = vector_amp::magnitude(vector_amp::cross(p0, p2)) / a;
+	return float_3(a1, a3, a2);
+}
+
 float_3 rt_geometry::get_min() restrict(amp,cpu)
 {
 	return m_min;
@@ -382,6 +404,13 @@ void rt_geometry::get_uv(float_3 pt, float_3 bc, float& u, float& v, int dist_in
 		break;
 	case rt_geometry_type::rectangle:
 		rt_rectangle::get_uv(pt, bc, u, v, m_vertices[0], m_u_vec, m_v_vec, m_u_size, m_v_size);
+		break;
+	case rt_geometry_type::plane:
+		bc = get_bc(pt);
+		rt_plane::get_uv(pt, bc, u, v, point_0, m_u_vec, m_v_vec, m_map_width, m_map_height);
+		break;
+	case rt_geometry_type::triangle:
+		rt_triangle::get_uv(pt, bc, u, v, m_apex_u);
 		break;
 	}
 
