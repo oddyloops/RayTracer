@@ -2,8 +2,7 @@
 #include <amp.h>
 #include <amp_graphics.h>
 #include "indexed_resource.h"
-#include "vector_map.h"
-#include "float_map.h"
+#include "texture_map.h"
 
 using namespace concurrency;
 using namespace concurrency::graphics;
@@ -15,29 +14,29 @@ namespace rt_support
 		class rt_material : public indexed_resource
 		{
 		private:
-			vector_map m_ambient_color;
-			vector_map m_diffuse_color;
-			vector_map m_specular_color;
-			float_map m_specularity;
-			float_map m_refractive_index;
-			float_map m_transparency;
-			float_map m_reflectivity;
+			texture_map<float_3> m_ambient_color;
+			texture_map<float_3> m_diffuse_color;
+			texture_map<float_3> m_specular_color;
+			texture_map<float> m_specularity;
+			texture_map<float> m_refractive_index;
+			texture_map<float> m_transparency;
+			texture_map<float> m_reflectivity;
 		public:
 			__declspec(dllexport) rt_material() restrict(amp,cpu);
 
-			__declspec(dllexport) rt_material(vector_map ambient_color, vector_map diffuse_color) restrict(amp,cpu);
+			__declspec(dllexport) rt_material(texture_map<float_3> ambient_color, texture_map<float_3> diffuse_color) restrict(amp,cpu);
 
-			__declspec(dllexport) rt_material(vector_map ambient_color, vector_map diffuse_color, vector_map specular_color, float_map specularity) restrict(amp,cpu);
+			__declspec(dllexport) rt_material(texture_map<float_3> ambient_color, texture_map<float_3> diffuse_color, texture_map<float_3> specular_color, texture_map<float> specularity) restrict(amp,cpu);
 
-			__declspec(dllexport) void set_ref_properties(float_map ref_index, float_map transparency, float_map reflectivity)  restrict(amp, cpu);
+			__declspec(dllexport) void set_ref_properties(texture_map<float> ref_index, texture_map<float> transparency, texture_map<float> reflectivity)  restrict(amp, cpu);
 
-			void set_diffuse(vector_map color) restrict(amp,cpu);
+			void set_diffuse(texture_map<float_3> color) restrict(amp,cpu);
 			
-			void set_ambience(vector_map  color) restrict(amp, cpu);
+			void set_ambience(texture_map<float_3>  color) restrict(amp, cpu);
 
-			void set_specular(vector_map  color) restrict(amp, cpu);
+			void set_specular(texture_map<float_3>  color) restrict(amp, cpu);
 
-			void set_specular(vector_map  color, float_map  specularity)  restrict(amp, cpu);
+			void set_specular(texture_map<float_3>  color, texture_map<float>  specularity)  restrict(amp, cpu);
 
 			float_3 get_ambient_color(float u, float v, texture_view<const float_3,3> bitmaps, texture_view<const float_3,1> scalars) restrict(amp);
 

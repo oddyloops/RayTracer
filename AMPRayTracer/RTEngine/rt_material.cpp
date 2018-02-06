@@ -3,13 +3,13 @@
 using namespace rt_support::scene_resource_support;
 rt_material::rt_material()  restrict(amp, cpu) {}
 
-rt_material::rt_material(vector_map ambient_color, vector_map diffuse_color) restrict(amp, cpu)
+rt_material::rt_material(texture_map<float_3> ambient_color, texture_map<float_3> diffuse_color) restrict(amp, cpu)
 {
 	m_diffuse_color = diffuse_color;
 	m_ambient_color = ambient_color;
 }
 
-rt_material::rt_material(vector_map ambient_color, vector_map diffuse_color, vector_map specular_color, float_map specularity) restrict(amp, cpu)
+rt_material::rt_material(texture_map<float_3> ambient_color, texture_map<float_3> diffuse_color, texture_map<float_3> specular_color, texture_map<float> specularity) restrict(amp, cpu)
 {
 	m_diffuse_color = diffuse_color;
 	m_ambient_color = ambient_color;
@@ -18,28 +18,28 @@ rt_material::rt_material(vector_map ambient_color, vector_map diffuse_color, vec
 }
 
 
-void rt_material::set_ref_properties(float_map ref_index, float_map transparency, float_map reflectivity)  restrict(amp, cpu)
+void rt_material::set_ref_properties(texture_map<float> ref_index, texture_map<float> transparency, texture_map<float> reflectivity)  restrict(amp, cpu)
 {
 	m_refractive_index = ref_index;
 	m_transparency = transparency;
 	m_reflectivity = reflectivity;
 }
-void rt_material::set_diffuse(vector_map color) restrict(amp, cpu)
+void rt_material::set_diffuse(texture_map<float_3> color) restrict(amp, cpu)
 {
 	m_diffuse_color = color;
 }
 
-void rt_material::set_ambience(vector_map color) restrict(amp, cpu)
+void rt_material::set_ambience(texture_map<float_3> color) restrict(amp, cpu)
 {
 	m_ambient_color = color;
 }
 
-void rt_material::set_specular(vector_map color) restrict(amp, cpu)
+void rt_material::set_specular(texture_map<float_3> color) restrict(amp, cpu)
 {
 	m_specular_color = color;
 }
 
-void rt_material::set_specular(vector_map  color, float_map  specularity)  restrict(amp, cpu)
+void rt_material::set_specular(texture_map<float_3>  color, texture_map<float>  specularity)  restrict(amp, cpu)
 {
 	m_specular_color = color;
 	m_specularity = specularity;

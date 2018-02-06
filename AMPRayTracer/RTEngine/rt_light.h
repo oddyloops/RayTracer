@@ -33,13 +33,26 @@ namespace rt_support
 			float_3 m_color;
 			float_3 m_direction; //does not apply to point light
 			float_3 m_origin; //does not apply to directional light
+			float m_total_fov; //only spot light
+			float m_central_fov; //only spot light
+			float m_drop_constant; //only spot light
+			float m_cos_half_fov; //only spot light
+			float m_cos_half_cent_fov; //only spot light
 			float m_range; //farthest distance light can travel (does not apply to directional light)
 			float m_att_frac; //fraction of the range where attenuation starts
 			int m_realistic_att; // a flag to determine if attenuation was linear or cosine based (realistic)
 			float compute_attenuation(float hitDist) restrict(amp);
 
 		public:
-			__declspec(dllexport) rt_light(int type) restrict(amp,cpu);
+			__declspec(dllexport) rt_light(int type);
+			__declspec(dllexport) void construct_directional_light(float_3 direction);
+			__declspec(dllexport) void construct_directional_light(float_3 direction, float_3 color);
+			__declspec(dllexport) void construct_point_light(float_3 origin);
+			__declspec(dllexport) void construct_point_light(float_3 origin, float_3 color);
+			__declspec(dllexport) void construct_point_light(float_3 origin, float_3 color, float range, float att_frac, int is_real_att);
+			__declspec(dllexport) void construct_spot_light(float_3 origin,float_3 direction, float total_fov, float central_fov, float drop_constant);
+			__declspec(dllexport) void construct_spot_light(float_3 origin, float_3 direction, float total_fov, float central_fov, float drop_constant, float_3 color);
+			__declspec(dllexport) void construct_spot_light(float_3 origin, float_3 direction, float total_fov, float central_fov, float drop_constant, float_3 color, float range, float att_frac, int is_real_att);
 
 			void set_color(float_3 color) restrict(amp,cpu);
 			void set_direction(float_3 direction) restrict(amp, cpu);
@@ -58,8 +71,7 @@ namespace rt_support
 			///<summary>
 			///Determines the percentage of light a pixel gets based on intersection with the light ray (GPU hates virtual functions)
 			///</summary>
-			float percent_light(array_view<rt_rectangle,1>& rects, array_view<rt_sphere,1>& spheres,
-				array_view<rt_triangle,1>& triangles, array_view<rt_plane,1>& planes, array_view<rt_cylinder>& cylinders,float_3 geomPoint, int exceptGeomIndex) restrict(amp);
+			float percent_light(array_view<rt_geometry,1>& geom, float_3 geomPoint, int exceptGeomIndex) restrict(amp);
 
 
 		};

@@ -126,9 +126,6 @@
     <ClInclude Include="rt_spot_light.h">
       <Filter>Header Files\rt_support\lights</Filter>
     </ClInclude>
-    <ClInclude Include="rt_area_light.h">
-      <Filter>Header Files\rt_support\lights</Filter>
-    </ClInclude>
     <ClInclude Include="IParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -225,9 +222,6 @@
       <Filter>Source Files\rt_support\lights</Filter>
     </ClCompile>
     <ClCompile Include="rt_spot_light.cpp">
-      <Filter>Source Files\rt_support\lights</Filter>
-    </ClCompile>
-    <ClCompile Include="rt_area_light.cpp">
       <Filter>Source Files\rt_support\lights</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">

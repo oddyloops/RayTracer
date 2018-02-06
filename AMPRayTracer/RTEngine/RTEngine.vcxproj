@@ -126,7 +126,6 @@
     <ClInclude Include="matrix_amp.h" />
     <ClInclude Include="pixel_data.h" />
     <ClInclude Include="ray.h" />
-    <ClInclude Include="rt_area_light.h" />
     <ClInclude Include="rt_camera.h" />
     <ClInclude Include="rt_core.h" />
     <ClInclude Include="rt_cylinder.h" />
@@ -154,7 +153,6 @@
     <ClCompile Include="image_spec.cpp" />
     <ClCompile Include="indexed_resource.cpp" />
     <ClCompile Include="intersection_record.cpp" />
-    <ClCompile Include="rt_area_light.cpp" />
     <ClCompile Include="rt_cylinder.cpp" />
     <ClCompile Include="rt_directional_light.cpp" />
     <ClCompile Include="rt_light.cpp" />

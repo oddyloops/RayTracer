@@ -1,5 +1,8 @@
 #pragma once
-#include "rt_geometry.h"
+#include "intersection_record.h"
+#include "ray.h"
+
+using namespace rt_support::ray_support;
 
 
 namespace rt_support
