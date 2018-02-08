@@ -1,9 +1,11 @@
 #pragma once
 #define PI 3.14159265f
 #include "vector_amp.h"
+#include "ray.h"
 #include <amp_math.h>
 
 using namespace concurrency::fast_math;
+using namespace rt_support::ray_support;
 ///<summary>
 ///Provides helper math functions
 ///</summary>

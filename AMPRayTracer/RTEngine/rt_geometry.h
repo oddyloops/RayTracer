@@ -58,7 +58,7 @@ namespace rt_support
 			//rt-plane/rectangle/triangle
 			float_3 point_0;
 			float_3 m_true_normal;
-			float md, m_map_width, m_map_height;
+			float  m_map_width, m_map_height;
 			float_3 m_u_vec, m_v_vec;
 			float_3 m_vertices[4];    // max of 4 vertices
 			int m_u_axis_index, m_v_axis_index; // 0 is X, 1 is Y, and 2 is Z

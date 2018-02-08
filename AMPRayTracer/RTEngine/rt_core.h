@@ -6,8 +6,7 @@
 #include "amp_lcg_rand.h"
 #include "ray.h"
 #include "intersection_record.h"
-#include "rt_sphere.h"
-#include "rt_rectangle.h"
+#include "rt_geometry.h"
 #include "rt_shader.h"
 #include "rt_visibility.h"
 
@@ -43,10 +42,8 @@ namespace rt
 		
 		// computes pixel data given its x and y offsets from top left pixel
 		// also takes number of samples to take as a parameter
-		pixel_data compute_pixel_data(int current_x, int current_y, array_view<rt_sphere, 1> spheres,array_view<rt_rectangle,1> rectangles,
-			array_view<rt_triangle, 1> triangles, array_view<rt_plane, 1> planes, array_view<rt_cylinder, 1> cylinders,
-			array_view<rt_directional_light, 1> dir_lights, array_view<rt_point_light, 1> point_lights, array_view<rt_area_light, 1> area_lights,
-			array_view<rt_spot_light, 1> spot_lights, array_view<rt_material, 1> materials,  texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
+		pixel_data compute_pixel_data(int current_x, int current_y, array_view<rt_geometry, 1> geom,
+			array_view<rt_light, 1> lights,array_view<rt_material, 1> materials,  texture_view<const float_3, 3> bitmaps, texture_view<const float_3, 1> scalars
 			, texture_view<const float, 3> f_bitmaps, texture_view<const float, 1> f_scalars) restrict(amp);
 
 		

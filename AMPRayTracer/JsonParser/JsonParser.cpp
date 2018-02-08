@@ -126,10 +126,6 @@ void JsonParser::parse_lights(json& j_lights)
 		{
 			parse_spot_light(light);
 		}
-		else if (light["type"].get<string>() == "area")
-		{
-			parse_area_light(light);
-		}
 		else
 		{
 			throw exception("Invalid light type");
@@ -148,15 +144,17 @@ void JsonParser::parse_directional_light(json& j_dlight)
 	}
 
 	float_3 direction = json_to_vector(j_dlight["direction"]);
+	rt_light light = rt_light(light_type::DIRECTIONAL);
 	if (j_dlight.find("color") != j_dlight.end())
 	{
 		float_3 color = json_to_vector(j_dlight["color"]);
-		_dir_lights.push_back(rt_directional_light(direction, color));
+		light.construct_directional_light(direction, color);
 	}
 	else
 	{
-		_dir_lights.push_back(rt_directional_light(direction));
+		light.construct_directional_light(direction);
 	}
+	_lights.push_back(light);
 
 }
 
@@ -168,6 +166,7 @@ void JsonParser::parse_point_light(json& j_plight)
 	}
 
 	float_3 origin = json_to_vector(j_plight["origin"]);
+	rt_light light = rt_light(light_type::POINT);
 	if (j_plight.find("color") != j_plight.end())
 	{
 		float_3 color = json_to_vector(j_plight["color"]);
@@ -177,18 +176,19 @@ void JsonParser::parse_point_light(json& j_plight)
 			float range = j_plight["range"].get<float>();
 			float att_frac = j_plight["attenuation_fraction"].get<float>();
 			int is_real_att = j_plight["is_realistic_attuation"].get<bool>() ? 1 : 0;
-			_point_lights.push_back(rt_point_light(origin, color, range, att_frac, is_real_att));
+			light.construct_point_light(origin, color, range, att_frac, is_real_att);
 		}
 		else
 		{
-			_point_lights.push_back(rt_point_light(origin, color));
+			light.construct_point_light(origin, color);
 		}
 
 	}
 	else
 	{
-		_point_lights.push_back(rt_point_light(origin));
+		light.construct_point_light(origin);
 	}
+	_lights.push_back(light);
 }
 
 void JsonParser::parse_spot_light(json& j_slight)
@@ -205,7 +205,7 @@ void JsonParser::parse_spot_light(json& j_slight)
 	float central_fov = j_slight["central_fov"].get<float>();
 	float total_fov = j_slight["total_fov"].get<float>();
 	float drop_constant = j_slight["drop_constant"].get<float>();
-
+	rt_light light = rt_light(light_type::POINT);
 	if (j_slight.find("color") != j_slight.end())
 	{
 		float_3 color = json_to_vector(j_slight["color"]);
@@ -215,68 +215,22 @@ void JsonParser::parse_spot_light(json& j_slight)
 			float range = j_slight["range"].get<float>();
 			float att_frac = j_slight["attenuation_fraction"].get<float>();
 			int is_real_att = j_slight["is_realistic_attuation"].get<bool>() ? 1 : 0;
-			_spot_lights.push_back(rt_spot_light(origin, direction, total_fov, central_fov, drop_constant, color, range, att_frac, is_real_att));
+			light.construct_spot_light(origin, direction, total_fov, central_fov, drop_constant, color, range, att_frac, is_real_att);
 		}
 		else
 		{
-			_spot_lights.push_back(rt_spot_light(origin, direction, total_fov, central_fov, drop_constant, color));
+			light.construct_spot_light(origin, direction, total_fov, central_fov, drop_constant, color);
 		}
 
 	}
 	else
 	{
-		_spot_lights.push_back(rt_spot_light(origin, direction, total_fov, central_fov, drop_constant));
+		light.construct_spot_light(origin, direction, total_fov, central_fov, drop_constant);
 	}
+
+	_lights.push_back(light);
 }
 
-void JsonParser::parse_area_light(json& j_alight)
-{
-	if (j_alight.find("direction") == j_alight.end() || j_alight.find("origin") != j_alight.end()
-		|| j_alight.find("vertices") == j_alight.end() || j_alight.find("padding") == j_alight.end()
-		|| j_alight.find("drop_constant") == j_alight.end())
-	{
-		throw exception("Incorrect area light structure");
-	}
-
-
-
-	if (j_alight["vertices"].size() != 4)
-	{
-		throw exception("Area light must have exactly 4 vertices");
-	}
-	float_3 vertices[4];
-	int i = 0;
-	for (auto v = j_alight["vertices"].begin(); v != j_alight["vertices"].end(); v++)
-	{
-		vertices[i++] = json_to_vector(*v);
-	}
-
-	float_3 direction = json_to_vector(j_alight["direction"]);
-	float padding = j_alight["padding"].get<float>();
-	float drop_constant = j_alight["drop_constant"].get<float>();
-
-	if (j_alight.find("color") != j_alight.end())
-	{
-		float_3 color = json_to_vector(j_alight["color"]);
-		if (j_alight.find("range") != j_alight.end() && j_alight.find("attenuation_fraction") != j_alight.end()
-			&& j_alight.find("is_realistic_attuation") != j_alight.end())
-		{
-			float range = j_alight["range"].get<float>();
-			float att_frac = j_alight["attenuation_fraction"].get<float>();
-			int is_real_att = j_alight["is_realistic_attuation"].get<bool>() ? 1 : 0;
-			_area_lights.push_back(rt_area_light(direction, rt_rectangle(vertices), padding, drop_constant, color, range, att_frac, is_real_att));
-		}
-		else
-		{
-			_area_lights.push_back(rt_area_light(direction, rt_rectangle(vertices), padding, drop_constant, color));
-		}
-
-	}
-	else
-	{
-		_area_lights.push_back(rt_area_light(direction, rt_rectangle(vertices), padding, drop_constant));
-	}
-}
 
 void JsonParser::parse_diffuse_materials(json& j_mats)
 {
@@ -289,13 +243,13 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 			throw exception("Incorrect diffuse material structure");
 		}
 
-		vector_map diffuse_color = json_to_vector_map(mat["diffuse_color"]);
-		vector_map ambient_color = json_to_vector_map(mat["ambient_color"]);
+		texture_map<float_3> diffuse_color = json_to_map<float_3>(mat["diffuse_color"]);
+		texture_map<float_3> ambient_color = json_to_map<float_3>(mat["ambient_color"]);
 		rt_material m;
 		if (mat.find("specular_color") != mat.end() && mat.find("specularity") != mat.end())
 		{
-			vector_map specular_color = json_to_vector_map(mat["specular_color"]);
-			float_map specularity = json_to_float_map(mat["specularity"]);
+			texture_map<float_3> specular_color = json_to_map<float_3>(mat["specular_color"]);
+			texture_map<float> specularity = json_to_map<float>(mat["specularity"]);
 			m = rt_material(ambient_color, diffuse_color, specular_color, specularity);
 
 		}
@@ -303,7 +257,7 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 		{
 			m = rt_material(ambient_color, diffuse_color);
 		}
-		m.set_ref_properties(json_to_float_map(mat["refractive_index"]), json_to_float_map(mat["transparency"]), json_to_float_map(mat["reflectivity"]));
+		m.set_ref_properties(json_to_map<float>(mat["refractive_index"]), json_to_map<float>(mat["transparency"]), json_to_map<float>(mat["reflectivity"]));
 		m.set_resource_index(mat["resource_index"].get<int>());
 		_mats.push_back(m);
 	}
@@ -323,12 +277,13 @@ void JsonParser::parse_spheres(json& j_sphs)
 		}
 		float radius = sph["radius"].get<float>();
 		float_3 center = json_to_vector(sph["center"]);
-		rt_sphere s = rt_sphere(center, radius);
+		rt_geometry s = rt_geometry(rt_geometry_type::sphere);
+		s.construct_sphere(radius,center);
 
 		if (sph.find("vertical_axis") != sph.end())
 		{
 			float_3 vertical_axis = json_to_vector(sph["vertical_axis"]);
-			s = rt_sphere(center, radius, vertical_axis);
+			s.construct_sphere(radius,center, vertical_axis);
 		}
 		s.set_resource_index(sph["resource_index"].get<int>());
 		if (sph.find("material_index") != sph.end())
@@ -337,17 +292,17 @@ void JsonParser::parse_spheres(json& j_sphs)
 		}
 		if (sph.find("normal_map") != sph.end())
 		{
-			vector_map norm_map = json_to_map<vector_map>(sph["normal_map"]);
+			texture_map<float_3> norm_map = json_to_map<float_3>(sph["normal_map"]);
 			s.set_normal_map(norm_map);
 		}
 
 		if (sph.find("bump_map") != sph.end())
 		{
-			float_map bump_map = json_to_float_map(sph["bump_map"]);
+			texture_map<float> bump_map = json_to_map<float>(sph["bump_map"]);
 			s.set_bump_map(bump_map);
 		}
 
-		_spheres.push_back(s);
+		_geoms.push_back(s);
 	}
 }
 
@@ -376,7 +331,7 @@ void JsonParser::parse_rects(json& j_rects)
 			vertices[i++] = json_to_vector(*v_itr);
 		}
 
-		rt_rectangle r;
+		rt_geometry r = rt_geometry(rt_geometry_type::rectangle);
 		if (rect.find("xform") != rect.end())
 		{
 			//parse xform
@@ -396,11 +351,11 @@ void JsonParser::parse_rects(json& j_rects)
 			{
 				throw exception("3D transformation matrix must be 3x3!");
 			}
-			r = rt_rectangle(vertices, x_form_mat);
+			r.construct_rectangle(vertices, x_form_mat);
 
 		}
 		else {
-			r = rt_rectangle(vertices);
+			r.construct_rectangle(vertices);
 		}
 		r.set_resource_index(rect["resource_index"].get<int>());
 		if (rect.find("material_index") != rect.end())
@@ -410,16 +365,16 @@ void JsonParser::parse_rects(json& j_rects)
 
 		if (rect.find("normal_map") != rect.end())
 		{
-			vector_map norm_map = json_to_vector_map(rect["normal_map"]);
+			texture_map<float_3> norm_map = json_to_map<float_3>(rect["normal_map"]);
 			r.set_normal_map(norm_map);
 		}
 
 		if (rect.find("bump_map") != rect.end())
 		{
-			float_map bump_map = json_to_float_map(rect["bump_map"]);
+			texture_map<float> bump_map = json_to_map<float>(rect["bump_map"]);
 			r.set_bump_map(bump_map);
 		}
-		_rects.push_back(r);
+		_geoms.push_back(r);
 	}
 }
 
@@ -447,7 +402,7 @@ void JsonParser::parse_triangles(json& j_triangles)
 			vertices[i++] = json_to_vector(*v_itr);
 		}
 
-		rt_triangle t;
+		rt_geometry t  = rt_geometry(rt_geometry_type::triangle);
 		if (tri.find("xform") != tri.end())
 		{
 			//parse xform
@@ -467,11 +422,11 @@ void JsonParser::parse_triangles(json& j_triangles)
 			{
 				throw exception("3D transformation matrix must be 3x3!");
 			}
-			t = rt_triangle(vertices, x_form_mat);
+			t.construct_triangle(vertices, x_form_mat);
 
 		}
 		else {
-			t = rt_triangle(vertices);
+			t.construct_triangle(vertices);
 		}
 		t.set_resource_index(tri["resource_index"].get<int>());
 		if (tri.find("material_index") != tri.end())
@@ -480,16 +435,16 @@ void JsonParser::parse_triangles(json& j_triangles)
 		}
 		if (tri.find("normal_map") != tri.end())
 		{
-			vector_map norm_map = json_to_vector_map(tri["normal_map"]);
+			texture_map<float_3> norm_map = json_to_map<float_3>(tri["normal_map"]);
 			t.set_normal_map(norm_map);
 		}
 
 		if (tri.find("bump_map") != tri.end())
 		{
-			float_map bump_map = json_to_float_map(tri["bump_map"]);
+			texture_map<float> bump_map = json_to_map<float>(tri["bump_map"]);
 			t.set_bump_map(bump_map);
 		}
-		_triangles.push_back(t);
+		_geoms.push_back(t);
 	}
 }
 void JsonParser::parse_planes(json& j_planes)
@@ -515,7 +470,8 @@ void JsonParser::parse_planes(json& j_planes)
 		}
 		float unit_width = plane["texture_unit_width"].get<float>();
 		float unit_height = plane["texture_unit_height"].get<float>();
-		rt_plane p = rt_plane(points_vector, unit_width, unit_height);
+		rt_geometry p = rt_geometry(rt_geometry_type::plane);
+			p.construct_plane(points_vector, unit_width, unit_height);
 		p.set_resource_index(plane["resource_index"].get<int>());
 		if (plane.find("material_index") != plane.end())
 		{
@@ -524,16 +480,16 @@ void JsonParser::parse_planes(json& j_planes)
 
 		if (plane.find("normal_map") != plane.end())
 		{
-			vector_map norm_map = json_to_vector_map(plane["normal_map"]);
+			texture_map<float_3> norm_map = json_to_map<float_3>(plane["normal_map"]);
 			p.set_normal_map(norm_map);
 		}
 
 		if (plane.find("bump_map") != plane.end())
 		{
-			float_map bump_map = json_to_float_map(plane["bump_map"]);
+			texture_map<float> bump_map = json_to_map<float>(plane["bump_map"]);
 			p.set_bump_map(bump_map);
 		}
-		_planes.push_back(p);
+		_geoms.push_back(p);
 
 	}
 }
@@ -554,7 +510,8 @@ void JsonParser::parse_cylinders(json& j_cylinders)
 		float_3 top_center = json_to_vector(cylinder["top_center"]);
 		float_3 bottom_center = json_to_vector(cylinder["bottom_center"]);
 
-		rt_cylinder c = rt_cylinder(radius, top_center, bottom_center);
+		rt_geometry c = rt_geometry(rt_geometry_type::cylinder);
+			c.construct_cylinder(radius, top_center, bottom_center);
 		c.set_resource_index(cylinder["resource_index"].get<int>());
 
 		if (cylinder.find("material_index") != cylinder.end())
@@ -563,16 +520,16 @@ void JsonParser::parse_cylinders(json& j_cylinders)
 		}
 		if (cylinder.find("normal_map") != cylinder.end())
 		{
-			vector_map norm_map = json_to_vector_map(cylinder["normal_map"]);
+			texture_map<float_3> norm_map = json_to_map<float_3>(cylinder["normal_map"]);
 			c.set_normal_map(norm_map);
 		}
 
 		if (cylinder.find("bump_map") != cylinder.end())
 		{
-			float_map bump_map = json_to_float_map(cylinder["bump_map"]);
+			texture_map<float> bump_map = json_to_map<float>(cylinder["bump_map"]);
 			c.set_bump_map(bump_map);
 		}
-		_cylinders.push_back(c);
+		_geoms.push_back(c);
 	}
 }
 
@@ -646,7 +603,7 @@ void JsonParser::parse(const char* input)
 
 void JsonParser::render()
 {
-	auto results = rt_gateway::ray_trace(_spheres, _rects, _triangles, _planes, _cylinders, _mats, _dir_lights, _point_lights, _spot_lights, _area_lights, _ambient_color, _ambient_intensity,
+	auto results = rt_gateway::ray_trace(_geoms, _mats, _lights, _ambient_color, _ambient_intensity,
 		_camera, _specs, _vec_bmps, _vec_scalars, _flt_bmps, _flt_scalars, _max_bmp_width, _max_bmp_height);
 
 	auto image = results.color;

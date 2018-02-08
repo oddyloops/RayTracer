@@ -126,7 +126,7 @@ int rt_cylinder::intersect(ray& ray, intersection_record& record, float& hit_dis
 
 	//update intersection record with the closest distance
 	
-	int dist_index = 1;
+	dist_index = 1;
 	float curr_min = dist1;
 	if (dist2 < curr_min)
 	{

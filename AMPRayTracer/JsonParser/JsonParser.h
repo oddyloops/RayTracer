@@ -11,16 +11,9 @@ class JsonParser : public IParser
 private:
 
 
-	vector<rt_sphere> _spheres;
-	vector<rt_rectangle> _rects;
-	vector<rt_triangle> _triangles;
-	vector<rt_plane> _planes;
-	vector<rt_cylinder> _cylinders;
+	vector<rt_geometry> _geoms;
 	vector<rt_material> _mats;
-	vector<rt_directional_light> _dir_lights;
-	vector<rt_point_light> _point_lights;
-	vector<rt_spot_light> _spot_lights;
-	vector <rt_area_light > _area_lights;
+	vector<rt_light> _lights;
 	map<int, tuple<string,int,int>> _vec_bmps; //a mapping of bitmap filename to its dimensions
 	map<int, tuple<string,int, int>> _flt_bmps;
 	float _max_bmp_width, _max_bmp_height;  //maximum dimension of a bitmap
@@ -63,7 +56,6 @@ private:
 
 	void parse_spot_light(json& j_slight);
 
-	void parse_area_light(json& j_alight);
 
 	void parse_camera(json& j_cam);
 
@@ -74,12 +66,9 @@ private:
 	float_2 json_to_vector_2d(json& v);
 
 	template<typename T>
-	T json_to_map(json& j);
+	texture_map<T> json_to_map(json& j);
 
-	vector_map json_to_vector_map(json& j);
-
-	float_map json_to_float_map(json& j);
-
+	
 	void render();
 
 public:
@@ -88,7 +77,7 @@ public:
 
 
 template<typename T>
-T JsonParser::json_to_map(json& j)
+texture_map<T> JsonParser::json_to_map(json& j)
 {
 	if (j.find("is_bitmap") == j.end())
 	{
@@ -122,16 +111,16 @@ T JsonParser::json_to_map(json& j)
 		int i_ver_offset = static_cast<int>(ver_offset * height);
 		int i_width = static_cast<int>(hor_unit_length * width);
 		int i_height = static_cast<int>(ver_unit_length * height);
-
+		texture_map<T> map;
 		if (is_vector)
 		{
-			vector_map = vector_map(true, map_type::plain);
+			map = texture_map<T>(true, map_type::plain);
 			map.set_bitmap_index(index, i_hor_offset, i_ver_offset, i_width, i_height);
 			return map;
 		}
 		else
 		{
-			float_map = float_map(true, map_type::plain);
+			map = texture_map<T>(true, map_type::plain);
 			map.set_bitmap_index(index, i_hor_offset, i_ver_offset, i_width, i_height);
 			return map;
 		}
@@ -146,7 +135,7 @@ T JsonParser::json_to_map(json& j)
 
 		string mapping = j["mapping"].get<string>();
 
-		texture_map map;
+		texture_map<T> map;
 		if (mapping == "checkered")
 		{
 			if (j.find("unit_check_height") == j.end() || j.find("unit_check_width") == j.end())
@@ -156,7 +145,7 @@ T JsonParser::json_to_map(json& j)
 
 			float check_width = j["unit_check_width"].get<float>();
 			float check_height = j["unit_check_height"].get<float>();
-			map = is_vector ? vector_map(false, map_type::checkered) : float_map(false, map_type::checkered);
+			map = texture_map<T>(false, map_type::checkered);
 			map.set_checker_dim(check_width, check_height);
 
 		}
@@ -166,7 +155,7 @@ T JsonParser::json_to_map(json& j)
 			{
 				throw exception("Invalid stripes mapping structure");
 			}
-			map = is_vector ? vector_map(false, map_type::stripes) : float_map(false, map_type::stripes);
+			map = texture_map<T>(false, map_type::stripes);
 			float_2 direction = json_to_vector_2d(j["direction"]);
 			float stripe_unit_width = j["stripe_unit_width"].get<float>();
 			map.set_stripe_width_perc(stripe_unit_width);
@@ -180,7 +169,7 @@ T JsonParser::json_to_map(json& j)
 			{
 				throw exception("Invalid stripes mapping structure");
 			}
-			map = map = is_vector ? vector_map(false, map_type::wavy) : float_map(false, map_type::wavy);
+			map = map = texture_map<T>(false, map_type::wavy);
 			float_2 direction = json_to_vector_2d(j["direction"]);
 			float stripe_unit_width = j["stripe_unit_width"].get<float>();
 			map.set_stripe_width_perc(stripe_unit_width);
@@ -188,7 +177,7 @@ T JsonParser::json_to_map(json& j)
 		}
 		else
 		{
-			map = map = is_vector ? vector_map(false, map_type::plain) : float_map(false, map_type::plain);
+			map = map = texture_map<T>(false, map_type::plain);
 		}
 		map.set_scalar_index(j["color_offset"].get<int>(), j["colors_length"].get<int>());
 		return map;

@@ -2,11 +2,7 @@
 #include <amp.h>
 #include <amp_graphics.h>
 
-#include "rt_sphere.h"
-#include "rt_rectangle.h"
-#include "rt_triangle.h"
-#include "rt_plane.h"
-#include "rt_cylinder.h"
+#include "rt_geometry.h"
 
 using namespace concurrency;
 using namespace concurrency::graphics;

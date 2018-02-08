@@ -295,17 +295,18 @@ void rt_geometry::set_material_index(int index)
 
 int rt_geometry::intersect(ray& r, intersection_record& record) restrict(amp)
 {
-	//stub since virtual methods are not allowed
+	
 	int intersects = false;
 	float dist;
 	float_3 pt, n;
+	int dist_index = -1;
 	switch (m_type)
 	{
 	case rt_geometry_type::sphere:
 		intersects = rt_sphere::intersect(r, record, dist, pt, n, m_center, m_radius);
 		break;
 	case rt_geometry_type::cylinder:
-		int dist_index = -1;
+		
 		intersects = rt_cylinder::intersect(r, record,dist,pt,n, dist_index, m_height, m_axis_dir, m_base_center,
 			m_top_center, m_radius_sq, m_orth_d);
 		break;
@@ -390,7 +391,7 @@ float_3 rt_geometry::get_max() restrict(amp,cpu)
 	return m_max;
 }
 
-void rt_geometry::get_uv(float_3 pt, float_3 bc, float& u, float& v, int dist_index =-1) restrict(amp)
+void rt_geometry::get_uv(float_3 pt, float_3 bc, float& u, float& v, int dist_index) restrict(amp)
 {
 
 	switch (m_type)
