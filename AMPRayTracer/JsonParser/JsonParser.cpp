@@ -205,7 +205,7 @@ void JsonParser::parse_spot_light(json& j_slight)
 	float central_fov = j_slight["central_fov"].get<float>();
 	float total_fov = j_slight["total_fov"].get<float>();
 	float drop_constant = j_slight["drop_constant"].get<float>();
-	rt_light light = rt_light(light_type::POINT);
+	rt_light light = rt_light(light_type::SPOT);
 	if (j_slight.find("color") != j_slight.end())
 	{
 		float_3 color = json_to_vector(j_slight["color"]);
@@ -257,7 +257,12 @@ void JsonParser::parse_diffuse_materials(json& j_mats)
 		{
 			m = rt_material(ambient_color, diffuse_color);
 		}
-		m.set_ref_properties(json_to_map<float>(mat["refractive_index"]), json_to_map<float>(mat["transparency"]), json_to_map<float>(mat["reflectivity"]));
+
+		if (mat.find("refractive_index") != mat.end() && mat.find("transparency") != mat.end() && mat.find("reflectivity") != mat.end())
+		{
+			m.set_ref_properties(json_to_map<float>(mat["refractive_index"]), json_to_map<float>(mat["transparency"]), json_to_map<float>(mat["reflectivity"]));
+		}
+		
 		m.set_resource_index(mat["resource_index"].get<int>());
 		_mats.push_back(m);
 	}

@@ -5,21 +5,21 @@
     "vector_bitmaps": [
       {
     
-        "file": "horizontal.bmp"
+        "file": "earth.bmp"
       },
       {
        
-        "file": "green_slime.BMP"
+        "file": "galaxy.bmp"
       },
       {
         
-        "file": "Shred-Paper.bmp"
+        "file": "glass.bmp"
       }
     ],
     "float_bitmaps": [
       {
        
-        "file": "Shred-Paper.bmp"
+        "file": "mars.bmp"
       }
     ],
     "vector_scalars": [
@@ -122,6 +122,8 @@
           [ 4, -3, -4 ],
           [ 4, -3, 4 ]
         ],
+        "texture_unit_width": 5,
+        "texture_unit_height": 5,
         "resource_index": 8,
         "material_index": 2
       }
@@ -275,18 +277,6 @@
 
       "total_fov": 45,
       "central_fov": 30,
-      "drop_constant": 2.0
-    },
-    {
-      "type": "area",
-      "direction": [ 0, -1, 0 ],
-      "vertices": [
-        [ -1, 5, 1 ],
-        [ 1, 5, 1 ],
-        [ 1, 5, -1 ],
-        [ -1, 5, -1 ]
-      ],
-      "padding": 1.0,
       "drop_constant": 2.0
     }
   ],

@@ -14,8 +14,8 @@ private:
 	vector<rt_geometry> _geoms;
 	vector<rt_material> _mats;
 	vector<rt_light> _lights;
-	map<int, tuple<string,int,int>> _vec_bmps; //a mapping of bitmap filename to its dimensions
-	map<int, tuple<string,int, int>> _flt_bmps;
+	map<int, tuple<string, int, int>> _vec_bmps; //a mapping of bitmap filename to its dimensions
+	map<int, tuple<string, int, int>> _flt_bmps;
 	float _max_bmp_width, _max_bmp_height;  //maximum dimension of a bitmap
 	vector<float_3> _vec_scalars;
 	vector<float> _flt_scalars;
@@ -30,7 +30,7 @@ private:
 
 	void parse_max_bmp_dim(json& j_dim);
 
-	void parse_bmps(json& j_vec_bmps,bool is_vector);
+	void parse_bmps(json& j_vec_bmps, bool is_vector);
 
 	void parse_vector_scalars(json& j_vec_scalars);
 
@@ -68,7 +68,7 @@ private:
 	template<typename T>
 	texture_map<T> json_to_map(json& j);
 
-	
+
 	void render();
 
 public:
@@ -79,6 +79,7 @@ public:
 template<typename T>
 texture_map<T> JsonParser::json_to_map(json& j)
 {
+
 	if (j.find("is_bitmap") == j.end())
 	{
 		throw exception("invalid mapping structure");
@@ -104,33 +105,33 @@ texture_map<T> JsonParser::json_to_map(json& j)
 		{
 			throw exception("Mapping out of bounds");
 		}
-		int width = is_vector ? get<1>(_vec_bmps[index] ): get<1>(_flt_bmps[index]);
+		int width = is_vector ? get<1>(_vec_bmps[index]) : get<1>(_flt_bmps[index]);
 		int height = is_vector ? get<2>(_vec_bmps[index]) : get<2>(_flt_bmps[index]);
 
 		int i_hor_offset = static_cast<int>(hor_offset * width);
 		int i_ver_offset = static_cast<int>(ver_offset * height);
 		int i_width = static_cast<int>(hor_unit_length * width);
 		int i_height = static_cast<int>(ver_unit_length * height);
-		texture_map<T> map;
-		if (is_vector)
-		{
-			map = texture_map<T>(true, map_type::plain);
-			map.set_bitmap_index(index, i_hor_offset, i_ver_offset, i_width, i_height);
-			return map;
-		}
-		else
-		{
-			map = texture_map<T>(true, map_type::plain);
-			map.set_bitmap_index(index, i_hor_offset, i_ver_offset, i_width, i_height);
-			return map;
-		}
+		texture_map<T> map = texture_map<T>(true, map_type::plain);
+		map.set_bitmap_index(index, i_hor_offset, i_ver_offset, i_width, i_height);
+		return map;
+
 	}
 	else
 	{
-		if (j.find("mapping") == j.end() || j.find("color_offset") == j.end()
-			|| j.find("colors_length") == j.end())
-		{
-			throw exception("Invalid scalar mapping");
+		if (is_vector) {
+			if (j.find("mapping") == j.end() || j.find("color_offset") == j.end()
+				|| j.find("colors_length") == j.end())
+			{
+				throw exception("Invalid scalar mapping");
+			}
+		}
+		else {
+			if (j.find("mapping") == j.end() || j.find("float_offset") == j.end()
+				|| j.find("floats_length") == j.end())
+			{
+				throw exception("Invalid scalar mapping");
+			}
 		}
 
 		string mapping = j["mapping"].get<string>();
@@ -179,7 +180,13 @@ texture_map<T> JsonParser::json_to_map(json& j)
 		{
 			map = map = texture_map<T>(false, map_type::plain);
 		}
-		map.set_scalar_index(j["color_offset"].get<int>(), j["colors_length"].get<int>());
+		if (is_vector) {
+			map.set_scalar_index(j["color_offset"].get<int>(), j["colors_length"].get<int>());
+		}
+		else
+		{
+			map.set_scalar_index(j["float_offset"].get<int>(), j["floats_length"].get<int>());
+		}
 		return map;
 	}
 }

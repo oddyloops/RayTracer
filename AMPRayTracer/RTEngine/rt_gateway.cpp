@@ -85,8 +85,7 @@ void rt_gateway::load_vec_bmps(vector<float_3>& buffer, map<int, tuple<string, i
 {
 	int texel_index = 0;
 	int read_texel_index = 0;
-	int bmp_index = 0;
-	int _max_texel_count = max_width * max_height * bmps.size();
+	int _max_texel_count = max_width * max_height;
 	for (auto itr = bmps.begin(); itr != bmps.end(); itr++)
 	{
 		texel_index += (_max_texel_count - read_texel_index);
@@ -111,10 +110,10 @@ void rt_gateway::load_vec_bmps(vector<float_3>& buffer, map<int, tuple<string, i
 				texel.g = static_cast<float>(pixel->Green) / 255;
 				texel.b = static_cast<float>(pixel->Blue) / 255;
 				buffer[texel_index++] = texel;
-
+				read_texel_index++;
 
 			}
-			read_texel_index++;
+			
 		}
 	}
 
@@ -126,7 +125,7 @@ void rt_gateway::load_flt_bmps(vector<float>& buffer, map<int, tuple<string, int
 	int texel_index = 0;
 	int read_texel_index = 0;
 	int bmp_index = 0;
-	int _max_texel_count = max_width * max_height * bmps.size();
+	int _max_texel_count = max_width * max_height;
 	for (auto itr = bmps.begin(); itr != bmps.end(); itr++)
 	{
 		texel_index += (_max_texel_count - read_texel_index);
@@ -150,10 +149,10 @@ void rt_gateway::load_flt_bmps(vector<float>& buffer, map<int, tuple<string, int
 				texel = (static_cast<float>(pixel->Red) + static_cast<float>(pixel->Green) +
 					static_cast<float>(pixel->Blue)) / 765;
 				buffer[texel_index++] = texel;
-
+				read_texel_index++;
 
 			}
-			read_texel_index++;
+			
 		}
 	}
 
