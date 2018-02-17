@@ -88,14 +88,14 @@ void rt_gateway::load_vec_bmps(vector<float_3>& buffer, map<int, tuple<string, i
 	int _max_texel_count = max_width * max_height;
 	for (auto itr = bmps.begin(); itr != bmps.end(); itr++)
 	{
-		texel_index += (_max_texel_count - read_texel_index);
-		read_texel_index = 0;
+		
 		string file = get<0>(itr->second);
 		int width = get<1>(itr->second);
 		int height = get<2>(itr->second);
 
 		BMP bmp_file;
 		bmp_file.ReadFromFile(file.c_str());
+		cout << file << endl;
 
 
 
@@ -115,6 +115,9 @@ void rt_gateway::load_vec_bmps(vector<float_3>& buffer, map<int, tuple<string, i
 			}
 			
 		}
+
+		texel_index += (_max_texel_count - read_texel_index);
+		read_texel_index = 0;
 	}
 
 }
@@ -128,8 +131,7 @@ void rt_gateway::load_flt_bmps(vector<float>& buffer, map<int, tuple<string, int
 	int _max_texel_count = max_width * max_height;
 	for (auto itr = bmps.begin(); itr != bmps.end(); itr++)
 	{
-		texel_index += (_max_texel_count - read_texel_index);
-		read_texel_index = 0;
+		
 		string file = get<0>(itr->second);
 		int width = get<1>(itr->second);
 		int height = get<2>(itr->second);
@@ -154,6 +156,9 @@ void rt_gateway::load_flt_bmps(vector<float>& buffer, map<int, tuple<string, int
 			}
 			
 		}
+
+		texel_index += (_max_texel_count - read_texel_index);
+		read_texel_index = 0;
 	}
 
 }
