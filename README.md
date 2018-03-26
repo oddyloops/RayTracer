@@ -35,12 +35,15 @@ even a windows phone, X-Box, whatever, and also because of Visual Studio.
 
 
 # Build
-- Requires a minimum of windows 8, and VS 2017 community edition or higher, and it does not matter if your computer has a GPU or not. 
+- Requires a minimum of 64-bit windows 8, and VS 2017 community edition or higher, and it does not matter if your computer has a GPU or not. 
 - The AMP framework knows how to fallback to whatever accelerator is available.
 - Clone the source code through the URL: https://github.com/oddyloops/RayTracer.git. This pulls a working copy in the Master branch. 
 - Open the AMPRayTracer folder, and use Visual Studio to open the solution file.
-- Build the solution in Release Mode, and you can execute the JsonParser using the sample test_input.json file as input.
-- You can also just reference the RTEngine dll in your C++ Application, and use the JsonParser source to guide you through
+- Build the solution in Release x64 Mode, and you can execute the JsonParser using the sample json_test.json file as input.
+- You can also just reference the RTEngine dll in your C++ Application, and use the JsonParser source to guide you through its usage.
+
+
+More of the usage details will be explained in the Wiki.
 
 
 This is still a work in progress, as the current Renderer does not handle meshes and texture maps yet. I will also add a wiki page to 
