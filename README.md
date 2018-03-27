@@ -3,7 +3,7 @@
 # Motivation
 The most popular techniques used in image renderers have been hardware Z-buffering, and ray tracing. The earlier is mostly used in video games, and movie
 CGIs for real time generation of high quality images. Some of these modern games/movies (including Virtual/Augmented
-Reality) require over 120 of this images to be generated within fractions of a second. The hardware renders are able to keep up because they have an army
+Reality) require over 120 of this images to be generated within fractions of a second. The hardware renderers are able to keep up because they have an army
 of dumb GPU cores crunching elementary school math to create these visual "illusions". They are illusions, because in hardware rendering, a shadow is not really a shadow,
 a reflection isnt what you think. They are bunch of sleight-of-hand tricks by crafty programmers. That is not the case with ray-tracers. In hardware z-buffers, WYSIWYG (What is
 what you get), as for ray-tracers we go by WYGIWYG (What you give is what you get). That is a much fairer deal.
@@ -38,7 +38,10 @@ even a windows phone, X-Box, whatever, and also because of Visual Studio.
 - Requires a minimum of 64-bit windows 8, and VS 2017 community edition or higher, and it does not matter if your computer has a GPU or not. 
 - The AMP framework knows how to fallback to whatever accelerator is available.
 - Clone the source code through the URL: https://github.com/oddyloops/RayTracer.git. This pulls a working copy in the Master branch. 
-- Open the AMPRayTracer folder, and use Visual Studio to open the solution file.
+- Open the AMPRayTracer folder, and use Visual Studio to open the solution file. You should three projects (JsonParser, RTEngine, and RTEngineCPU).
+- The RTEngine is the core GPU ray tracer.
+- The RTEngineCPU is just an experimental baseline, and not part of the application functionality.
+- The JsonParser provides a simple JSON interface to the RTEngine renderer.
 - Build the solution in Release x64 Mode, and you can execute the JsonParser using the sample json_test.json file as input.
 - You can also just reference the RTEngine dll in your C++ Application, and use the JsonParser source to guide you through its usage.
 
