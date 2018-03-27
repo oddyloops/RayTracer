@@ -17,8 +17,7 @@ namespace RTMeld
 
         Task<T> SelectOneAsync<T, K>(K key);
 
-        List<T> SelectMatching<T>(T match
-            )
+        List<T> SelectMatching<T>(T match);
 
 
 
