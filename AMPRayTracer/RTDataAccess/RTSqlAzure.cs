@@ -2,8 +2,9 @@
 
 namespace RTDataAccess
 {
-    public class Class1
+    public class RTSqlAzure
     {
+        void main()
         
     }
 }
