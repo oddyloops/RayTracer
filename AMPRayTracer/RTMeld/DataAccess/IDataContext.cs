@@ -20,6 +20,14 @@ namespace RTMeld.DataAccess
         /// </summary>
         /// <param name="str">A connection string or key to a config entry for the actual connection string</param>
         void Connect(string str);
+        /// <summary>
+        /// Commits changes to databases
+        /// </summary>
+        void Commit();
+        /// <summary>
+        /// Reverts any accumulated changes that has not been committed
+        /// </summary>
+        void RollBack();
         
         #region StronglyTyped
         /// <summary>
@@ -76,7 +84,7 @@ namespace RTMeld.DataAccess
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        int UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher);
+        Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher);
 
         /// <summary>
         /// Removes the record with the corresponding primary key from the data source
