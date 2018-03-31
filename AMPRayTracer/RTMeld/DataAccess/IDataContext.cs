@@ -217,32 +217,36 @@ namespace RTMeld.DataAccess
         /// </summary>
         /// <typeparam name="T">Record type to be inserted, deleted, or modified</typeparam>
         /// <param name="exec">Statement to be executed</param>
+        /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int ExecuteNonQuery<T>(string exec) where T : IDataMapper;
+        int ExecuteNonQuery<T>(string exec);
 
         /// <summary>
         /// Executes a data altering statement against the datasource using a mapper interface  within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Record type to be inserted, deleted, or modified</typeparam>
         /// <param name="exec">Statement to be executed</param>
+        /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
         /// <returns>A callback handle providing access to the status code indicating the result of the operation</returns>
-        Task<int> ExecuteNonQueryAsync<T>(string exec) where T : IDataMapper;
+        Task<int> ExecuteNonQueryAsync<T>(string exec, IDataMapper mapper);
 
         /// <summary>
         /// Executes a data retrieval statement against the underlying datasource using a mapper interface
         /// </summary>
         /// <typeparam name="T">Record type to be retrieved</typeparam>
         /// <param name="exec">Statement to be executed</param>
+        /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
         /// <returns>The iterator for traversing the results</returns>
-        IEnumerable<T> Query<T>(string exec) where T : IDataMapper;
+        IEnumerable<T> Query<T>(string exec,  IDataMapper mapper);
 
         /// <summary>
         /// Executes a data retrieval statement against the underlying datasource using a mapper interface within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Record type to be retrieved</typeparam>
         /// <param name="exec">Statement to be executed</param>
+        /// /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
         /// <returns>A callback handle providing access to the list of returned records</returns>
-        Task<IList<T>> QueryAsync<T>(string exec) where T : IDataMapper;
+        Task<IList<T>> QueryAsync<T>(string exec,  IDataMapper mapper);
 
         #endregion
 

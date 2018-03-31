@@ -6,7 +6,7 @@ using RTMeld.DataAccess;
 
 namespace RTMeld.DataTransport
 {
-    public interface IRTUser : IDataMapper
+    public interface IRTUser
     {
         [Key]
         [Map("id,user_id,UserId")]
@@ -22,7 +22,7 @@ namespace RTMeld.DataTransport
         string Email { get; set; }
 
         #region Children
-        IList<IRTUserSession> UserSessions { get; set; }
+        ICollection<IRTUserSession> UserSessions { get; set; }
         #endregion
 
     }

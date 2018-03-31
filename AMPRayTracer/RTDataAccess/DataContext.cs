@@ -22,7 +22,7 @@ namespace RTDataAccess
         public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher);
        
         public abstract int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap);
-        public abstract int ExecuteNonQuery<T>(string exec) where T : IDataMapper;
+        public abstract int ExecuteNonQuery<T>(string exec,IDataMapper mapper);
         public abstract int Insert<T>(T data);
        
         public abstract IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap);
@@ -60,9 +60,9 @@ namespace RTDataAccess
         }
 
 
-        public virtual Task<int> ExecuteNonQueryAsync<T>(string exec) where T : IDataMapper
+        public virtual Task<int> ExecuteNonQueryAsync<T>(string exec,IDataMapper mapper) where T : IDataMapper
         {
-            int result = ExecuteNonQuery<T>(exec);
+            int result = ExecuteNonQuery<T>(exec,mapper);
             return Task.FromResult(result);
         }
 
