@@ -22,14 +22,6 @@ namespace RTDataAccess.DataObjects
         public virtual string Email { get => email; set => email = value; }
         public virtual ICollection<IRTUserSession> UserSessions { get => userSessions; set => userSessions =value; }
 
-        public virtual object GetField(string fieldName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual object GetValue(string fieldName)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

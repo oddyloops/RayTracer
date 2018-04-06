@@ -1,59 +1,114 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using RTDataAccess.DataRepos;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
+using System.Data.SqlClient;
 
 namespace RTDataAccess
 {
+    /// <summary>
+    /// Compliant IDataAcess wrapper around the SQL Azure EF interface
+    /// </summary>
     public class RTSqlAzureContext : DataContext
     {
+        RTSqlAzureDataRepo repository;
+
+        private string connStr;
+
+        private List<SqlParameter> MapQueryParams(IDictionary<string,object> paramMap)
+        {
+            List<SqlParameter> paramList = new List<SqlParameter>(paramMap.Count);
+            foreach(var key in paramMap.Keys)
+            {
+                paramList.Add(new SqlParameter(key, paramMap[key]));
+            }
+            return paramList;
+        }
         public override void Connect()
         {
-            throw new NotImplementedException();
+            connStr = "DefaultAzureConnection";
+            Connect(connStr);
         }
 
         public override void Connect(string str)
         {
-            throw new NotImplementedException();
+            connStr = str;
+            var optionsBuilder = new DbContextOptionsBuilder<RTSqlAzureDataRepo>();
+            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[connStr].ToString());
+            repository = new RTSqlAzureDataRepo(optionsBuilder.Options);
         }
 
         public override void Commit()
         {
-            throw new NotImplementedException();
+            repository.SaveChanges();
         }
 
         public override void RollBack()
         {
-            throw new NotImplementedException();
+            repository.Dispose();
+            Connect(connStr);
+
         }
 
-        public override int Delete<K>(K key, Type type)
+        public override int Delete<K,T>(K key)
         {
-            throw new NotImplementedException();
+            T entity = new T();
+            string keyName = Mapper.GetKeyName(entity);
+            if(keyName == null)
+            {
+                throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key field");
+            }
+            foreach(var field in entity.GetType().GetProperties())
+            {
+                if(field.Name == keyName)
+                {
+                    if(field.GetType() != key.GetType())
+                    {
+                        throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key of type " + key.GetType());
+                    }
+                    field.SetValue(entity, key);
+                    break;
+                }
+            }
+            repository.Attach(entity);
+            repository.Remove(entity);
+            Commit();
+            return 0;
         }
 
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            throw new NotImplementedException();
+            List<T> matches = SelectMatching(matcher).ToList();
+            repository.RemoveRange(matches);
+            Commit();
+            return 0;
         }
 
-        public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap)
+        public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap = null)
         {
-            throw new NotImplementedException();
+            if(paramMap == null)
+                return repository.Database.ExecuteSqlCommand(new RawSqlString(exec));
+            else
+                return repository.Database.ExecuteSqlCommand(new RawSqlString(exec),MapQueryParams(paramMap));
+
         }
 
-        public override int ExecuteNonQuery<T>(string exec)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public override int Insert<T>(T data)
         {
-            throw new NotImplementedException();
+            repository.Add(data);
+            Commit();
+            return 0;
         }
 
         public override IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap)
         {
-            throw new NotImplementedException();
+          
         }
 
         public override IEnumerable<T> Query<T>(string exec)
@@ -63,7 +118,7 @@ namespace RTDataAccess
 
         public override IEnumerable<T> SelectAll<T>()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)

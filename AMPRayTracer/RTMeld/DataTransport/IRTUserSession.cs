@@ -5,7 +5,7 @@ using RTMeld.Attributes;
 
 namespace RTMeld.DataTransport
 {
-    public interface IRTUserSession : IDataMapper
+    public interface IRTUserSession
     {
         [Map("user_id,UserId")]
         Guid UserId { get; set; }

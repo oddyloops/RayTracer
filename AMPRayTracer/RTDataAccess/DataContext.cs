@@ -13,20 +13,24 @@ namespace RTDataAccess
     /// </summary>
     public abstract class DataContext : IDataContext
     {
+        private IDataMapper mapper;
+
+        public virtual IDataMapper Mapper { get => mapper; set => mapper = value; }
+
         public abstract void Connect();
         public abstract void Connect(string str);
         public abstract void Commit();
         public abstract void RollBack();
-        public abstract int Delete<K>(K key, Type type);
+        public abstract int Delete<K,T>(K key) where T : class, new();
         
         public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher);
        
         public abstract int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap);
-        public abstract int ExecuteNonQuery<T>(string exec,IDataMapper mapper);
-        public abstract int Insert<T>(T data);
+        
+        public abstract int Insert<T>(T data) where T : class;
        
         public abstract IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap);
-        public abstract IEnumerable<T> Query<T>(string exec) where T : IDataMapper;
+        public abstract IEnumerable<T> Query<T>(string exec);
        
         public abstract IEnumerable<T> SelectAll<T>();
         public abstract IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher);
@@ -35,14 +39,20 @@ namespace RTDataAccess
        
         public abstract IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length);
         
-        public abstract int Update<K, T>(K key, T newData);
+        public abstract int Update<K, T>(K key, T newData) where T : class;
        
-        public abstract int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher);
+        public abstract int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
         
 
-        public virtual Task<int> DeleteAsync<K>(K key, Type type)
+        public virtual Task CommitAsync()
         {
-            int result = Delete(key, type);
+            Commit();
+            return Task.FromResult<object>(null);
+        }
+
+        public virtual Task<int> DeleteAsync<K,T>(K key) where T : class, new()
+        {
+            int result = Delete<K,T>(key);
             return Task.FromResult(result);
         }
 
@@ -60,21 +70,14 @@ namespace RTDataAccess
         }
 
 
-        public virtual Task<int> ExecuteNonQueryAsync<T>(string exec,IDataMapper mapper) where T : IDataMapper
-        {
-            int result = ExecuteNonQuery<T>(exec,mapper);
-            return Task.FromResult(result);
-        }
-
-
-        public virtual Task<int> InsertAsync<T>(T data)
+        public virtual Task<int> InsertAsync<T>(T data) where T : class
         {
             int result = Insert(data);
             return Task.FromResult(result);
         }
 
 
-        public virtual Task<IList<T>> QueryAsync<T>(string exec) where T : IDataMapper
+        public virtual Task<IList<T>> QueryAsync<T>(string exec)
         {
             IList<T> results = Query<T>(exec).ToList();
             return Task.FromResult(results);
@@ -100,13 +103,13 @@ namespace RTDataAccess
         }
 
 
-        public virtual Task<int> UpdateAsync<K, T>(K key, T newData)
+        public virtual Task<int> UpdateAsync<K, T>(K key, T newData) where T : class
         {
             int result = Update(key, newData);
             return Task.FromResult(result);
         }
 
-        public virtual Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher)
+        public virtual Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher) where T : class
         {
             int result = UpdateMatching(newData, matcher);
             return Task.FromResult(result);

@@ -11,6 +11,10 @@ namespace RTMeld.DataAccess
     public interface IDataContext
     {
         /// <summary>
+        /// An instance of a data mapper
+        /// </summary>
+        IDataMapper Mapper { get; set; }
+        /// <summary>
         /// Connects data access object to its data source
         /// </summary>
         void Connect();
@@ -21,9 +25,15 @@ namespace RTMeld.DataAccess
         /// <param name="str">A connection string or key to a config entry for the actual connection string</param>
         void Connect(string str);
         /// <summary>
-        /// Commits changes to databases
+        /// Commits changes to data source
         /// </summary>
         void Commit();
+
+        /// <summary>
+        /// Commits changes to data source in a non-blocking context
+        /// </summary>
+        /// <returns>Handle to status of execution</returns>
+        Task CommitAsync();
         /// <summary>
         /// Reverts any accumulated changes that has not been committed
         /// </summary>
@@ -36,7 +46,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T"> Type of data to be added</typeparam>
         /// <param name="data">Data to be added</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Insert<T>(T data);
+        int Insert<T>(T data) where T : class;
 
         /// <summary>
         /// Adds new data entry to data source within a non-blocking context
@@ -44,7 +54,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T"> Type of data to be added</typeparam>
         /// <param name="data">Data to be added</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> InsertAsync<T>(T data);
+        Task<int> InsertAsync<T>(T data) where T : class;
 
 
         /// <summary>
@@ -55,7 +65,7 @@ namespace RTMeld.DataAccess
         /// <param name="key">Matching primary key</param>
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Update<K,T>(K key,T newData);
+        int Update<K,T>(K key,T newData) where T : class;
 
 
         /// <summary>
@@ -66,7 +76,7 @@ namespace RTMeld.DataAccess
         /// <param name="key">Matching primary key</param>
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> UpdateAsync<K,T>(K key,T newData);
+        Task<int> UpdateAsync<K,T>(K key,T newData) where T : class;
 
         /// <summary>
         /// Applies modification to record(s) matching the predicate
@@ -75,7 +85,7 @@ namespace RTMeld.DataAccess
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher);
+        int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
 
         /// <summary>
         /// Applies modification to record(s) matching the predicate within a non-blocking context
@@ -84,25 +94,26 @@ namespace RTMeld.DataAccess
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher);
+        Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
 
         /// <summary>
-        /// Removes the record with the corresponding primary key from the data source
+        /// Removes the record from the data source
         /// </summary>
-        /// <typeparam name="K">Key type</typeparam>
-        /// <param name="key">Matching primary key</param>
-        /// <param name="type">Record type handle</param>
+        /// <typeparam name="K">Primary key type</typeparam>
+        /// <typeparam name="T">Record type</typeparam>
+        /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Delete<K>(K key, Type type);
+        int Delete<K, T>(K key) where T : class, new();
 
         /// <summary>
-        /// Removes the record with the corresponding primary key from the data source within a non-blocking context
+        /// Removes the record from the data source within a non-blocking context
         /// </summary>
-        /// <typeparam name="K">Key type</typeparam>
-        /// <param name="key">Matching primary key</param>
-        /// <param name="type">Record type handle</param>
+        /// <typeparam name="T">Key type</typeparam>
+        /// <typeparam name="K">Primary key type</typeparam>
+        /// <typeparam name="T">Record type</typeparam>
+        /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> DeleteAsync<K>(K key, Type type);
+        Task<int> DeleteAsync<K,T>(K key) where T : class, new();
 
         /// <summary>
         /// Removes the record(s) matching the predicate
@@ -212,41 +223,24 @@ namespace RTMeld.DataAccess
         /// <returns>An iterator for traversing through the resultset with each entry abstracted as a mapping of fields to values</returns>
         IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap);
 
-        /// <summary>
-        /// Executes a data altering statement against the datasource using a mapper interface 
-        /// </summary>
-        /// <typeparam name="T">Record type to be inserted, deleted, or modified</typeparam>
-        /// <param name="exec">Statement to be executed</param>
-        /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
-        /// <returns>A status code indicating the result of the operation</returns>
-        int ExecuteNonQuery<T>(string exec);
-
-        /// <summary>
-        /// Executes a data altering statement against the datasource using a mapper interface  within a non-blocking context
-        /// </summary>
-        /// <typeparam name="T">Record type to be inserted, deleted, or modified</typeparam>
-        /// <param name="exec">Statement to be executed</param>
-        /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
-        /// <returns>A callback handle providing access to the status code indicating the result of the operation</returns>
-        Task<int> ExecuteNonQueryAsync<T>(string exec, IDataMapper mapper);
 
         /// <summary>
         /// Executes a data retrieval statement against the underlying datasource using a mapper interface
         /// </summary>
         /// <typeparam name="T">Record type to be retrieved</typeparam>
         /// <param name="exec">Statement to be executed</param>
-        /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
+   
         /// <returns>The iterator for traversing the results</returns>
-        IEnumerable<T> Query<T>(string exec,  IDataMapper mapper);
+        IEnumerable<T> Query<T>(string exec);
 
         /// <summary>
         /// Executes a data retrieval statement against the underlying datasource using a mapper interface within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Record type to be retrieved</typeparam>
         /// <param name="exec">Statement to be executed</param>
-        /// /// <param name="mapper">An interface to a class that maps result sets to annotated data object of type T</param>
+    
         /// <returns>A callback handle providing access to the list of returned records</returns>
-        Task<IList<T>> QueryAsync<T>(string exec,  IDataMapper mapper);
+        Task<IList<T>> QueryAsync<T>(string exec);
 
         #endregion
 
