@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using RTDataAccess.DataRepos;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System.Configuration;
 using System.Data.SqlClient;
 
@@ -19,15 +18,38 @@ namespace RTDataAccess
 
         private string connStr;
 
-        private List<SqlParameter> MapQueryParams(IDictionary<string,object> paramMap)
+        #region HelperMethods
+        private List<SqlParameter> MapQueryParams(IDictionary<string, object> paramMap)
         {
             List<SqlParameter> paramList = new List<SqlParameter>(paramMap.Count);
-            foreach(var key in paramMap.Keys)
+            foreach (var key in paramMap.Keys)
             {
                 paramList.Add(new SqlParameter(key, paramMap[key]));
             }
             return paramList;
         }
+
+        private SqlConnection ConnectADO()
+        {
+            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connStr].ToString());
+            return conn;
+        }
+
+        private SqlCommand BuildADOCommand(string cmd, IList<SqlParameter> parameters)
+        {
+            SqlCommand command = new SqlCommand(cmd);
+            if (parameters != null)
+            {
+                foreach (SqlParameter param in parameters)
+                {
+                    command.Parameters.Add(param);
+                }
+            }
+            return command;
+        }
+        #endregion
+
+
         public override void Connect()
         {
             connStr = "DefaultAzureConnection";
@@ -42,6 +64,7 @@ namespace RTDataAccess
             repository = new RTSqlAzureDataRepo(optionsBuilder.Options);
         }
 
+
         public override void Commit()
         {
             repository.SaveChanges();
@@ -54,19 +77,19 @@ namespace RTDataAccess
 
         }
 
-        public override int Delete<K,T>(K key)
+        public override int Delete<K, T>(K key)
         {
             T entity = new T();
             string keyName = Mapper.GetKeyName(entity);
-            if(keyName == null)
+            if (keyName == null)
             {
                 throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key field");
             }
-            foreach(var field in entity.GetType().GetProperties())
+            foreach (var field in entity.GetType().GetProperties())
             {
-                if(field.Name == keyName)
+                if (field.Name == keyName)
                 {
-                    if(field.GetType() != key.GetType())
+                    if (field.GetType() != key.GetType())
                     {
                         throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key of type " + key.GetType());
                     }
@@ -90,14 +113,14 @@ namespace RTDataAccess
 
         public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap = null)
         {
-            if(paramMap == null)
+            if (paramMap == null)
                 return repository.Database.ExecuteSqlCommand(new RawSqlString(exec));
             else
-                return repository.Database.ExecuteSqlCommand(new RawSqlString(exec),MapQueryParams(paramMap));
+                return repository.Database.ExecuteSqlCommand(new RawSqlString(exec), MapQueryParams(paramMap));
 
         }
 
-       
+
 
         public override int Insert<T>(T data)
         {
@@ -108,7 +131,23 @@ namespace RTDataAccess
 
         public override IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap)
         {
-          
+
+            SqlConnection conn = ConnectADO();
+            var parameters = MapQueryParams(paramMap);
+            SqlCommand command = BuildADOCommand(query, parameters);
+            SqlDataReader reader = command.ExecuteReader();
+            while(reader.Read())
+            {
+                IDictionary<string, object> row = new Dictionary<string, object>();
+                for(int i =0; i < reader.FieldCount; i++)
+                {
+                    row.Add(reader.GetName(i), reader.GetValue(i));
+                }
+                yield return row;
+            }
+            reader.Close();
+            conn.Close();
+
         }
 
         public override IEnumerable<T> Query<T>(string exec)
@@ -118,7 +157,7 @@ namespace RTDataAccess
 
         public override IEnumerable<T> SelectAll<T>()
         {
-            
+
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
