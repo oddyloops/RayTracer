@@ -23,21 +23,21 @@ namespace RTDataAccess
         public abstract void RollBack();
         public abstract int Delete<K,T>(K key) where T : class, new();
         
-        public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher);
+        public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
        
         public abstract int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap);
         
         public abstract int Insert<T>(T data) where T : class;
        
         public abstract IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap);
-        public abstract IEnumerable<T> Query<T>(string exec);
+        public abstract IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T : new();
        
-        public abstract IEnumerable<T> SelectAll<T>();
-        public abstract IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher);
+        public abstract IEnumerable<T> SelectAll<T>() where T : class;
+        public abstract IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
         
-        public abstract T SelectOne<T, K>(K key);
+        public abstract T SelectOne<T, K>(K key) where T : class;
        
-        public abstract IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length);
+        public abstract IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class;
         
         public abstract int Update<K, T>(K key, T newData) where T : class;
        
@@ -56,7 +56,7 @@ namespace RTDataAccess
             return Task.FromResult(result);
         }
 
-        public virtual Task<int> DeleteMatchingAsync<T>(Expression<Func<T, bool>> matcher)
+        public virtual Task<int> DeleteMatchingAsync<T>(Expression<Func<T, bool>> matcher) where T : class
         {
             int result = DeleteMatching(matcher);
             return Task.FromResult(result);
@@ -77,26 +77,26 @@ namespace RTDataAccess
         }
 
 
-        public virtual Task<IList<T>> QueryAsync<T>(string exec)
+        public virtual Task<IList<T>> QueryAsync<T>(string exec, IDictionary<string, object> paramMap) where T : new()
         {
-            IList<T> results = Query<T>(exec).ToList();
+            IList<T> results = Query<T>(exec, paramMap).ToList();
             return Task.FromResult(results);
         }
 
-        public virtual Task<IList<T>> SelectMatchingAsync<T>(Expression<Func<T, bool>> matcher)
+        public virtual Task<IList<T>> SelectMatchingAsync<T>(Expression<Func<T, bool>> matcher) where T : class
         {
             IList<T> results = SelectMatching(matcher).ToList();
             return Task.FromResult(results);
         }
 
-        public virtual Task<T> SelectOneAsync<T, K>(K key)
+        public virtual Task<T> SelectOneAsync<T, K>(K key) where T : class
         {
            T result = SelectOne<T,K>(key);
            return Task.FromResult(result);
         }
 
 
-        public virtual Task<IList<T>> SelectRangeAsync<T>(Expression<Func<T, bool>> matcher, int from, int to)
+        public virtual Task<IList<T>> SelectRangeAsync<T>(Expression<Func<T, bool>> matcher, int from, int to) where T : class
         {
             IList<T> results = SelectRange(matcher, from, to);
             return Task.FromResult(results);
@@ -114,5 +114,32 @@ namespace RTDataAccess
             int result = UpdateMatching(newData, matcher);
             return Task.FromResult(result);
         }
+
+        /// <summary>
+        /// A helper method for checking if specified key type K actually exist in type T
+        /// </summary>
+        /// <typeparam name="T">Recrod Type</typeparam>
+        /// <typeparam name="K">Key Type</typeparam>
+        protected virtual void ValidateKeyType<T, K>() where T : class
+        {
+            Type tType = typeof(T);
+            string keyName = Mapper.GetKeyName(tType);
+
+            if (keyName == null)
+            {
+                throw new InvalidOperationException("Object of type " + tType.Name + " does not contain a key field.");
+            }
+            foreach (var prop in tType.GetProperties())
+            {
+                if (prop.Name == keyName)
+                {
+                    if (!prop.PropertyType.Equals(typeof(K)))
+                    {
+                        throw new InvalidOperationException("Object of type " + tType.Name + " does not contain a key of type " + typeof(K).Name);
+                    }
+                }
+            }
+        }
+
     }
 }

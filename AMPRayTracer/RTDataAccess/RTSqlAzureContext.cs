@@ -6,6 +6,7 @@ using RTDataAccess.DataRepos;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using System.Data.SqlClient;
+using RTMeld;
 
 namespace RTDataAccess
 {
@@ -47,6 +48,8 @@ namespace RTDataAccess
             }
             return command;
         }
+
+        
         #endregion
 
 
@@ -80,7 +83,7 @@ namespace RTDataAccess
         public override int Delete<K, T>(K key)
         {
             T entity = new T();
-            string keyName = Mapper.GetKeyName(entity);
+            string keyName = Mapper.GetKeyName(entity.GetType());
             if (keyName == null)
             {
                 throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key field");
@@ -89,7 +92,7 @@ namespace RTDataAccess
             {
                 if (field.Name == keyName)
                 {
-                    if (field.GetType() != key.GetType())
+                    if (!field.GetType().Equals(key.GetType()))
                     {
                         throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key of type " + key.GetType());
                     }
@@ -150,39 +153,72 @@ namespace RTDataAccess
 
         }
 
-        public override IEnumerable<T> Query<T>(string exec)
+        public override IEnumerable<T> Query<T>(string exec, IDictionary<string, object> paramMap)
         {
-            throw new NotImplementedException();
+
+            SqlConnection conn = ConnectADO();
+            var parameters = MapQueryParams(paramMap);
+            SqlCommand command = BuildADOCommand(exec, parameters);
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                T record = new T();
+                for(int i =0; i < reader.FieldCount;i++)
+                {
+                    Mapper.SetFieldValue(reader.GetName(i), reader.GetValue(i), record);
+                }
+                yield return record;
+            }
+            reader.Close();
+            conn.Close();
+
         }
 
         public override IEnumerable<T> SelectAll<T>()
         {
-
+            return this.repository.Set<T>().AsEnumerable();
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            throw new NotImplementedException();
+            return from x in this.repository.Set<T>() where matcher.Compile()(x) select x;
         }
 
         public override T SelectOne<T, K>(K key)
         {
-            throw new NotImplementedException();
+            ValidateKeyType<T, K>();
+            string keyName = Mapper.GetKeyName(typeof(T));
+            return SelectMatching<T>((x => ((K)Mapper.GetValue(keyName, x)).Equals(key))).First();
         }
 
+
+        
         public override IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length)
         {
-            throw new NotImplementedException();
+            return SelectMatching<T>(matcher).Skip(from).Take(length).ToList();
         }
 
         public override int Update<K, T>(K key, T newData)
         {
-            throw new NotImplementedException();
+            ValidateKeyType<T, K>();
+            T oldData = SelectOne<T,K>(key);
+            Util.DeepCopy(newData, oldData);
+            this.repository.Update<T>(oldData);
+            Commit();
+            return 0;
         }
 
         public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
         {
-            throw new NotImplementedException();
+            IEnumerable<T> matches = SelectMatching<T>(matcher);
+            string keyName = Mapper.GetKeyName(typeof(T));
+            foreach(T match in matches)
+            {
+                Util.DeepCopy(newData, match, new List<string>() { keyName });
+            }
+            this.repository.UpdateRange(matches);
+            Commit();
+            return 0;
         }
     }
 }

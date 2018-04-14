@@ -121,7 +121,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int DeleteMatching<T>(Expression<Func<T, bool>> matcher);
+        int DeleteMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
 
         /// <summary>
         /// Removes the record(s) matching the predicate within a non-blocking context
@@ -129,14 +129,14 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> DeleteMatchingAsync<T>(Expression<Func<T, bool>> matcher);
+        Task<int> DeleteMatchingAsync<T>(Expression<Func<T, bool>> matcher) where T : class;
 
         /// <summary>
         /// Returns an iterator for traversing the instances of the record present in the data source
         /// </summary>
         /// <typeparam name="T">Record type</typeparam>
         /// <returns>The iterator for traversing the results</returns>
-        IEnumerable<T> SelectAll<T>();
+        IEnumerable<T> SelectAll<T>() where T : class;
 
         /// <summary>
         /// Returns a single record with the corresponding primary key
@@ -145,7 +145,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="K">Key Type</typeparam>
         /// <param name="key">Matching Primary Key</param>
         /// <returns>Instance of matching record</returns>
-        T SelectOne<T, K>(K key);
+        T SelectOne<T, K>(K key) where T : class;
 
         /// <summary>
         /// Returns a single record with the corresponding primary key within a non-blocking context
@@ -154,7 +154,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="K">Key Type</typeparam>
         /// <param name="key">Matching Primary Key</param>
         /// <returns>A callback that provides access to the instance of matching record</returns>
-        Task<T> SelectOneAsync<T, K>(K key);
+        Task<T> SelectOneAsync<T, K>(K key) where T : class;
 
         /// <summary>
         /// Return record(s) matching the specified predicate
@@ -162,7 +162,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="matcher">Predicate expression used for matching records meant to be retrieved</param>
         /// <returns>The iterator for traversing the results</returns>
-        IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher);
+        IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
 
         /// <summary>
         /// Return record(s) matching the specified predicate within  a non-blocking context 
@@ -170,7 +170,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="matcher">Predicate expression used for matching records meant to be retrieved</param>
         /// <returns>A callback that provides access to the list of matching records</returns>
-        Task<IList<T>> SelectMatchingAsync<T>(Expression<Func<T, bool>> matcher);
+        Task<IList<T>> SelectMatchingAsync<T>(Expression<Func<T, bool>> matcher) where T : class;
 
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace RTMeld.DataAccess
         /// <param name="from">Starting index</param>
         /// <param name="length">Amount of records to be returned</param>
         /// <returns>A list of matching record within specified range</returns>
-        IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length);
+        IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class;
 
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace RTMeld.DataAccess
         /// <param name="from">Starting index</param>
         /// <param name="length">Amount of records to be returned</param>
         /// <returns>A callback that provides access to the list of matching record within specified range</returns>
-        Task<IList<T>> SelectRangeAsync<T>(Expression<Func<T, bool>> matcher, int from, int to);
+        Task<IList<T>> SelectRangeAsync<T>(Expression<Func<T, bool>> matcher, int from, int to) where T : class;
 
         #endregion
 
@@ -229,18 +229,20 @@ namespace RTMeld.DataAccess
         /// </summary>
         /// <typeparam name="T">Record type to be retrieved</typeparam>
         /// <param name="exec">Statement to be executed</param>
+        /// <param name="paramMap">A mapping of parameter placeholders to their actual values</param>
    
         /// <returns>The iterator for traversing the results</returns>
-        IEnumerable<T> Query<T>(string exec);
+        IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T :new();
 
         /// <summary>
         /// Executes a data retrieval statement against the underlying datasource using a mapper interface within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Record type to be retrieved</typeparam>
         /// <param name="exec">Statement to be executed</param>
-    
+        /// ///<param name="paramMap">A mapping of parameter placeholders to their actual values</param>
+
         /// <returns>A callback handle providing access to the list of returned records</returns>
-        Task<IList<T>> QueryAsync<T>(string exec);
+        Task<IList<T>> QueryAsync<T>(string exec,  IDictionary<string, object> paramMap) where T : new();
 
         #endregion
 
