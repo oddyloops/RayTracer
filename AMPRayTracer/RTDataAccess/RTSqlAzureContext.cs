@@ -17,7 +17,6 @@ namespace RTDataAccess
     {
         RTSqlAzureDataRepo repository;
 
-        private string connStr;
 
         #region HelperMethods
         private List<SqlParameter> MapQueryParams(IDictionary<string, object> paramMap)
@@ -55,15 +54,15 @@ namespace RTDataAccess
 
         public override void Connect()
         {
-            connStr = "DefaultAzureConnection";
+            connStr = "DefaultSQLAzureConnection";
             Connect(connStr);
         }
 
         public override void Connect(string str)
         {
-            connStr = str;
+            base.Connect(str);
             var optionsBuilder = new DbContextOptionsBuilder<RTSqlAzureDataRepo>();
-            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[connStr].ToString());
+            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[connStr].ConnectionString);
             repository = new RTSqlAzureDataRepo(optionsBuilder.Options);
         }
 

@@ -15,10 +15,15 @@ namespace RTDataAccess
     {
         private IDataMapper mapper;
 
+        protected string connStr;
+
         public virtual IDataMapper Mapper { get => mapper; set => mapper = value; }
 
         public abstract void Connect();
-        public abstract void Connect(string str);
+        public virtual void Connect(string str)
+        {
+            this.connStr = str;
+        }
         public abstract void Commit();
         public abstract void RollBack();
         public abstract int Delete<K,T>(K key) where T : class, new();

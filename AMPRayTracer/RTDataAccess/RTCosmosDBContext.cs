@@ -1,14 +1,100 @@
-﻿using System;
+﻿using Microsoft.Azure.CosmosDB.Table;
+using Microsoft.WindowsAzure.Storage;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace RTDataAccess
 {
     /// <summary>
-    /// IDataContext compliant wrapper around the Azure Cosmos DB interface
+    /// IDataContext compliant wrapper around the Azure Cosmos DB Table API
     /// </summary>
     public class RTCosmoDBContext : DataContext
     {
 
+        CloudStorageAccount account;
+
+        public override void Commit()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Connect()
+        {
+            Connect("DefaultCosmosDBConnection");
+        }
+
+        public override void Connect(string str)
+        {
+            base.Connect(str);
+            account = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings[str].ConnectionString);
+        }
+
+        public override int Delete<K, T>(K key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Insert<T>(T data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<T> Query<T>(string exec, IDictionary<string, object> paramMap)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void RollBack()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<T> SelectAll<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override T SelectOne<T, K>(K key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Update<K, T>(K key, T newData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
