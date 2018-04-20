@@ -1,5 +1,5 @@
-﻿using Microsoft.Azure.CosmosDB.Table;
-using Microsoft.WindowsAzure.Storage;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,7 +15,17 @@ namespace RTDataAccess
     {
 
         CloudStorageAccount account;
+        CloudTable tableHandle;
 
+        #region HelperMethods
+        private void ValidateEntityType<T>()
+        {
+            if(!(typeof(T).IsSubclassOf(  typeof(TableEntity))))
+            {
+                throw new InvalidOperationException("Only instances of TableEntity can be interfaced with Azure Table");
+            }
+        }
+#endregion
         public override void Commit()
         {
             throw new NotImplementedException();
@@ -30,11 +40,19 @@ namespace RTDataAccess
         {
             base.Connect(str);
             account = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings[str].ConnectionString);
+            CloudTableClient tableClient = account.CreateCloudTableClient();
+            tableHandle = tableClient.GetTableReference(ConfigurationManager.AppSettings["AzureCosmosDBTable"].ToString());
+            tableHandle.CreateIfNotExistsAsync().ContinueWith(result => { if (!result.Result) {
+                    throw new Exception("Error getting table handle from Azure Cosmos DB");
+                } });
         }
 
         public override int Delete<K, T>(K key)
         {
-            throw new NotImplementedException();
+            ValidateKeyType<T, K>();
+            ValidateEntityType<T>();
+            
+            return 0;
         }
 
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
