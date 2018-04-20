@@ -3,8 +3,9 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq.Expressions;
-using System.Text;
+using System.Linq;
 
 namespace RTDataAccess
 {
@@ -25,6 +26,15 @@ namespace RTDataAccess
                 throw new InvalidOperationException("Only instances of TableEntity can be interfaced with Azure Table");
             }
         }
+
+
+        private void ThrowOnHttpFailure(int statusCode)
+        {
+            if(((System.Net.HttpStatusCode)statusCode) != System.Net.HttpStatusCode.OK)
+            {
+                throw new IOException("Network error when connecting to Cosmos DB table service");
+            }
+        }
 #endregion
         public override void Commit()
         {
@@ -43,7 +53,7 @@ namespace RTDataAccess
             CloudTableClient tableClient = account.CreateCloudTableClient();
             tableHandle = tableClient.GetTableReference(ConfigurationManager.AppSettings["AzureCosmosDBTable"].ToString());
             tableHandle.CreateIfNotExistsAsync().ContinueWith(result => { if (!result.Result) {
-                    throw new Exception("Error getting table handle from Azure Cosmos DB");
+                    throw new IOException("Network error when connecting to Cosmos DB table service");
                 } });
         }
 
@@ -51,13 +61,35 @@ namespace RTDataAccess
         {
             ValidateKeyType<T, K>();
             ValidateEntityType<T>();
-            
+            T entity = Activator.CreateInstance<T>();
+            Mapper.SetFieldValue(Mapper.GetKeyName(entity.GetType()), key, entity);
+            TableOperation deleteKey = TableOperation.Delete(entity as ITableEntity);
+            tableHandle.ExecuteAsync(deleteKey).ContinueWith(result => {
+                ThrowOnHttpFailure(result.Result.HttpStatusCode);
+            });
+
             return 0;
         }
 
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            throw new NotImplementedException();
+            ValidateEntityType<T>();
+            IList<T> matched = SelectMatching(matcher).ToList();
+            TableBatchOperation batchDelete = new TableBatchOperation();
+
+            foreach(T match in matched)
+            {
+                batchDelete.Delete(match as ITableEntity);
+            }
+
+            tableHandle.ExecuteBatchAsync(batchDelete).ContinueWith(results =>
+            {
+                foreach(var opResult in results.Result)
+                {
+                    ThrowOnHttpFailure(opResult.HttpStatusCode);
+                }
+            });
+            return 0;
         }
 
         public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap)
@@ -67,7 +99,13 @@ namespace RTDataAccess
 
         public override int Insert<T>(T data)
         {
-            throw new NotImplementedException();
+            ValidateEntityType<T>();
+            TableOperation insert = TableOperation.Insert(data as ITableEntity);
+            tableHandle.ExecuteAsync(insert).ContinueWith(result => {
+                ThrowOnHttpFailure(result.Result.HttpStatusCode);
+            });
+
+            return 0;
         }
 
         public override IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap)
@@ -87,7 +125,9 @@ namespace RTDataAccess
 
         public override IEnumerable<T> SelectAll<T>()
         {
-            throw new NotImplementedException();
+
+           
+            TableQuery<T> allQuery = new TableQuery<T>();
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)

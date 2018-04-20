@@ -26,7 +26,7 @@ namespace RTDataAccess
         }
         public abstract void Commit();
         public abstract void RollBack();
-        public abstract int Delete<K,T>(K key) where T : class, new();
+        public abstract int Delete<K,T>(K key) where T : class ;
         
         public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
        
@@ -35,7 +35,7 @@ namespace RTDataAccess
         public abstract int Insert<T>(T data) where T : class;
        
         public abstract IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap);
-        public abstract IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T : new();
+        public abstract IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T : class;
        
         public abstract IEnumerable<T> SelectAll<T>() where T : class;
         public abstract IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
@@ -55,7 +55,7 @@ namespace RTDataAccess
             return Task.FromResult<object>(null);
         }
 
-        public virtual Task<int> DeleteAsync<K,T>(K key) where T : class, new()
+        public virtual Task<int> DeleteAsync<K,T>(K key) where T : class 
         {
             int result = Delete<K,T>(key);
             return Task.FromResult(result);
@@ -82,7 +82,7 @@ namespace RTDataAccess
         }
 
 
-        public virtual Task<IList<T>> QueryAsync<T>(string exec, IDictionary<string, object> paramMap) where T : new()
+        public virtual Task<IList<T>> QueryAsync<T>(string exec, IDictionary<string, object> paramMap) where T : class
         {
             IList<T> results = Query<T>(exec, paramMap).ToList();
             return Task.FromResult(results);

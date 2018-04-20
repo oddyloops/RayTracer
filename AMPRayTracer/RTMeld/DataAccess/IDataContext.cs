@@ -103,7 +103,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Delete<K, T>(K key) where T : class, new();
+        int Delete<K, T>(K key) where T : class;
 
         /// <summary>
         /// Removes the record from the data source within a non-blocking context
@@ -113,7 +113,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> DeleteAsync<K,T>(K key) where T : class, new();
+        Task<int> DeleteAsync<K,T>(K key) where T : class;
 
         /// <summary>
         /// Removes the record(s) matching the predicate
@@ -232,7 +232,7 @@ namespace RTMeld.DataAccess
         /// <param name="paramMap">A mapping of parameter placeholders to their actual values</param>
    
         /// <returns>The iterator for traversing the results</returns>
-        IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T :new();
+        IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T : class;
 
         /// <summary>
         /// Executes a data retrieval statement against the underlying datasource using a mapper interface within a non-blocking context
@@ -242,7 +242,7 @@ namespace RTMeld.DataAccess
         /// ///<param name="paramMap">A mapping of parameter placeholders to their actual values</param>
 
         /// <returns>A callback handle providing access to the list of returned records</returns>
-        Task<IList<T>> QueryAsync<T>(string exec,  IDictionary<string, object> paramMap) where T : new();
+        Task<IList<T>> QueryAsync<T>(string exec,  IDictionary<string, object> paramMap) where T : class;
 
         #endregion
 

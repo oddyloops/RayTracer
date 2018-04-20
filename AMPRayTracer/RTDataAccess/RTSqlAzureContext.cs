@@ -81,7 +81,8 @@ namespace RTDataAccess
 
         public override int Delete<K, T>(K key)
         {
-            T entity = new T();
+            T entity = Activator.CreateInstance<T>();
+
             string keyName = Mapper.GetKeyName(entity.GetType());
             if (keyName == null)
             {
@@ -161,7 +162,7 @@ namespace RTDataAccess
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                T record = new T();
+                T record = Activator.CreateInstance<T>();
                 for(int i =0; i < reader.FieldCount;i++)
                 {
                     Mapper.SetFieldValue(reader.GetName(i), reader.GetValue(i), record);
