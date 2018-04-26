@@ -21,6 +21,8 @@ namespace RTDataAccess
         #region HelperMethods
         private List<SqlParameter> MapQueryParams(IDictionary<string, object> paramMap)
         {
+            if (paramMap == null)
+                return null;
             List<SqlParameter> paramList = new List<SqlParameter>(paramMap.Count);
             foreach (var key in paramMap.Keys)
             {

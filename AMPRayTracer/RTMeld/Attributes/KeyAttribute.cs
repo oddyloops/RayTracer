@@ -12,5 +12,6 @@ namespace RTMeld.Attributes
                        AllowMultiple = false)]
     public class KeyAttribute : Attribute
     {
+        
     }
 }

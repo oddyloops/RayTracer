@@ -1,41 +1,49 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.Azure.Documents;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq.Expressions;
 using System.Linq;
+using Microsoft.Azure.Documents.Client;
+using System.Threading.Tasks;
 
 namespace RTDataAccess
 {
     /// <summary>
-    /// IDataContext compliant wrapper around the Azure Cosmos DB Table API
+    /// IDataContext compliant wrapper around the Azure Cosmos DB SQL API
     /// </summary>
     public class RTCosmoDBContext : DataContext
     {
 
-        CloudStorageAccount account;
-        CloudTable tableHandle;
+        DocumentClient client;
+        private string database;
+
+        private const string KEY = "AzureCosmosSQLKey";
+        private const string DB = "AzureCosmosSQLDB";
 
         #region HelperMethods
-        private void ValidateEntityType<T>()
+
+        private SqlParameterCollection MapQueryParams(IDictionary<string, object> paramMap)
         {
-            if(!(typeof(T).IsSubclassOf(  typeof(TableEntity))))
+            if (paramMap == null)
+                return null;
+            SqlParameterCollection mapped = new SqlParameterCollection();
+            foreach (var param in paramMap)
             {
-                throw new InvalidOperationException("Only instances of TableEntity can be interfaced with Azure Table");
+                mapped.Add(new SqlParameter(param.Key, param.Value));
             }
+            return mapped;
         }
 
-
-        private void ThrowOnHttpFailure(int statusCode)
+        private void ThrowOnHttpFailure(System.Net.HttpStatusCode statusCode)
         {
-            if(((System.Net.HttpStatusCode)statusCode) != System.Net.HttpStatusCode.OK)
+            if (statusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new IOException("Network error when connecting to Cosmos DB table service");
             }
         }
-#endregion
+        #endregion
         public override void Commit()
         {
             throw new NotImplementedException();
@@ -49,44 +57,37 @@ namespace RTDataAccess
         public override void Connect(string str)
         {
             base.Connect(str);
-            account = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings[str].ConnectionString);
-            CloudTableClient tableClient = account.CreateCloudTableClient();
-            tableHandle = tableClient.GetTableReference(ConfigurationManager.AppSettings["AzureCosmosDBTable"].ToString());
-            tableHandle.CreateIfNotExistsAsync().ContinueWith(result => { if (!result.Result) {
-                    throw new IOException("Network error when connecting to Cosmos DB table service");
-                } });
+            client = new DocumentClient(new Uri(ConfigurationManager.ConnectionStrings[str].ConnectionString), ConfigurationManager.AppSettings[KEY].ToString());
+            database = ConfigurationManager.AppSettings[DB].ToString();
+            client.CreateDatabaseIfNotExistsAsync(new Database { Id = database }).ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
+
+
         }
 
         public override int Delete<K, T>(K key)
         {
-            ValidateKeyType<T, K>();
-            ValidateEntityType<T>();
-            T entity = Activator.CreateInstance<T>();
-            Mapper.SetFieldValue(Mapper.GetKeyName(entity.GetType()), key, entity);
-            TableOperation deleteKey = TableOperation.Delete(entity as ITableEntity);
-            tableHandle.ExecuteAsync(deleteKey).ContinueWith(result => {
-                ThrowOnHttpFailure(result.Result.HttpStatusCode);
-            });
 
+            ValidateKeyType<T, K>();
+            client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()))
+                .ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
             return 0;
         }
 
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            ValidateEntityType<T>();
+
             IList<T> matched = SelectMatching(matcher).ToList();
-            TableBatchOperation batchDelete = new TableBatchOperation();
 
-            foreach(T match in matched)
+            IList<Task<ResourceResponse<Document>>> deletionTasks = new List<Task<ResourceResponse<Document>>>();
+            foreach (T match in matched)
             {
-                batchDelete.Delete(match as ITableEntity);
+                deletionTasks.Add(client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), Mapper.GetKeyValue(match).ToString())));
             }
-
-            tableHandle.ExecuteBatchAsync(batchDelete).ContinueWith(results =>
+            Task.WhenAll(deletionTasks).ContinueWith(result =>
             {
-                foreach(var opResult in results.Result)
+                foreach (var outcome in result.Result)
                 {
-                    ThrowOnHttpFailure(opResult.HttpStatusCode);
+                    ThrowOnHttpFailure(outcome.StatusCode);
                 }
             });
             return 0;
@@ -99,12 +100,8 @@ namespace RTDataAccess
 
         public override int Insert<T>(T data)
         {
-            ValidateEntityType<T>();
-            TableOperation insert = TableOperation.Insert(data as ITableEntity);
-            tableHandle.ExecuteAsync(insert).ContinueWith(result => {
-                ThrowOnHttpFailure(result.Result.HttpStatusCode);
-            });
-
+            client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))), data)
+                .ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
             return 0;
         }
 
@@ -115,7 +112,10 @@ namespace RTDataAccess
 
         public override IEnumerable<T> Query<T>(string exec, IDictionary<string, object> paramMap)
         {
-            throw new NotImplementedException();
+            SqlParameterCollection parameters = MapQueryParams(paramMap);
+            IEnumerable<T> result = client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))),
+                new SqlQuerySpec() { QueryText = exec, Parameters = parameters });
+            return result;
         }
 
         public override void RollBack()
@@ -125,24 +125,28 @@ namespace RTDataAccess
 
         public override IEnumerable<T> SelectAll<T>()
         {
-
-           
-            TableQuery<T> allQuery = new TableQuery<T>();
+            var result = from data in client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))))
+                         select data;
+            return result;
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            throw new NotImplementedException();
+            var result = from data in client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))))
+                         where matcher.Compile()(data)
+                         select data;
+            return result;
         }
 
         public override T SelectOne<T, K>(K key)
         {
-            throw new NotImplementedException();
+            ValidateKeyType<T, K>();
+            return client.CreateDocumentQuery<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString())).First();
         }
 
         public override IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length)
         {
-            throw new NotImplementedException();
+            return SelectMatching(matcher).Skip(from).Take(length).ToList();
         }
 
         public override int Update<K, T>(K key, T newData)
