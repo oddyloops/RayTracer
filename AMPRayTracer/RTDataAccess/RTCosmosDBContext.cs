@@ -144,10 +144,7 @@ namespace RTDataAccess
             return client.CreateDocumentQuery<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString())).First();
         }
 
-        public override IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length)
-        {
-            return SelectMatching(matcher).Skip(from).Take(length).ToList();
-        }
+   
 
         public override int Update<K, T>(K key, T newData)
         {

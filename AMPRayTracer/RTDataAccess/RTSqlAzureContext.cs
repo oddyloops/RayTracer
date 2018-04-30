@@ -143,6 +143,7 @@ namespace RTDataAccess
             SqlDataReader reader = command.ExecuteReader();
             while(reader.Read())
             {
+           
                 IDictionary<string, object> row = new Dictionary<string, object>();
                 for(int i =0; i < reader.FieldCount; i++)
                 {
@@ -195,11 +196,7 @@ namespace RTDataAccess
 
 
         
-        public override IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length)
-        {
-            return SelectMatching<T>(matcher).Skip(from).Take(length).ToList();
-        }
-
+      
         public override int Update<K, T>(K key, T newData)
         {
             ValidateKeyType<T, K>();

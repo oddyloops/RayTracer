@@ -42,7 +42,10 @@ namespace RTDataAccess
         
         public abstract T SelectOne<T, K>(K key) where T : class;
        
-        public abstract IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class;
+        public virtual IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class
+        {
+            return SelectMatching<T>(matcher).Skip(from).Take(length).ToList();
+        }
         
         public abstract int Update<K, T>(K key, T newData) where T : class;
        
