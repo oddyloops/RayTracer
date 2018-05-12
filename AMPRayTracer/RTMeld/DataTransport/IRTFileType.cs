@@ -6,6 +6,7 @@ namespace RTMeld.DataTransport
 
     public interface IRTFileType
     {
+        [Key]
         [Map("id")]
         int Id { get; set; }
 

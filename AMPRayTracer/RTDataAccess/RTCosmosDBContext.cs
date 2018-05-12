@@ -148,12 +148,20 @@ namespace RTDataAccess
 
         public override int Update<K, T>(K key, T newData)
         {
-            throw new NotImplementedException();
+            client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database,Mapper.GetAzureDocumentCollection(typeof(T)),key.ToString()),newData)
+                 .ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
+            return 0;
+
         }
 
         public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
         {
-            throw new NotImplementedException();
+            var matches = SelectMatching(matcher);
+            foreach(var match in matches)
+            {
+                Update(Mapper.GetKeyValue(match), newData);
+            }
+            return 0;
         }
     }
 }

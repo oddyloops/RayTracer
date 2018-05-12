@@ -6,6 +6,7 @@ namespace RTMeld.DataTransport
 {
     public interface IRTUserSession
     {
+        [Key]
         [Map("user_id,userId")]
         Guid UserId { get; set; }
 

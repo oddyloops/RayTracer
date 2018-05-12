@@ -9,9 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RTEngineCPU", "RTEngineCPU\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JsonParser", "JsonParser\JsonParser.vcxproj", "{2DBC5796-CE34-44C2-BF8C-0A21341F613A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTMeld", "RTMeld\RTMeld.csproj", "{67C4DA79-8C99-4F6D-AFF0-BE7D88B12F55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RTMeld", "RTMeld\RTMeld.csproj", "{67C4DA79-8C99-4F6D-AFF0-BE7D88B12F55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTDataAccess", "RTDataAccess\RTDataAccess.csproj", "{42C1115C-8EC3-451D-AEB6-BFD10B6839F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RTDataAccess", "RTDataAccess\RTDataAccess.csproj", "{42C1115C-8EC3-451D-AEB6-BFD10B6839F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
