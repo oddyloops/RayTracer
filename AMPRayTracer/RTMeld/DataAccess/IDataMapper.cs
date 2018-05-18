@@ -16,7 +16,7 @@ namespace RTMeld.DataAccess
         object GetValue(string fieldName,object obj);
 
         /// <summary>
-        /// Returns a reference field mapped to specified name
+        /// Returns value of field mapped to specified name
         /// </summary>
         /// <param name="fieldName">Mapped field name</param>
         /// <param name="obj">Object to be mapped</param>
