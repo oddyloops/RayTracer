@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using System.Data.SqlClient;
 using RTMeld;
+using RTMeld.DataAccess;
 
 namespace RTDataAccess
 {
@@ -50,8 +51,14 @@ namespace RTDataAccess
             return command;
         }
 
-        
+
         #endregion
+
+        public RTSqlAzureContext(IConnectionContext _context, IDataMapper _mapper) :
+            base(_context, _mapper)
+        {
+
+        }
 
 
         public override void Connect()

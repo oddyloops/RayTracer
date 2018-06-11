@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using Microsoft.Azure.Documents.Client;
 using System.Threading.Tasks;
+using RTMeld.DataAccess;
 
 namespace RTDataAccess
 {
@@ -44,6 +45,13 @@ namespace RTDataAccess
             }
         }
         #endregion
+
+        public RTCosmoDBContext(IConnectionContext _context, IDataMapper _mapper) :
+            base(_context,_mapper)
+        {
+
+        }
+
         public override void Commit()
         {
             throw new NotImplementedException();

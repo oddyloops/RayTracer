@@ -14,7 +14,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RTDataAccess\RTDataAccess.csproj" />
+    <ProjectReference Include="..\RTMapper\RTMapper.csproj" />
     <ProjectReference Include="..\RTMeld\RTMeld.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="App1.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -14,16 +14,26 @@ namespace RTDataAccess
     public abstract class DataContext : IDataContext
     {
         private IDataMapper mapper;
+        private IConnectionContext context;
 
         protected string connStr;
 
         public virtual IDataMapper Mapper { get => mapper; set => mapper = value; }
+
+        public virtual IConnectionContext Context { get => context; set => context = value; }
 
         public abstract void Connect();
         public virtual void Connect(string str)
         {
             this.connStr = str;
         }
+
+        public DataContext(IConnectionContext _context,IDataMapper _mapper)
+        {
+            context = _context;
+            mapper = _mapper;
+        }
+
         public abstract void Commit();
         public abstract void RollBack();
         public abstract int Delete<K,T>(K key) where T : class ;
