@@ -8,7 +8,7 @@ namespace RTMeld.DataAccess
     /// <summary>
     /// Contract that all data access objects must satisfy
     /// </summary>
-    public interface IDataContext
+    public interface IDataContext : IDisposable
     {
         /// <summary>
         /// An instance of a data mapper
@@ -38,7 +38,8 @@ namespace RTMeld.DataAccess
         /// Reverts any accumulated changes that has not been committed
         /// </summary>
         void RollBack();
-        
+
+
         #region StronglyTyped
         /// <summary>
         /// Adds new data entry to data source

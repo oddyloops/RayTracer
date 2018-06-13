@@ -65,8 +65,8 @@ namespace RTDataAccess
         public override void Connect(string str)
         {
             base.Connect(str);
-            client = new DocumentClient(new Uri(ConfigurationManager.ConnectionStrings[str].ConnectionString), ConfigurationManager.AppSettings[KEY].ToString());
-            database = ConfigurationManager.AppSettings[DB].ToString();
+            client = new DocumentClient(new Uri(Context.GetConnectionString(str)), Context.GetAppSetting(KEY));
+            database = Context.GetAppSetting(DB);
             client.CreateDatabaseIfNotExistsAsync(new Database { Id = database }).ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
 
 

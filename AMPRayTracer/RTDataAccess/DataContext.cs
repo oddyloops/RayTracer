@@ -159,5 +159,10 @@ namespace RTDataAccess
             }
         }
 
+
+        public virtual void Dispose()
+        {
+            //do nothing for classes that do not need to explicitly close their connection
+        }
     }
 }

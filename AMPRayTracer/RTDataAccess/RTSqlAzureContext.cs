@@ -71,7 +71,7 @@ namespace RTDataAccess
         {
             base.Connect(str);
             var optionsBuilder = new DbContextOptionsBuilder<RTSqlAzureDataRepo>();
-            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[connStr].ConnectionString);
+            optionsBuilder.UseSqlServer(Context.GetConnectionString(str));
             repository = new RTSqlAzureDataRepo(optionsBuilder.Options);
         }
 
@@ -225,6 +225,12 @@ namespace RTDataAccess
             this.repository.UpdateRange(matches);
             Commit();
             return 0;
+        }
+
+
+        public override void Dispose()
+        {
+            repository.Database.CloseConnection();
         }
     }
 }
