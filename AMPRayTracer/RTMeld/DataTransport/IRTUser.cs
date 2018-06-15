@@ -21,9 +21,7 @@ namespace RTMeld.DataTransport
         [Map("email")]
         string Email { get; set; }
 
-        #region Children
-        ICollection<IRTUserSession> UserSessions { get; set; }
-        #endregion
+        
 
     }
 }

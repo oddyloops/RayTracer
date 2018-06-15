@@ -4,11 +4,11 @@ namespace RTDataAccess.DataObjects
 {
     public class RTFileType : IRTFileType
     {
-        protected int id;
+        private int id;
 
-        protected string ext;
+        private string ext;
 
-        protected string fullName;
+        private string fullName;
 
         public int Id { get => id; set => id = value; }
         public string Ext { get => ext; set => ext = value; }

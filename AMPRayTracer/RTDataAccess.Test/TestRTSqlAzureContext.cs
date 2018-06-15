@@ -4,6 +4,8 @@ using RTMeld.DataTransport;
 using Xunit;
 using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace RTDataAccess.Test
 {
@@ -36,14 +38,15 @@ namespace RTDataAccess.Test
         }
 
         [Fact]
-        public void TestInsert()
+        public void TestInsertAndDelete()
         {
+            azureContext.Connect();
             azureContext.Insert(testUser);
-            var results= azureContext.SelectAll<IRTUser>().ToList();
-            Assert.True(results.Count > 0);
-            var returnedUser = results.First();
+            var returnedUser = azureContext.SelectOne<IRTUser,Guid>(testUser.Id);
             Assert.Equal(testUser.UserName, returnedUser.UserName);
             azureContext.Delete<Guid,IRTUser>(returnedUser.Id);
+            returnedUser = azureContext.SelectOne<IRTUser, Guid>(testUser.Id);
+            Assert.Null(returnedUser);
         }
 
 

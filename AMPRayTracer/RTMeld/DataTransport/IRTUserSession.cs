@@ -15,8 +15,6 @@ namespace RTMeld.DataTransport
 
         [Map("log_in_time,login_time")]
         DateTime LogInTime { get; set; }
-        #region Parent(s)
-        IRTUser User { get; set; }
-        #endregion
+    
     }
 }

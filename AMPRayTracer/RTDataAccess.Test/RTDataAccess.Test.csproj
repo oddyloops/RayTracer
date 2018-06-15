@@ -18,10 +18,4 @@
     <ProjectReference Include="..\RTMeld\RTMeld.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="App1.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
