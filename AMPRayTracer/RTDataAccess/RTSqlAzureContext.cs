@@ -52,6 +52,18 @@ namespace RTDataAccess
         }
 
 
+        private void ClearTracks<T> () where T : class
+        {
+            var entries = repository.ChangeTracker.Entries<T>();
+            if (entries.Count() > 0)
+            {
+                foreach (var entity in entries.ToList())
+                {
+                    entity.State = EntityState.Detached;
+                }
+            }
+        }
+
         #endregion
 
         public RTSqlAzureContext(IConnectionContext _context, IDataMapper _mapper) :
@@ -101,7 +113,7 @@ namespace RTDataAccess
             {
                 if (field.Name == keyName)
                 {
-                    if (!field.GetType().Equals(key.GetType()))
+                    if (!field.PropertyType.Equals(key.GetType()))
                     {
                         throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key of type " + key.GetType());
                     }
@@ -109,6 +121,7 @@ namespace RTDataAccess
                     break;
                 }
             }
+            ClearTracks<T>();
             repository.Attach(entity);
             repository.Remove(entity);
             Commit();
@@ -140,6 +153,15 @@ namespace RTDataAccess
             Commit();
             return 0;
         }
+
+
+        public override int Insert<T>(IList<T> data)
+        {
+            repository.AddRange(data);
+            Commit();
+            return 0;
+        }
+
 
         public override IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap)
         {
@@ -198,7 +220,12 @@ namespace RTDataAccess
         {
             ValidateKeyType<T, K>();
             string keyName = Mapper.GetKeyName(typeof(T));
-            return SelectMatching<T>((x => ((K)Mapper.GetValue(keyName, x)).Equals(key))).First();
+            var matches= SelectMatching<T>((x => ((K)Mapper.GetValue(keyName, x)).Equals(key)));
+            if(matches.Count() > 0)
+            {
+                return matches.First();
+            }
+            return null;
         }
 
 

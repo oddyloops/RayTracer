@@ -28,7 +28,7 @@ namespace RTDataAccess
             this.connStr = str;
         }
 
-        public DataContext(IConnectionContext _context,IDataMapper _mapper)
+        public DataContext(IConnectionContext _context, IDataMapper _mapper)
         {
             context = _context;
             mapper = _mapper;
@@ -36,31 +36,46 @@ namespace RTDataAccess
 
         public abstract void Commit();
         public abstract void RollBack();
-        public abstract int Delete<K,T>(K key) where T : class ;
-        
+        public abstract int Delete<K, T>(K key) where T : class;
+
         public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
-       
+
         public abstract int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap);
-        
+
         public abstract int Insert<T>(T data) where T : class;
-       
+
+        public virtual int Insert<T>(IList<T> data) where T : class
+        {
+            foreach(var item in data)
+            {
+                Insert(item);
+            }
+            return 0;
+        }
+
+        public virtual Task<int> InsertAsync<T>(IList<T> data) where T : class
+        {
+            int result = Insert(data);
+            return Task.FromResult(result);
+        }
+
         public abstract IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap);
-        public abstract IEnumerable<T> Query<T>(string exec,IDictionary<string,object> paramMap) where T : class;
-       
+        public abstract IEnumerable<T> Query<T>(string exec, IDictionary<string, object> paramMap) where T : class;
+
         public abstract IEnumerable<T> SelectAll<T>() where T : class;
         public abstract IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
-        
+
         public abstract T SelectOne<T, K>(K key) where T : class;
-       
+
         public virtual IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class
         {
             return SelectMatching<T>(matcher).Skip(from).Take(length).ToList();
         }
-        
+
         public abstract int Update<K, T>(K key, T newData) where T : class;
-       
+
         public abstract int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
-        
+
 
         public virtual Task CommitAsync()
         {
@@ -68,9 +83,9 @@ namespace RTDataAccess
             return Task.FromResult<object>(null);
         }
 
-        public virtual Task<int> DeleteAsync<K,T>(K key) where T : class 
+        public virtual Task<int> DeleteAsync<K, T>(K key) where T : class
         {
-            int result = Delete<K,T>(key);
+            int result = Delete<K, T>(key);
             return Task.FromResult(result);
         }
 
@@ -109,8 +124,8 @@ namespace RTDataAccess
 
         public virtual Task<T> SelectOneAsync<T, K>(K key) where T : class
         {
-           T result = SelectOne<T,K>(key);
-           return Task.FromResult(result);
+            T result = SelectOne<T, K>(key);
+            return Task.FromResult(result);
         }
 
 
@@ -164,5 +179,7 @@ namespace RTDataAccess
         {
             //do nothing for classes that do not need to explicitly close their connection
         }
+
+
     }
 }

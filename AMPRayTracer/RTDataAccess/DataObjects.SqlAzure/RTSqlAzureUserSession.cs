@@ -5,9 +5,13 @@ using System.Text;
 
 namespace RTDataAccess.DataObjects.SqlAzure
 {
-    [Table("RTUserSession")]
+    [Table("RT_User_Session")]
     public class RTSqlAzureUserSession : RTUserSession
     {
+        
+        [Column("Id")]
+        public override Guid Id { get => base.Id; set => base.Id = value; }
+
         [Column("UserId")]
         public override Guid UserId { get => base.UserId; set => base.UserId = value; }
         [Column("SessionId")]

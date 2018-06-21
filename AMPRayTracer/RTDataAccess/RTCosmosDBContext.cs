@@ -149,7 +149,12 @@ namespace RTDataAccess
         public override T SelectOne<T, K>(K key)
         {
             ValidateKeyType<T, K>();
-            return client.CreateDocumentQuery<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString())).First();
+            var matches = client.CreateDocumentQuery<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
+            if(matches.Count() > 0)
+            {
+                return matches.First();
+            }
+            return null;
         }
 
    

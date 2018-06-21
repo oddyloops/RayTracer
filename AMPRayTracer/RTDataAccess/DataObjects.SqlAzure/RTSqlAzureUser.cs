@@ -6,14 +6,14 @@ using System.Text;
 
 namespace RTDataAccess.DataObjects.SqlAzure
 {
-    [Table("RTUser")]
+    [Table("RT_User")]
     public class RTSqlAzureUser : RTUser
     {
-       [Column("User_Id")]
+       [Column("UserId")]
         public override Guid Id { get => base.Id; set => base.Id = value; }
         [Column("Username")]
         public override string UserName { get => base.UserName; set => base.UserName = value; }
-        [Column("Password")]
+        [Column("Pwd")]
         public override byte[] Password { get => base.Password; set => base.Password = value; }
         [Column("Email")]
         public override string Email { get => base.Email; set => base.Email = value; }

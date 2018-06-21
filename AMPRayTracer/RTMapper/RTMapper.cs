@@ -1,6 +1,7 @@
 ﻿using RTMeld.Attributes;
 using RTMeld.DataAccess;
 using System;
+using System.Linq;
 
 namespace RTMapper
 {
@@ -20,8 +21,8 @@ namespace RTMapper
             Type tObj = obj.GetType();
             foreach(var field in tObj.GetProperties())
             {
-                var mapAttr = Attribute.GetCustomAttribute(field.PropertyType, typeof(MapAttribute))
-                    as MapAttribute;
+
+                var mapAttr = field.GetCustomAttributes(typeof(MapAttribute), true).FirstOrDefault() as MapAttribute;
                 if(mapAttr != null && mapAttr.Maps.Contains(fieldName))
                 {
                     return field.GetValue(obj);
@@ -35,11 +36,25 @@ namespace RTMapper
  
             foreach (var field in objType.GetProperties())
             {
-                var keyAttr = Attribute.GetCustomAttribute(field.PropertyType, typeof(KeyAttribute));
-                if(keyAttr!= null)
+               
+                var keyAttr =field.GetCustomAttributes(typeof(KeyAttribute),true).FirstOrDefault() as KeyAttribute;
+
+                if (keyAttr != null)
                 {
                     //found key field 
                     return field.Name;
+                }
+                else
+                {
+                    //recursively search its implemented interfaces (.net bug not performing this ancestral search)
+                    foreach(var _interface in objType.GetInterfaces())
+                    {
+                        string fieldName = GetKeyName(_interface);
+                        if(fieldName != null)
+                        {
+                            return fieldName;
+                        }
+                    }
                 }
             }
             return null;
@@ -49,7 +64,7 @@ namespace RTMapper
         {
             foreach (var field in obj.GetType().GetProperties())
             {
-                var keyAttr = Attribute.GetCustomAttribute(field.PropertyType, typeof(KeyAttribute));
+                var keyAttr = field.GetCustomAttributes(typeof(KeyAttribute), true).FirstOrDefault() as KeyAttribute;
                 if (keyAttr != null)
                 {
                     //found key field 
@@ -77,8 +92,7 @@ namespace RTMapper
             Type tObj = obj.GetType();
             foreach (var field in tObj.GetProperties())
             {
-                var mapAttr = Attribute.GetCustomAttribute(field.PropertyType, typeof(MapAttribute))
-                    as MapAttribute;
+                var mapAttr = field.GetCustomAttributes(typeof(MapAttribute), true).FirstOrDefault() as MapAttribute;
                 if (mapAttr != null && mapAttr.Maps.Contains(fieldName))
                 {
                     field.SetValue(obj, value);
