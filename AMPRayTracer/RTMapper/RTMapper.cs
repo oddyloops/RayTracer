@@ -2,6 +2,7 @@
 using RTMeld.DataAccess;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace RTMapper
 {
@@ -10,97 +11,169 @@ namespace RTMapper
     /// </summary>
     public class RTMapper : IDataMapper
     {
-        public string GetAzureDocumentCollection(Type objRType)
+
+        #region HelperMethods
+        private Attribute GetAttribute(Type objType, Type attrType, bool isClass = false)
         {
-            MetaAttribute metaAttr = (MetaAttribute)Attribute.GetCustomAttribute(objRType, typeof(MetaAttribute));
-            return metaAttr.AzureCosmosDocCollection;
+            Attribute result = null;
+            if (isClass)
+            {
+                // a class attribute
+                var attrs = objType.GetCustomAttributes(attrType, false);
+                if (attrType != null)
+                {
+                    result = attrs.First() as Attribute;
+                }
+                else
+                {
+                    foreach (var _interface in objType.GetInterfaces())
+                    { //recursively search its implemented interfaces (.net bug not performing this ancestral search)
+
+                        result = GetAttribute(_interface, attrType, isClass);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //is a field attribute
+                foreach (var field in objType.GetProperties())
+                {
+                    var attrs = field.GetCustomAttributes(attrType, false);
+
+                    if (attrs != null)
+                    {
+                        result = attrs.First() as Attribute;
+                    }
+                }
+
+                if (result == null)
+                {
+                    foreach (var _interface in objType.GetInterfaces())
+                    {
+                        result = GetAttribute(_interface, attrType, isClass);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
-        public object GetField(string fieldName, object obj)
+        private PropertyInfo GetPropertyWithAttr(Type objType, Type attrType)
         {
-            Type tObj = obj.GetType();
-            foreach(var field in tObj.GetProperties())
-            {
 
-                var mapAttr = field.GetCustomAttributes(typeof(MapAttribute), true).FirstOrDefault() as MapAttribute;
-                if(mapAttr != null && mapAttr.Maps.Contains(fieldName))
+            foreach (var property in objType.GetProperties())
+            {
+                var attrs = property.GetCustomAttributes(attrType, false);
+                if (attrs != null)
                 {
-                    return field.GetValue(obj);
+                    return property;
+                }
+            }
+            foreach (var _interface in objType.GetInterfaces())
+            { //recursively search its implemented interfaces (.net bug not performing this ancestral search)
+
+                var field = GetPropertyWithAttr(_interface, attrType);
+                if (field != null)
+                {
+                    return field;
                 }
             }
             return null;
         }
 
-        public string GetKeyName(Type objType)
+
+        private PropertyInfo GetFieldByName(string fieldName, Type objType)
         {
- 
             foreach (var field in objType.GetProperties())
             {
-               
-                var keyAttr =field.GetCustomAttributes(typeof(KeyAttribute),true).FirstOrDefault() as KeyAttribute;
 
-                if (keyAttr != null)
+                var mapAttr = field.GetCustomAttributes(typeof(MapAttribute), false);
+                if (fieldName.Equals(field.Name) || (mapAttr != null && (mapAttr.First() as MapAttribute).Maps.Contains(fieldName)))
                 {
-                    //found key field 
-                    return field.Name;
+                    return field;
                 }
                 else
                 {
-                    //recursively search its implemented interfaces (.net bug not performing this ancestral search)
-                    foreach(var _interface in objType.GetInterfaces())
+                    foreach (var _interface in objType.GetInterfaces())
                     {
-                        string fieldName = GetKeyName(_interface);
-                        if(fieldName != null)
+                        var result = GetFieldByName(fieldName, _interface);
+                        if (result != null)
                         {
-                            return fieldName;
+                            return result;
                         }
                     }
                 }
             }
             return null;
         }
-
-        public object GetKeyValue(object obj)
+        #endregion
+        public string GetAzureDocumentCollection(Type objType)
         {
-            foreach (var field in obj.GetType().GetProperties())
+            MetaAttribute metaAttr = GetAttribute(objType, typeof(MetaAttribute), true)
+                as MetaAttribute;
+            if (metaAttr != null)
+                return metaAttr.AzureCosmosDocCollection;
+            return null;
+        }
+
+        public object GetField(string fieldName, object obj)
+        {
+            PropertyInfo field = GetFieldByName(fieldName, obj.GetType());
+
+            if(field != null)
             {
-                var keyAttr = field.GetCustomAttributes(typeof(KeyAttribute), true).FirstOrDefault() as KeyAttribute;
-                if (keyAttr != null)
-                {
-                    //found key field 
-                    return field.GetValue(obj);
-                }
+                return field.GetValue(obj);
+            }
+            return null;
+            
+        }
+
+
+
+        public string GetKeyName(Type objType)
+        {
+
+            PropertyInfo keyField = GetPropertyWithAttr(objType, typeof(KeyAttribute));
+            if (keyField != null)
+            {
+                return keyField.Name;
             }
             return null;
         }
 
-        public object GetValue(string fieldName, object obj)
+        public object GetKeyValue(object obj)
         {
-            Type tObj = obj.GetType();
-            foreach (var field in tObj.GetProperties())
+            string keyName = GetKeyName(obj.GetType());
+
+            if(keyName != null)
             {
-                if (field.Name.Equals(fieldName))
-                {
-                    return field.GetValue(obj);
-                }
+                return GetField(keyName, obj);
             }
+
             return null;
         }
 
         public void SetFieldValue(string fieldName, object value, object obj)
         {
-            Type tObj = obj.GetType();
-            foreach (var field in tObj.GetProperties())
+            PropertyInfo field = GetFieldByName(fieldName, obj.GetType());
+            if (field != null)
             {
-                var mapAttr = field.GetCustomAttributes(typeof(MapAttribute), true).FirstOrDefault() as MapAttribute;
-                if (mapAttr != null && mapAttr.Maps.Contains(fieldName))
-                {
-                    field.SetValue(obj, value);
-                    return;
-                }
+                field.SetValue(obj, value);
             }
-            
+            else
+            {
+                throw new InvalidOperationException("Field with name " + fieldName +
+                    " cannot be found in object " + obj.GetType());
+            }
+
         }
     }
-    
+
 }

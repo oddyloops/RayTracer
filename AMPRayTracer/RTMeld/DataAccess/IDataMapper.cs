@@ -7,13 +7,7 @@ namespace RTMeld.DataAccess
     /// </summary>
     public interface IDataMapper
     {
-        /// <summary>
-        /// Returns value of field mapped to specified name
-        /// </summary>
-        /// <param name="fieldName">Mapped field name</param>
-        /// <param name="obj">Object to be mapped</param>
-        /// <returns>Field value</returns>
-        object GetValue(string fieldName,object obj);
+        
 
         /// <summary>
         /// Returns value of field mapped to specified name
