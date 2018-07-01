@@ -20,7 +20,7 @@ namespace RTMapper
             {
                 // a class attribute
                 var attrs = objType.GetCustomAttributes(attrType, false);
-                if (attrType != null)
+                if (attrs != null && attrs.Count() > 0)
                 {
                     result = attrs.First() as Attribute;
                 }
@@ -44,7 +44,7 @@ namespace RTMapper
                 {
                     var attrs = field.GetCustomAttributes(attrType, false);
 
-                    if (attrs != null)
+                    if (attrs != null && attrs.Count() > 0)
                     {
                         result = attrs.First() as Attribute;
                     }
@@ -71,7 +71,7 @@ namespace RTMapper
             foreach (var property in objType.GetProperties())
             {
                 var attrs = property.GetCustomAttributes(attrType, false);
-                if (attrs != null)
+                if (attrs != null && attrs.Count() > 0)
                 {
                     return property;
                 }
@@ -95,7 +95,7 @@ namespace RTMapper
             {
 
                 var mapAttr = field.GetCustomAttributes(typeof(MapAttribute), false);
-                if (fieldName.Equals(field.Name) || (mapAttr != null && (mapAttr.First() as MapAttribute).Maps.Contains(fieldName)))
+                if (fieldName.Equals(field.Name) || (mapAttr != null && mapAttr.Count() > 0 && (mapAttr.First() as MapAttribute).Maps.Contains(fieldName)))
                 {
                     return field;
                 }

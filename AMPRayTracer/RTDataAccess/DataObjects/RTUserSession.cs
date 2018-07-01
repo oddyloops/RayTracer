@@ -17,6 +17,19 @@ namespace RTDataAccess.DataObjects
         public virtual byte[] SessionId { get => sessionId; set => sessionId = value; }
         public virtual DateTime LogInTime { get => logInTime; set => logInTime = value; }
 
-       
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is RTUserSession)
+            {
+                var temp = (RTUserSession)obj;
+                return Id.Equals(temp.Id);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return id.GetHashCode();
+        }
     }
 }

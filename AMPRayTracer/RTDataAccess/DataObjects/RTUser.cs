@@ -19,8 +19,21 @@ namespace RTDataAccess.DataObjects
         public virtual string UserName { get => userName; set => userName = value; }
         public virtual byte[] Password { get => password; set => password = value; }
         public virtual string Email { get => email; set => email = value; }
-       
 
-      
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is RTUser)
+            {
+                var temp = (RTUser)obj;
+                return Id.Equals(temp.Id);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return id.GetHashCode();
+        }
+
     }
 }

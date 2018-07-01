@@ -3,7 +3,7 @@ using RTMeld.Attributes;
 
 namespace RTMeld.DataTransport
 {
-
+    [Meta(AzureCosmosDocCollection ="rt_file_type")]
     public interface IRTFileType
     {
         [Key]
