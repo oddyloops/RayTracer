@@ -220,7 +220,7 @@ namespace RTDataAccess
         {
             ValidateKeyType<T, K>();
             string keyName = Mapper.GetKeyName(typeof(T));
-            var matches = SelectMatching<T>((x => ((K)Mapper.GetValue(keyName, x)).Equals(key)));
+            var matches = SelectMatching<T>((x => ((K)Mapper.GetField(keyName, x)).Equals(key)));
             if (matches != null && matches.Count() > 0)
             {
                 return matches.First();
