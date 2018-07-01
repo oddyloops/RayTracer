@@ -84,20 +84,26 @@ namespace RTDataAccess
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
 
-            IList<T> matched = SelectMatching(matcher).ToList();
+            var results = SelectMatching(matcher).ToList();
 
-            IList<Task<ResourceResponse<Document>>> deletionTasks = new List<Task<ResourceResponse<Document>>>();
-            foreach (T match in matched)
+            if (results != null)
             {
-                deletionTasks.Add(client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), Mapper.GetKeyValue(match).ToString())));
-            }
-            Task.WhenAll(deletionTasks).ContinueWith(result =>
-            {
-                foreach (var outcome in result.Result)
+                IList<T> matched = results.ToList();
+
+
+                IList<Task<ResourceResponse<Document>>> deletionTasks = new List<Task<ResourceResponse<Document>>>();
+                foreach (T match in matched)
                 {
-                    ThrowOnHttpFailure(outcome.StatusCode);
+                    deletionTasks.Add(client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), Mapper.GetKeyValue(match).ToString())));
                 }
-            });
+                Task.WhenAll(deletionTasks).ContinueWith(result =>
+                {
+                    foreach (var outcome in result.Result)
+                    {
+                        ThrowOnHttpFailure(outcome.StatusCode);
+                    }
+                });
+            }
             return 0;
         }
 
@@ -150,7 +156,7 @@ namespace RTDataAccess
         {
             ValidateKeyType<T, K>();
             var matches = client.CreateDocumentQuery<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
-            if(matches.Count() > 0)
+            if(matches != null && matches.Count() > 0)
             {
                 return matches.First();
             }

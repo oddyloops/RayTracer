@@ -52,7 +52,7 @@ namespace RTDataAccess
         }
 
 
-        private void ClearTracks<T> () where T : class
+        private void ClearTracks<T>() where T : class
         {
             var entries = repository.ChangeTracker.Entries<T>();
             if (entries.Count() > 0)
@@ -170,11 +170,11 @@ namespace RTDataAccess
             var parameters = MapQueryParams(paramMap);
             SqlCommand command = BuildADOCommand(query, parameters);
             SqlDataReader reader = command.ExecuteReader();
-            while(reader.Read())
+            while (reader.Read())
             {
-           
+
                 IDictionary<string, object> row = new Dictionary<string, object>();
-                for(int i =0; i < reader.FieldCount; i++)
+                for (int i = 0; i < reader.FieldCount; i++)
                 {
                     row.Add(reader.GetName(i), reader.GetValue(i));
                 }
@@ -195,7 +195,7 @@ namespace RTDataAccess
             while (reader.Read())
             {
                 T record = Activator.CreateInstance<T>();
-                for(int i =0; i < reader.FieldCount;i++)
+                for (int i = 0; i < reader.FieldCount; i++)
                 {
                     Mapper.SetFieldValue(reader.GetName(i), reader.GetValue(i), record);
                 }
@@ -220,8 +220,8 @@ namespace RTDataAccess
         {
             ValidateKeyType<T, K>();
             string keyName = Mapper.GetKeyName(typeof(T));
-            var matches= SelectMatching<T>((x => ((K)Mapper.GetValue(keyName, x)).Equals(key)));
-            if(matches.Count() > 0)
+            var matches = SelectMatching<T>((x => ((K)Mapper.GetValue(keyName, x)).Equals(key)));
+            if (matches != null && matches.Count() > 0)
             {
                 return matches.First();
             }
@@ -229,12 +229,12 @@ namespace RTDataAccess
         }
 
 
-        
-      
+
+
         public override int Update<K, T>(K key, T newData)
         {
             ValidateKeyType<T, K>();
-            T oldData = SelectOne<T,K>(key);
+            T oldData = SelectOne<T, K>(key);
             Util.DeepCopy(newData, oldData);
             this.repository.Update<T>(oldData);
             Commit();
@@ -244,13 +244,16 @@ namespace RTDataAccess
         public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
         {
             IEnumerable<T> matches = SelectMatching<T>(matcher);
-            string keyName = Mapper.GetKeyName(typeof(T));
-            foreach(T match in matches)
+            if (matches != null)
             {
-                Util.DeepCopy(newData, match, new List<string>() { keyName });
+                string keyName = Mapper.GetKeyName(typeof(T));
+                foreach (T match in matches)
+                {
+                    Util.DeepCopy(newData, match, new List<string>() { keyName });
+                }
+                this.repository.UpdateRange(matches);
+                Commit();
             }
-            this.repository.UpdateRange(matches);
-            Commit();
             return 0;
         }
 
