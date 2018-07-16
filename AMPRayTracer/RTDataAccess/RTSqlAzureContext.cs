@@ -103,24 +103,7 @@ namespace RTDataAccess
         public override int Delete<K, T>(K key)
         {
             T entity = Activator.CreateInstance<T>();
-
-            string keyName = Mapper.GetKeyName(entity.GetType());
-            if (keyName == null)
-            {
-                throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key field");
-            }
-            foreach (var field in entity.GetType().GetProperties())
-            {
-                if (field.Name == keyName)
-                {
-                    if (!field.PropertyType.Equals(key.GetType()))
-                    {
-                        throw new InvalidOperationException("Type " + entity.GetType() + " does not contain a key of type " + key.GetType());
-                    }
-                    field.SetValue(entity, key);
-                    break;
-                }
-            }
+            SetKeyField(entity, key);
             ClearTracks<T>();
             repository.Attach(entity);
             repository.Remove(entity);

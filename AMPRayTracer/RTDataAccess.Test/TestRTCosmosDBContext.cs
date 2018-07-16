@@ -23,7 +23,6 @@ namespace RTDataAccess.Test
 
             testFileType = new RTCosmosFileType()
             {
-                Id =1,
                 FullName = "Bitmap",
                 Ext = "bmp"
             };
@@ -38,14 +37,14 @@ namespace RTDataAccess.Test
 
 
         [Fact]
-        public void TestInsertAndDelete()
+        public async void TestInsertAndDelete()
         {
             cosmosContext.Connect();
-            cosmosContext.Insert(testFileType);
-            var returned = cosmosContext.SelectOne<RTCosmosFileType, int>(testFileType.Id);
+            await cosmosContext.InsertAsync(testFileType);
+            var returned = cosmosContext.SelectOne<RTCosmosFileType, string>(testFileType.Id);
             Assert.Equal(testFileType.FullName, returned.FullName);
-            cosmosContext.Delete<int, RTCosmosFileType>(returned.Id);
-            returned = cosmosContext.SelectOne<RTCosmosFileType, int>(testFileType.Id);
+            cosmosContext.Delete<string, RTCosmosFileType>(returned.Id);
+            returned = cosmosContext.SelectOne<RTCosmosFileType, string>(testFileType.Id);
             Assert.Null(returned);
         }
     }

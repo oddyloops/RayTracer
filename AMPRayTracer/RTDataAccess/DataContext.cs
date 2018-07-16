@@ -148,6 +148,7 @@ namespace RTDataAccess
             return Task.FromResult(result);
         }
 
+        #region Helpers
         /// <summary>
         /// A helper method for checking if specified key type K actually exist in type T
         /// </summary>
@@ -174,7 +175,21 @@ namespace RTDataAccess
             }
         }
 
-
+        /// <summary>
+        /// Helper method to set key field of an object to a value
+        /// </summary>
+        /// <param name="obj">object</param>
+        /// <param name="keyValue">value key is to be set</param>
+        protected virtual void SetKeyField(object obj,object keyValue)
+        {
+            string keyName = Mapper.GetKeyName(obj.GetType());
+            if (keyName == null)
+            {
+                throw new InvalidOperationException("Type " + obj.GetType() + " does not contain a key field");
+            }
+            Mapper.SetFieldValue(keyName, keyValue, obj);
+        }
+#endregion
         public virtual void Dispose()
         {
             //do nothing for classes that do not need to explicitly close their connection

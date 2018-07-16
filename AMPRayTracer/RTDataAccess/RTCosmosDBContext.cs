@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.Documents;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Net;
 using System.IO;
 using System.Linq.Expressions;
 using System.Linq;
@@ -23,6 +23,13 @@ namespace RTDataAccess
         private const string KEY = "AzureCosmosSQLKey";
         private const string DB = "AzureCosmosSQLDB";
 
+        private IList<HttpStatusCode> successCodes = new
+            List<HttpStatusCode>()
+        {
+            HttpStatusCode.Created,
+            HttpStatusCode.OK
+        };
+
         #region HelperMethods
 
         private SqlParameterCollection MapQueryParams(IDictionary<string, object> paramMap)
@@ -39,7 +46,7 @@ namespace RTDataAccess
 
         private void ThrowOnHttpFailure(System.Net.HttpStatusCode statusCode)
         {
-            if (statusCode != System.Net.HttpStatusCode.OK)
+            if (!successCodes.Contains(statusCode))
             {
                 throw new IOException("Network error when connecting to Cosmos DB table service");
             }
@@ -47,7 +54,7 @@ namespace RTDataAccess
         #endregion
 
         public RTCosmoDBContext(IConnectionContext _context, IDataMapper _mapper) :
-            base(_context,_mapper)
+            base(_context, _mapper)
         {
 
         }
@@ -75,13 +82,26 @@ namespace RTDataAccess
         public override int Delete<K, T>(K key)
         {
 
+            throw new NotImplementedException();
+        }
+
+
+        public async override Task<int> DeleteAsync<K, T>(K key)
+        {
             ValidateKeyType<T, K>();
-            client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()))
-                .ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
+            var result = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
+            ThrowOnHttpFailure(result.StatusCode);
             return 0;
         }
 
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
+        {
+
+            throw new NotImplementedException();
+        }
+
+
+        public async override Task<int> DeleteMatchingAsync<T>(Expression<Func<T, bool>> matcher)
         {
 
             var results = SelectMatching(matcher).ToList();
@@ -96,13 +116,12 @@ namespace RTDataAccess
                 {
                     deletionTasks.Add(client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), Mapper.GetKeyValue(match).ToString())));
                 }
-                Task.WhenAll(deletionTasks).ContinueWith(result =>
+                var taskResults = await Task.WhenAll(deletionTasks);
+
+                foreach (var taskRes in taskResults)
                 {
-                    foreach (var outcome in result.Result)
-                    {
-                        ThrowOnHttpFailure(outcome.StatusCode);
-                    }
-                });
+                    ThrowOnHttpFailure(taskRes.StatusCode);
+                }
             }
             return 0;
         }
@@ -114,8 +133,15 @@ namespace RTDataAccess
 
         public override int Insert<T>(T data)
         {
-            client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))), data)
-                .ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
+            throw new NotImplementedException();
+        }
+
+        public override async Task<int> InsertAsync<T>(T data)
+        {
+            var result = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))), data);
+
+            ThrowOnHttpFailure(result.StatusCode);
+            SetKeyField(data, result.Resource.Id);
             return 0;
         }
 
@@ -155,31 +181,50 @@ namespace RTDataAccess
         public override T SelectOne<T, K>(K key)
         {
             ValidateKeyType<T, K>();
-            var matches = client.CreateDocumentQuery<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
-            if(matches != null && matches.Count() > 0)
+
+            var matches = from data in client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))))
+                          where Mapper.GetKeyValue(data) == key
+                          select data;
+            if (matches != null && matches.Count() > 0)
             {
                 return matches.First();
             }
             return null;
         }
 
-   
+
 
         public override int Update<K, T>(K key, T newData)
         {
-            client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database,Mapper.GetAzureDocumentCollection(typeof(T)),key.ToString()),newData)
-                 .ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
+            throw new NotImplementedException();
+
+        }
+
+
+        public async override Task<int> UpdateAsync<K, T>(K key, T newData)
+        {
+            var result = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()), newData);
+            ThrowOnHttpFailure(result.StatusCode);
             return 0;
 
         }
 
         public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
         {
+            throw new NotImplementedException();
+        }
+
+
+        public async override Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher)
+        {
             var matches = SelectMatching(matcher);
-            foreach(var match in matches)
+            IList<Task<int>> updateTasks = new List<Task<int>>();
+            foreach (var match in matches)
             {
-                Update(Mapper.GetKeyValue(match), newData);
+                updateTasks.Add(UpdateAsync(Mapper.GetKeyValue(match), newData));
             }
+            await Task.WhenAll(updateTasks);
+
             return 0;
         }
     }

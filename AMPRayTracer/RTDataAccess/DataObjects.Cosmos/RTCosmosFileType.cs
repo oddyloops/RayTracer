@@ -3,7 +3,7 @@
 
 namespace RTDataAccess.DataObjects.Cosmos
 {
-    [Meta(AzureCosmosDocCollection ="filetypes")]
+    [Meta(AzureCosmosDocCollection ="rt_file_type")]
     public class RTCosmosFileType : RTFileType
     {
         
