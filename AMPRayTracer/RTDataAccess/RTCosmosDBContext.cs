@@ -178,18 +178,25 @@ namespace RTDataAccess
             return result;
         }
 
-        public override T SelectOne<T, K>(K key)
+
+        public override T SelectOne<T,K>( K key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async override Task<T> SelectOneAsync<T, K>(K key)
         {
             ValidateKeyType<T, K>();
-
-            var matches = from data in client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))))
-                          where Mapper.GetKeyValue(data) == key
-                          select data;
-            if (matches != null && matches.Count() > 0)
-            {
-                return matches.First();
-            }
-            return null;
+            /*
+             var matches = from data in client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))))
+                           where Mapper.GetKeyValue(data).Equals(key)
+                           select data;
+             if (matches != null && matches.Count() > 0)
+             {
+                 return matches.First();
+             }*/
+            var result =await  client.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
+            return result;
         }
 
 

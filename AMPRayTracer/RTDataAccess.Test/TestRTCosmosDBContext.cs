@@ -43,8 +43,8 @@ namespace RTDataAccess.Test
             await cosmosContext.InsertAsync(testFileType);
             var returned = cosmosContext.SelectOne<RTCosmosFileType, string>(testFileType.Id);
             Assert.Equal(testFileType.FullName, returned.FullName);
-            cosmosContext.Delete<string, RTCosmosFileType>(returned.Id);
-            returned = cosmosContext.SelectOne<RTCosmosFileType, string>(testFileType.Id);
+            await cosmosContext.DeleteAsync<string, RTCosmosFileType>(returned.Id);
+            returned = await cosmosContext.SelectOneAsync<RTCosmosFileType, string>(testFileType.Id);
             Assert.Null(returned);
         }
     }
