@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7A47D688-4E4E-428C-B10C-A06AC0BE2BC9}</ProjectGuid>
+    <RootNamespace>RTEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="amp_lcg_rand.h" />
+    <ClInclude Include="image_spec.h" />
+    <ClInclude Include="indexed_resource.h" />
+    <ClInclude Include="intersection_record.h" />
+    <ClInclude Include="IParser.h" />
+    <ClInclude Include="math_util.h" />
+    <ClInclude Include="matrix_amp.h" />
+    <ClInclude Include="pixel_data.h" />
+    <ClInclude Include="ray.h" />
+    <ClInclude Include="rt_area_light.h" />
+    <ClInclude Include="rt_camera.h" />
+    <ClInclude Include="rt_core.h" />
+    <ClInclude Include="rt_cylinder.h" />
+    <ClInclude Include="rt_directional_light.h" />
+    <ClInclude Include="rt_gateway.h" />
+    <ClInclude Include="rt_geometry.h" />
+    <ClInclude Include="rt_light.h" />
+    <ClInclude Include="rt_material.h" />
+    <ClInclude Include="rt_plane.h" />
+    <ClInclude Include="rt_point_light.h" />
+    <ClInclude Include="rt_rectangle.h" />
+    <ClInclude Include="rt_shader.h" />
+    <ClInclude Include="rt_sphere.h" />
+    <ClInclude Include="rt_spot_light.h" />
+    <ClInclude Include="rt_triangle.h" />
+    <ClInclude Include="rt_visibility.h" />
+    <ClInclude Include="rt_wave_props.h" />
+    <ClInclude Include="vector_amp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="amp_lcg_rand.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="image_spec.cpp" />
+    <ClCompile Include="indexed_resource.cpp" />
+    <ClCompile Include="intersection_record.cpp" />
+    <ClCompile Include="rt_area_light.cpp" />
+    <ClCompile Include="rt_cylinder.cpp" />
+    <ClCompile Include="rt_directional_light.cpp" />
+    <ClCompile Include="rt_light.cpp" />
+    <ClCompile Include="rt_plane.cpp" />
+    <ClCompile Include="rt_point_light.cpp" />
+    <ClCompile Include="rt_shader.cpp" />
+    <ClCompile Include="rt_spot_light.cpp" />
+    <ClCompile Include="rt_triangle.cpp" />
+    <ClCompile Include="rt_visibility.cpp" />
+    <ClCompile Include="rt_wave_props.cpp" />
+    <ClCompile Include="math_util.cpp" />
+    <ClCompile Include="matrix_amp.cpp" />
+    <ClCompile Include="pixel_data.cpp" />
+    <ClCompile Include="ray.cpp" />
+    <ClCompile Include="rt_camera.cpp" />
+    <ClCompile Include="rt_core.cpp" />
+    <ClCompile Include="rt_gateway.cpp" />
+    <ClCompile Include="rt_geometry.cpp" />
+    <ClCompile Include="rt_material.cpp" />
+    <ClCompile Include="rt_rectangle.cpp" />
+    <ClCompile Include="rt_sphere.cpp" />
+    <ClCompile Include="vector_amp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ShaderBackupGpu.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

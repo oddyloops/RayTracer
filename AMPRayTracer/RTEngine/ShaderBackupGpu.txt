@@ -1,0 +1,513 @@
+#pragma once
+
+
+
+
+#include "ray.h"
+#include "intersection_record.h"
+#include "rt_directional_light.h"
+#include "rt_point_light.h"
+#include "rt_spot_light.h"
+#include "rt_area_light.h"
+#include "rt_material.h"
+#include "rt_sphere.h"
+#include "rt_rectangle.h"
+#include "pixel_data.h"
+#include "rt_visibility.h"
+
+
+using namespace std;
+
+
+using namespace rt_support;
+using namespace rt_support::lights;
+using namespace rt_support::geometries;
+using namespace rt_support::ray_support;
+using namespace rt_support::scene_resource_support;
+
+
+namespace rt
+{
+	//needed for emulating recursion
+	struct stack_entry
+	{
+		intersection_record rec;
+		rt_material mat;
+		float_3 ray_dir;
+		float_3 color;
+		int generation;
+
+		stack_entry() restrict(amp) {}
+	};
+
+
+	class fixed_stack
+	{
+		int index;
+		
+		int size;
+
+	public:
+		stack_entry entries[33];
+
+		fixed_stack(int size) restrict(amp);
+
+		stack_entry pop() restrict(amp);
+
+		void push(stack_entry entry) restrict(amp);
+
+		stack_entry peek() restrict(amp);
+
+		int is_empty() restrict(amp);
+
+	};
+
+	///<summary>
+	///Handles all shading computation
+	///</summary>
+	class rt_shader
+	{
+
+		float_3 m_ambient_light;
+		float m_ambient_intensity;
+		float_3 m_view_dir;
+		rt_visibility m_visibility;
+
+		float_3 compute_ambience(rt_material& mat) restrict(amp);
+
+		float_3 compute_diffuse(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
+
+		float_3 compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres)  restrict(amp);
+	
+	
+		rt_material get_material_from_rec(intersection_record& rec, array_view<rt_material, 1>* materials) restrict(amp);
+
+		float_3 compute_shade_from_entry(stack_entry* entry, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+
+		stack_entry extract_new_entry(stack_entry* old_entry, bool is_reflect, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres, array_view<rt_material, 1>* m_materials) restrict(amp);
+
+	public:
+		rt_shader() restrict(amp, cpu);
+
+		rt_shader(float_3 ambient_light, float ambient_intensity, float_3 view_dir) restrict(amp, cpu);
+		float_3 compute_shade(intersection_record& rec, int generation,  array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+			array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp);
+	};
+}
+
+
+
+
+
+
+
+CPP STARTS HERE
+
+
+
+
+
+
+
+
+
+
+
+
+#include <amp_math.h>
+
+#include "rt_shader.h"
+#include "rt_wave_props.h"
+#include "vector_amp.h"
+#include "math_util.h"
+
+using namespace concurrency::fast_math;
+using namespace rt;
+
+///begin stack
+fixed_stack::fixed_stack(int size) restrict(amp)
+{
+	index = -1;
+	this->size = size;
+}
+
+stack_entry fixed_stack::pop() restrict(amp)
+{
+	if (index >= 0) 
+	{
+		return entries[index--];
+	}
+	return { };
+}
+
+void fixed_stack::push(stack_entry entry) restrict(amp)
+{
+	if (index < size-1)
+	{
+		entries[++index] = entry;
+	}
+}
+
+stack_entry fixed_stack::peek() restrict(amp)
+{
+	if (index >= 0)
+	{
+		return entries[index];
+	}
+	return { };
+}
+
+
+int fixed_stack::is_empty() restrict(amp)
+{
+	return index == -1;
+}
+
+///end stack
+
+
+
+
+
+
+rt_shader::rt_shader() restrict(amp, cpu) {}
+
+rt_shader::rt_shader(float_3 ambient_light, float ambient_intensity, float_3 view_dir) restrict(amp, cpu)
+{
+	m_ambient_light = ambient_light;
+	m_ambient_intensity = ambient_intensity;
+	m_view_dir = view_dir;
+}
+
+rt_material rt_shader::get_material_from_rec(intersection_record& rec, array_view<rt_material, 1>* materials) restrict(amp)
+{
+	for (int i = 0; i < materials->extent.size(); i++)
+	{
+		if ((*materials)(index<1>(i)).get_resource_index() == rec.get_material_index())
+		{
+			return (*materials)(index<1>(i));
+		}
+	}
+
+	return rt_material();
+}
+
+float_3 rt_shader::compute_shade_from_entry(stack_entry* entry, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp)
+{
+	float_3 color = compute_ambience(entry->mat) + compute_diffuse(entry->rec, entry->mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres)
+		+ compute_specular(entry->rec, entry->mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres);
+	return color;
+}
+
+
+float_3 rt_shader::compute_shade(intersection_record& rec, int generation, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp)
+{
+	float_3 shade = float_3(0, 0, 0);
+	if (rec.get_geom_index() != -1)
+	{
+
+		if (generation > 0 && get_material_from_rec(rec, m_materials).get_is_reflective_refractive())
+		{
+		/*	//create array stack
+			int size = static_cast<int>(powf(2, generation)) + 1;  //binary recursive calls
+			fixed_stack stack(size);
+			fixed_stack aux_stack(size);
+			stack_entry first;
+			first.mat = get_material_from_rec(rec, m_materials);
+			first.ray_dir = rec.get_ray_direction();
+			first.rec = rec;
+			first.generation = 0;
+			first.color = compute_shade_from_entry(&first, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres);
+			stack.push(first);
+			//divide into aux_stack
+			while (!stack.is_empty()) {
+
+				for (int i = first.generation; i < generation; i++)
+				{
+					stack_entry reflected = extract_new_entry(&first, true, m_rectangles, m_spheres, m_materials);
+					reflected.generation = i + 1;
+					reflected.color = compute_shade_from_entry(&reflected, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres);
+					stack.push(reflected);
+					first = reflected;
+				}
+				stack_entry prev = stack.pop();
+				aux_stack.push(prev);
+				while (prev.generation == generation)
+				{
+					prev = stack.pop();
+					aux_stack.push(prev);
+				}
+
+				stack_entry refracted = extract_new_entry(&prev, false, m_rectangles, m_spheres, m_materials);
+				refracted.generation = prev.generation + 1;
+				refracted.color = compute_shade_from_entry(&refracted, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres);
+				stack.push(refracted);
+
+				first = stack.pop();
+				aux_stack.push(first);
+
+			}
+
+			//conquer into shade using binary search on aux_stack 
+			int subtrees = size / 4; //get half number of subtrees
+			int left_parent_index = 1;
+			int right_parent_index = size - 2;
+			for (int i = 0; i < subtrees; i++)
+			{
+				//left subtree
+				stack_entry parent = aux_stack.entries[left_parent_index];
+				stack_entry left = aux_stack.entries[left_parent_index - 1];
+				stack_entry right = aux_stack.entries[left_parent_index + 1];
+
+				float_3 temp_color = parent.color * (1 - parent.mat.get_transparency() - parent.mat.get_reflectivity())
+					+ left.color * parent.mat.get_reflectivity() + right.color * parent.mat.get_transparency();
+				aux_stack.entries[left_parent_index].color = temp_color;
+
+				if (left_parent_index != right_parent_index)
+				{
+					//right subtree
+					parent = aux_stack.entries[right_parent_index];
+					left = aux_stack.entries[right_parent_index - 1];
+					right = aux_stack.entries[right_parent_index + 1];
+					temp_color = parent.color * (1 - parent.mat.get_transparency() - parent.mat.get_reflectivity())
+						+ left.color * parent.mat.get_reflectivity() + right.color * parent.mat.get_transparency();
+					aux_stack.entries[right_parent_index].color = temp_color;
+					left_parent_index += 2;
+					right_parent_index -= 2;
+				}
+				else {
+					//they've both converged at the tree root
+					break;
+				}
+
+
+			}
+			shade = aux_stack.entries[left_parent_index].color;*/
+		}
+		else
+		{
+			rt_material mat = get_material_from_rec(rec, m_materials);
+			shade=compute_ambience(mat) + compute_diffuse(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres)
+				+ compute_specular(rec, mat, m_dir_lights, m_point_lights, m_area_lights, m_spot_lights, m_materials, m_rectangles, m_spheres);
+		}
+		return vector_amp::clip_color(shade);
+	
+	}
+	else {
+		return pixel_data().get_default_color();
+	}
+}
+
+stack_entry rt_shader::extract_new_entry(stack_entry* old_entry, bool is_reflect, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres,
+	array_view<rt_material, 1>* m_materials) restrict(amp)
+{
+	float_3 new_ray_dir;
+	if (is_reflect)
+	{
+		new_ray_dir = rt_wave_props::reflect(old_entry->rec.get_normal_at_intersect(), old_entry->rec.get_ray_direction());
+	}
+	else {
+		//refract
+		new_ray_dir = rt_wave_props::refract(old_entry->rec.get_normal_at_intersect(), old_entry->ray_dir, 1, old_entry->mat.get_refractive_index());
+	}
+
+	intersection_record new_rec;
+	ray r = ray::create_ray_from_pt_dir(old_entry->rec.get_intersection_position(), new_ray_dir);
+	m_visibility.compute_visibility(r, old_entry->rec.get_geom_index(),new_rec,m_spheres,m_rectangles);
+	stack_entry new_entry;
+	new_entry.mat = get_material_from_rec(new_rec, m_materials);
+	new_entry.ray_dir = r.get_direction();
+	new_entry.rec = new_rec;
+	return new_entry;
+}
+
+float_3 rt_shader::compute_ambience(rt_material& mat) restrict(amp)
+{
+	return m_ambient_intensity * m_ambient_light * mat.get_ambient_color();
+}
+
+float_3 rt_shader::compute_diffuse(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp)
+{
+	float_3 diffuse_color = float_3(0, 0, 0);
+	float nDotL;
+	//directional lights
+	for (int i = 0; i < m_dir_lights->extent.size(); i++)
+	{
+		rt_directional_light& light = (*m_dir_lights)(index<1>(i));
+		nDotL = vector_amp::dot(rec.get_normal_at_intersect(), -light.get_direction());
+		if (rec.get_type() == rt_geometry_type::rectangle)
+		{
+			nDotL = math_util::abs(nDotL);
+		}
+		if (nDotL > 0) {
+			diffuse_color = diffuse_color + (
+				light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+				nDotL *
+				mat.get_diffuse_color() *
+				light.get_color()
+				);
+		}
+	}
+
+
+	//point lights
+	for (int i = 0; i < m_point_lights->extent.size(); i++)
+	{
+		rt_point_light& light = (*m_point_lights)(index<1>(i));
+		nDotL = vector_amp::dot(rec.get_normal_at_intersect(), vector_amp::normalize(light.get_origin() - rec.get_intersection_position()));
+		if (rec.get_type() == rt_geometry_type::rectangle)
+		{
+			nDotL = math_util::abs(nDotL);
+		}
+		if (nDotL > 0) {
+			diffuse_color = diffuse_color + (
+				light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+				nDotL *
+				mat.get_diffuse_color() *
+				light.get_color()
+				);
+		}
+	}
+
+	//spot lights
+	for (int i = 0; i < m_spot_lights->extent.size(); i++)
+	{
+		rt_spot_light& light = (*m_spot_lights)(index<1>(i));
+		nDotL = vector_amp::dot(rec.get_normal_at_intersect(), vector_amp::normalize(light.get_origin() - rec.get_intersection_position()));
+		if (rec.get_type() == rt_geometry_type::rectangle)
+		{
+			nDotL = math_util::abs(nDotL);
+		}
+		if (nDotL > 0) {
+			diffuse_color = diffuse_color + (
+				light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+				nDotL *
+				mat.get_diffuse_color() *
+				light.get_color()
+				);
+		}
+	}
+
+	// area lights
+
+	for (int i = 0; i < m_area_lights->extent.size(); i++)
+	{
+		rt_area_light& light = (*m_area_lights)(index<1>(i));
+		nDotL = vector_amp::dot(rec.get_normal_at_intersect(), -light.get_direction());
+		if (rec.get_type() == rt_geometry_type::rectangle)
+		{
+			nDotL = math_util::abs(nDotL);
+		}
+		if (nDotL > 0) {
+			diffuse_color = diffuse_color + (
+				light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+				nDotL *
+				mat.get_diffuse_color() *
+				light.get_color()
+				);
+		}
+	}
+
+	return vector_amp::clip_color(diffuse_color);
+}
+
+float_3 rt_shader::compute_specular(intersection_record& rec, rt_material& mat, array_view<rt_directional_light, 1>* m_dir_lights, array_view<rt_point_light, 1>* m_point_lights, array_view<rt_area_light, 1>* m_area_lights,
+	array_view<rt_spot_light, 1>* m_spot_lights, array_view<rt_material, 1>* m_materials, array_view<rt_rectangle, 1>* m_rectangles, array_view<rt_sphere, 1>* m_spheres) restrict(amp)
+{
+	if (mat.get_is_specular())
+	{ //flag for checking if specular color was set
+		float_3 specular_color = float_3(0, 0, 0);
+		float_3 reflected;
+		float vDotR;
+		for (int i = 0; i < m_dir_lights->extent.size(); i++)
+		{
+			rt_directional_light& light = (*m_dir_lights)(index<1>(i));
+			reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), light.get_direction());
+
+			vDotR = vector_amp::dot(-m_view_dir, reflected);
+			if (rec.get_type() == rt_geometry_type::rectangle)
+			{
+				vDotR = math_util::abs(vDotR);
+			}
+			if (vDotR > 0) {
+				specular_color = specular_color + (
+					light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+					powf(vDotR, mat.get_specularity()) *
+					mat.get_specular_color() * light.get_color()
+					);
+			}
+		}
+
+
+		//point lights
+		for (int i = 0; i < m_point_lights->extent.size(); i++)
+		{
+			rt_point_light& light = (*m_point_lights)(index<1>(i));
+			reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), vector_amp::normalize(rec.get_intersection_position() - light.get_origin()));
+
+			vDotR = vector_amp::dot(-m_view_dir, reflected);
+			if (rec.get_type() == rt_geometry_type::rectangle)
+			{
+				vDotR = math_util::abs(vDotR);
+			}
+			if (vDotR > 0) {
+				specular_color = specular_color + (
+					light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+					powf(vDotR, mat.get_specularity()) *
+					mat.get_specular_color() * light.get_color()
+					);
+			}
+		}
+
+
+		//spot lights
+		for (int i = 0; i < m_spot_lights->extent.size(); i++)
+		{
+			rt_spot_light& light = (*m_spot_lights)(index<1>(i));
+			reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), vector_amp::normalize(rec.get_intersection_position() - light.get_origin()));
+
+			vDotR = vector_amp::dot(-m_view_dir, reflected);
+			if (rec.get_type() == rt_geometry_type::rectangle)
+			{
+				vDotR = math_util::abs(vDotR);
+			}
+			if (vDotR > 0) {
+				specular_color = specular_color + (
+					light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+					powf(vDotR, mat.get_specularity()) *
+					mat.get_specular_color() * light.get_color()
+					);
+			}
+		}
+
+		// area lights
+
+		for (int i = 0; i < m_area_lights->extent.size(); i++)
+		{
+			rt_area_light& light = (*m_area_lights)(index<1>(i));
+			reflected = rt_wave_props::reflect(rec.get_normal_at_intersect(), light.get_direction());
+
+			vDotR = vector_amp::dot(-m_view_dir, reflected);
+			if (rec.get_type() == rt_geometry_type::rectangle)
+			{
+				vDotR = math_util::abs(vDotR);
+			}
+			if (vDotR > 0) {
+				specular_color = specular_color + (
+					light.percent_light(*m_rectangles, *m_spheres, rec.get_intersection_position(), rec.get_geom_index())*
+					powf(vDotR, mat.get_specularity()) *
+					mat.get_specular_color() * light.get_color()
+					);
+			}
+		}
+
+		return vector_amp::clip_color(specular_color);
+	}
+	return float_3(0, 0, 0); //do not compute specularity if not enabled
+}
