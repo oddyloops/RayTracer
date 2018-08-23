@@ -97,6 +97,7 @@ namespace RTDataAccess.Test
                     x => x.UserName.Equals(testUser.UserName)
                     );
             Assert.Empty(returned);
+
         }
 
 

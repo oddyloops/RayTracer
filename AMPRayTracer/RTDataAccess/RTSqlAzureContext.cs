@@ -100,6 +100,7 @@ namespace RTDataAccess
 
         }
 
+
         public override int Delete<T>(object key)
         {
             T entity = Activator.CreateInstance<T>();
@@ -114,6 +115,7 @@ namespace RTDataAccess
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
             List<T> matches = SelectMatching(matcher).ToList();
+
             if (matches != null)
             {
                 repository.RemoveRange(matches);
@@ -138,6 +140,7 @@ namespace RTDataAccess
             Mapper.GetKeyValue(record)).ToList();
             return UpdateMatching<T>(newData, x => keys.Contains(Mapper.GetKeyValue(x)), excludeNulls);
         }
+
 
         public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap = null)
         {
@@ -219,6 +222,7 @@ namespace RTDataAccess
             return from x in this.repository.Set<T>() where matcher.Compile()(x) select x;
         }
 
+
         public override T SelectOne<T>(object key)
         {
             ValidateKeyType(key.GetType(), typeof(T));
@@ -230,6 +234,7 @@ namespace RTDataAccess
             }
             return null;
         }
+
 
 
 
@@ -246,11 +251,11 @@ namespace RTDataAccess
             {
                 Util.DeepCopy(newData, oldData);
             }
-
             this.repository.Update<T>(oldData);
             Commit();
             return 0;
         }
+
 
         public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
         {
@@ -260,6 +265,7 @@ namespace RTDataAccess
                 string keyName = Mapper.GetKeyName(typeof(T));
                 foreach (T match in matches)
                 {
+
                     if (excludeNulls)
                     {
                         Util.DeepCopyNoNulls(newData, match, new List<string>() { keyName });
@@ -268,6 +274,7 @@ namespace RTDataAccess
                     {
                         Util.DeepCopy(newData, match, new List<string>() { keyName });
                     }
+
                 }
                 this.repository.UpdateRange(matches);
                 Commit();

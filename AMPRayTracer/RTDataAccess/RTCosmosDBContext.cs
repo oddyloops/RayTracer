@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using RTMeld.DataAccess;
 using RTMeld;
 
+
 namespace RTDataAccess
 {
     /// <summary>
@@ -30,6 +31,7 @@ namespace RTDataAccess
             HttpStatusCode.Created,
             HttpStatusCode.OK,
             HttpStatusCode.NoContent
+
         };
 
         #region HelperMethods
@@ -103,6 +105,7 @@ namespace RTDataAccess
         }
 
 
+
         public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap)
         {
             throw new NotImplementedException();
@@ -149,6 +152,7 @@ namespace RTDataAccess
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
         {
+
             throw new NotImplementedException();
         }
 
@@ -157,6 +161,7 @@ namespace RTDataAccess
         {
             throw new NotImplementedException();
         }
+
 
         public async override Task<T> SelectOneAsync<T>(object key)
         {
@@ -175,8 +180,6 @@ namespace RTDataAccess
             }
             return null;
         }
-
-
 
         public override int Update<T>(object key, T newData, bool excludeNulls = false)
         {
@@ -198,6 +201,7 @@ namespace RTDataAccess
                 var result = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()), newData);
                 ThrowOnHttpFailure(result.StatusCode);
             }
+
             return 0;
 
         }
@@ -206,6 +210,7 @@ namespace RTDataAccess
         {
             throw new NotImplementedException();
         }
+
 
 
         public async override Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)

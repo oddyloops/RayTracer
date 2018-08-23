@@ -14,6 +14,7 @@ namespace RTMeld
         public static void DeepCopy(object obj1, object obj2)
         {
             DeepCopy(obj1, obj2, new List<string>());
+
         }
 
 
@@ -23,6 +24,7 @@ namespace RTMeld
         /// <param name="obj1"> Source object </param>
         /// <param name="obj2"> Destination object </param>
         /// <param name="exclusions"> List of fields to exclude in the copy process</param>
+
         public static void DeepCopy(object obj1, object obj2, IList<string> exclusions)
         {
             if (!obj1.GetType().Equals(obj2))

@@ -86,6 +86,7 @@ namespace RTMeld.DataAccess
         int Update<T>(object key,T newData,bool excludeNulls = false) where T : class;
 
 
+
         /// <summary>
         /// Applies modification to record with the corresponding primary key within a non-blocking context
         /// </summary>
@@ -120,6 +121,7 @@ namespace RTMeld.DataAccess
 
 
 
+
         /// <summary>
         /// Applies modification to record(s) matching the predicate
         /// </summary>
@@ -129,6 +131,7 @@ namespace RTMeld.DataAccess
         /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
         /// <returns>A status code indicating the result of the operation</returns>
         int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class;
+
 
         /// <summary>
         /// Applies modification to record(s) matching the predicate within a non-blocking context
@@ -140,6 +143,7 @@ namespace RTMeld.DataAccess
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
         Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class;
 
+
         /// <summary>
         /// Removes the record from the data source
         /// </summary>
@@ -148,10 +152,12 @@ namespace RTMeld.DataAccess
         /// <returns>A status code indicating the result of the operation</returns>
         int Delete<T>(object key) where T : class;
 
+
         /// <summary>
         /// Removes the record from the data source within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Key type</typeparam>
+
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
@@ -173,6 +179,7 @@ namespace RTMeld.DataAccess
         /// <param name="records">List of recrods to be deleted</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
         Task<int> DeleteAllAsync<T>(IList<T> records) where T : class;
+
 
         /// <summary>
         /// Removes the record(s) matching the predicate
@@ -205,6 +212,7 @@ namespace RTMeld.DataAccess
         /// <returns>Instance of matching record</returns>
         T SelectOne<T>(object key) where T : class;
 
+
         /// <summary>
         /// Returns a single record with the corresponding primary key within a non-blocking context
         /// </summary>
@@ -212,6 +220,7 @@ namespace RTMeld.DataAccess
         /// <param name="key">Matching Primary Key</param>
         /// <returns>A callback that provides access to the instance of matching record</returns>
         Task<T> SelectOneAsync<T>(object key) where T : class;
+
 
         /// <summary>
         /// Return record(s) matching the specified predicate

@@ -36,7 +36,9 @@ namespace RTDataAccess
 
         public abstract void Commit();
         public abstract void RollBack();
+
         public abstract int Delete<T>(object key) where T : class;
+
 
         public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
 
@@ -67,6 +69,7 @@ namespace RTDataAccess
 
         public abstract T SelectOne<T>(object key) where T : class;
 
+
         public virtual IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class
         {
             return SelectMatching<T>(matcher).Skip(from).Take(length).ToList();
@@ -75,6 +78,7 @@ namespace RTDataAccess
         public abstract int Update<T>(object key, T newData, bool excludeNulls = false) where T : class;
 
         public abstract int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class;
+
 
 
         public virtual Task CommitAsync()
@@ -122,6 +126,7 @@ namespace RTDataAccess
             return Task.FromResult(results);
         }
 
+
         public virtual Task<T> SelectOneAsync<T>(object key) where T : class
         {
             T result = SelectOne<T>(key);
@@ -134,7 +139,6 @@ namespace RTDataAccess
             IList<T> results = SelectRange(matcher, from, to);
             return Task.FromResult(results);
         }
-
 
         public virtual Task<int> UpdateAsync<T>(object key, T newData, bool excludeNulls = false) where T : class
         {
@@ -200,7 +204,6 @@ namespace RTDataAccess
         }
 
 
-
         public virtual int DeleteAll<T>(IList<T> records) where T : class
         {
             foreach(var record in records)
@@ -232,5 +235,6 @@ namespace RTDataAccess
             int result = UpdateAll(oldData, newData, excludeNulls);
             return Task.FromResult(result);
         }
+
     }
 }
