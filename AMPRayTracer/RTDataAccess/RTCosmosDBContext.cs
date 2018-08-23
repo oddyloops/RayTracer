@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Azure.Documents.Client;
 using System.Threading.Tasks;
 using RTMeld.DataAccess;
+using RTMeld;
 
 namespace RTDataAccess
 {
@@ -80,16 +81,16 @@ namespace RTDataAccess
 
         }
 
-        public override int Delete<K, T>(K key)
+        public override int Delete<T>(object key)
         {
 
             throw new NotImplementedException();
         }
 
 
-        public async override Task<int> DeleteAsync<K, T>(K key)
+        public async override Task<int> DeleteAsync<T>(object key)
         {
-            ValidateKeyType<T, K>();
+            ValidateKeyType(key.GetType(),typeof(T));
             var result = await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
             ThrowOnHttpFailure(result.StatusCode);
             return 0;
@@ -101,31 +102,6 @@ namespace RTDataAccess
             throw new NotImplementedException();
         }
 
-
-        public async override Task<int> DeleteMatchingAsync<T>(Expression<Func<T, bool>> matcher)
-        {
-
-            var results = SelectMatching(matcher).ToList();
-
-            if (results != null)
-            {
-                IList<T> matched = results.ToList();
-
-
-                IList<Task<ResourceResponse<Document>>> deletionTasks = new List<Task<ResourceResponse<Document>>>();
-                foreach (T match in matched)
-                {
-                    deletionTasks.Add(client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), Mapper.GetKeyValue(match).ToString())));
-                }
-                var taskResults = await Task.WhenAll(deletionTasks);
-
-                foreach (var taskRes in taskResults)
-                {
-                    ThrowOnHttpFailure(taskRes.StatusCode);
-                }
-            }
-            return 0;
-        }
 
         public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap)
         {
@@ -173,21 +149,18 @@ namespace RTDataAccess
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            var result = from data in client.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))))
-                         where matcher.Compile()(data)
-                         select data;
-            return result;
+            throw new NotImplementedException();
         }
 
 
-        public override T SelectOne<T, K>(K key)
+        public override T SelectOne<T>(object key)
         {
             throw new NotImplementedException();
         }
 
-        public async override Task<T> SelectOneAsync<T, K>(K key)
+        public async override Task<T> SelectOneAsync<T>(object key)
         {
-            ValidateKeyType<T, K>();
+            ValidateKeyType(key.GetType(), typeof(T));
             try
             {
                 var result = await client.ReadDocumentAsync<T>(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()));
@@ -205,37 +178,39 @@ namespace RTDataAccess
 
 
 
-        public override int Update<K, T>(K key, T newData)
+        public override int Update<T>(object key, T newData, bool excludeNulls = false)
         {
             throw new NotImplementedException();
         }
 
 
-        public async override Task<int> UpdateAsync<K, T>(K key, T newData)
+        public async override Task<int> UpdateAsync<T>(object key, T newData, bool excludeNulls = false)
         {
-            var result = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()), newData);
-            ThrowOnHttpFailure(result.StatusCode);
-            return 0;
-
-        }
-
-        public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public async override Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher)
-        {
-            var matches = SelectMatching(matcher);
-            IList<Task<int>> updateTasks = new List<Task<int>>();
-            foreach (var match in matches)
+            if (excludeNulls)
             {
-                updateTasks.Add(UpdateAsync(Mapper.GetKeyValue(match), newData));
+                T oldData = await SelectOneAsync<T>(key);
+                Util.DeepCopyNoNulls(newData, oldData);
+                var result = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()), oldData);
+                ThrowOnHttpFailure(result.StatusCode);
             }
-            await Task.WhenAll(updateTasks);
-
+            else
+            {
+                var result = await client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(database, Mapper.GetAzureDocumentCollection(typeof(T)), key.ToString()), newData);
+                ThrowOnHttpFailure(result.StatusCode);
+            }
             return 0;
+
+        }
+
+        public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public async override Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -100,7 +100,7 @@ namespace RTDataAccess
 
         }
 
-        public override int Delete<K, T>(K key)
+        public override int Delete<T>(object key)
         {
             T entity = Activator.CreateInstance<T>();
             SetKeyField(entity, key);
@@ -114,9 +114,29 @@ namespace RTDataAccess
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
             List<T> matches = SelectMatching(matcher).ToList();
-            repository.RemoveRange(matches);
-            Commit();
+            if (matches != null)
+            {
+                repository.RemoveRange(matches);
+                Commit();
+            }
             return 0;
+        }
+
+
+        public override int DeleteAll<T>(IList<T> records)
+        {
+            IList<object> keys = (from record in records
+                                  select
+            Mapper.GetKeyValue(record)).ToList();
+            return DeleteMatching<T>(x => keys.Contains(Mapper.GetKeyValue(x)));
+        }
+
+        public override int UpdateAll<T>(IList<T> oldData, T newData, bool excludeNulls = false)
+        {
+            IList<object> keys = (from record in oldData
+                                  select
+            Mapper.GetKeyValue(record)).ToList();
+            return UpdateMatching<T>(newData, x => keys.Contains(Mapper.GetKeyValue(x)), excludeNulls);
         }
 
         public override int ExecuteNonQuery(string exec, IDictionary<string, object> paramMap = null)
@@ -199,11 +219,11 @@ namespace RTDataAccess
             return from x in this.repository.Set<T>() where matcher.Compile()(x) select x;
         }
 
-        public override T SelectOne<T, K>(K key)
+        public override T SelectOne<T>(object key)
         {
-            ValidateKeyType<T, K>();
+            ValidateKeyType(key.GetType(), typeof(T));
             string keyName = Mapper.GetKeyName(typeof(T));
-            var matches = SelectMatching<T>((x => ((K)Mapper.GetField(keyName, x)).Equals(key)));
+            var matches = SelectMatching<T>((x => (Mapper.GetField(keyName, x)).Equals(key)));
             if (matches != null && matches.Count() > 0)
             {
                 return matches.First();
@@ -214,17 +234,25 @@ namespace RTDataAccess
 
 
 
-        public override int Update<K, T>(K key, T newData)
+        public override int Update<T>(object key, T newData, bool excludeNulls = false)
         {
-            ValidateKeyType<T, K>();
-            T oldData = SelectOne<T, K>(key);
-            Util.DeepCopy(newData, oldData);
+            ValidateKeyType(key.GetType(), typeof(T));
+            T oldData = SelectOne<T>(key);
+            if (excludeNulls)
+            {
+                Util.DeepCopyNoNulls(newData, oldData);
+            }
+            else
+            {
+                Util.DeepCopy(newData, oldData);
+            }
+
             this.repository.Update<T>(oldData);
             Commit();
             return 0;
         }
 
-        public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher)
+        public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
         {
             IEnumerable<T> matches = SelectMatching<T>(matcher);
             if (matches != null)
@@ -232,7 +260,14 @@ namespace RTDataAccess
                 string keyName = Mapper.GetKeyName(typeof(T));
                 foreach (T match in matches)
                 {
-                    Util.DeepCopy(newData, match, new List<string>() { keyName });
+                    if (excludeNulls)
+                    {
+                        Util.DeepCopyNoNulls(newData, match, new List<string>() { keyName });
+                    }
+                    else
+                    {
+                        Util.DeepCopy(newData, match, new List<string>() { keyName });
+                    }
                 }
                 this.repository.UpdateRange(matches);
                 Commit();

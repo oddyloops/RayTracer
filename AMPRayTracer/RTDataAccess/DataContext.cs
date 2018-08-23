@@ -36,7 +36,7 @@ namespace RTDataAccess
 
         public abstract void Commit();
         public abstract void RollBack();
-        public abstract int Delete<K, T>(K key) where T : class;
+        public abstract int Delete<T>(object key) where T : class;
 
         public abstract int DeleteMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
 
@@ -65,16 +65,16 @@ namespace RTDataAccess
         public abstract IEnumerable<T> SelectAll<T>() where T : class;
         public abstract IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher) where T : class;
 
-        public abstract T SelectOne<T, K>(K key) where T : class;
+        public abstract T SelectOne<T>(object key) where T : class;
 
         public virtual IList<T> SelectRange<T>(Expression<Func<T, bool>> matcher, int from, int length) where T : class
         {
             return SelectMatching<T>(matcher).Skip(from).Take(length).ToList();
         }
 
-        public abstract int Update<K, T>(K key, T newData) where T : class;
+        public abstract int Update<T>(object key, T newData, bool excludeNulls = false) where T : class;
 
-        public abstract int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
+        public abstract int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class;
 
 
         public virtual Task CommitAsync()
@@ -83,9 +83,9 @@ namespace RTDataAccess
             return Task.FromResult<object>(null);
         }
 
-        public virtual Task<int> DeleteAsync<K, T>(K key) where T : class
+        public virtual Task<int> DeleteAsync<T>(object key) where T : class
         {
-            int result = Delete<K, T>(key);
+            int result = Delete<T>(key);
             return Task.FromResult(result);
         }
 
@@ -122,9 +122,9 @@ namespace RTDataAccess
             return Task.FromResult(results);
         }
 
-        public virtual Task<T> SelectOneAsync<T, K>(K key) where T : class
+        public virtual Task<T> SelectOneAsync<T>(object key) where T : class
         {
-            T result = SelectOne<T, K>(key);
+            T result = SelectOne<T>(key);
             return Task.FromResult(result);
         }
 
@@ -136,40 +136,44 @@ namespace RTDataAccess
         }
 
 
-        public virtual Task<int> UpdateAsync<K, T>(K key, T newData) where T : class
+        public virtual Task<int> UpdateAsync<T>(object key, T newData, bool excludeNulls = false) where T : class
         {
-            int result = Update(key, newData);
+            int result = Update(key, newData, excludeNulls);
             return Task.FromResult(result);
         }
 
-        public virtual Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher) where T : class
+        public virtual Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class
         {
-            int result = UpdateMatching(newData, matcher);
+            int result = UpdateMatching(newData, matcher, excludeNulls);
             return Task.FromResult(result);
         }
 
         #region Helpers
         /// <summary>
-        /// A helper method for checking if specified key type K actually exist in type T
+        /// A helper method for checking if specified key type actually exist in the record type
         /// </summary>
-        /// <typeparam name="T">Recrod Type</typeparam>
-        /// <typeparam name="K">Key Type</typeparam>
-        protected virtual void ValidateKeyType<T, K>() where T : class
+        /// <param name="recordType">Record type in which key type is being examined</param>
+        /// <param name="key">key type used for validation</param>
+        protected virtual void ValidateKeyType(Type keyType, Type recordType)
         {
-            Type tType = typeof(T);
-            string keyName = Mapper.GetKeyName(tType);
+           
+            string keyName = Mapper.GetKeyName(recordType);
 
             if (keyName == null)
             {
-                throw new InvalidOperationException("Object of type " + tType.Name + " does not contain a key field.");
+                throw new InvalidOperationException("Object of type " + recordType.Name + " does not contain a key field.");
             }
-            foreach (var prop in tType.GetProperties())
+            foreach (var prop in recordType.GetProperties())
             {
                 if (prop.Name == keyName)
                 {
-                    if (!prop.PropertyType.Equals(typeof(K)))
+                    if (!prop.PropertyType.Equals(keyType))
                     {
-                        throw new InvalidOperationException("Object of type " + tType.Name + " does not contain a key of type " + typeof(K).Name);
+                        throw new InvalidOperationException("Object of type " + recordType.Name + " does not contain a key of type " + keyType.Name);
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
             }
@@ -196,5 +200,37 @@ namespace RTDataAccess
         }
 
 
+
+        public virtual int DeleteAll<T>(IList<T> records) where T : class
+        {
+            foreach(var record in records)
+            {
+                Delete<T>(Mapper.GetKeyValue(record));
+            }
+
+            return 0;
+        }
+
+        public virtual Task<int> DeleteAllAsync<T>(IList<T> records) where T : class
+        {
+            int result = DeleteAll<T>(records);
+            return Task.FromResult(result);
+        }
+
+        public virtual int UpdateAll<T>(IList<T> oldData, T newData, bool excludeNulls = false) where T : class
+        {
+            foreach(var data in oldData)
+            {
+                Update(Mapper.GetKeyValue(data), newData, excludeNulls);
+            }
+
+            return 0;
+        }
+
+        public virtual Task<int> UpdateAllAsync<T>(IList<T> oldData, T newData, bool excludeNulls = false) where T : class
+        {
+            int result = UpdateAll(oldData, newData, excludeNulls);
+            return Task.FromResult(result);
+        }
     }
 }

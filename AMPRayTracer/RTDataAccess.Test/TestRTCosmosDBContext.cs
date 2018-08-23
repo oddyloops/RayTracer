@@ -41,11 +41,12 @@ namespace RTDataAccess.Test
         {
             cosmosContext.Connect();
             await cosmosContext.InsertAsync(testFileType);
-            var returned = await cosmosContext.SelectOneAsync<RTCosmosFileType, string>(testFileType.Id);
+            var returned = await cosmosContext.SelectOneAsync<RTCosmosFileType>(testFileType.Id);
             Assert.Equal(testFileType.FullName, returned.FullName);
-            await cosmosContext.DeleteAsync<string, RTCosmosFileType>(returned.Id);
-            returned = await cosmosContext.SelectOneAsync<RTCosmosFileType, string>(testFileType.Id);
+            await cosmosContext.DeleteAsync<RTCosmosFileType>(returned.Id);
+            returned = await cosmosContext.SelectOneAsync<RTCosmosFileType>(testFileType.Id);
             Assert.Null(returned);
         }
+
     }
 }

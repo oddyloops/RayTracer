@@ -42,10 +42,10 @@ namespace RTDataAccess.Test
         {
             azureContext.Connect();
             azureContext.Insert(testUser);
-            var returnedUser = azureContext.SelectOne<RTSqlAzureUser,Guid>(testUser.Id);
+            var returnedUser = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
             Assert.Equal(testUser.UserName, returnedUser.UserName);
-            azureContext.Delete<Guid, RTSqlAzureUser>(returnedUser.Id);
-            returnedUser = azureContext.SelectOne<RTSqlAzureUser, Guid>(testUser.Id);
+            azureContext.Delete<RTSqlAzureUser>(returnedUser.Id);
+            returnedUser = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
             Assert.Null(returnedUser);
         }
 
@@ -55,10 +55,10 @@ namespace RTDataAccess.Test
         {
             azureContext.Connect();
             await azureContext.InsertAsync(testUser);
-            var returnedUser = await azureContext.SelectOneAsync<RTSqlAzureUser, Guid>(testUser.Id);
+            var returnedUser = await azureContext.SelectOneAsync<RTSqlAzureUser>(testUser.Id);
             Assert.Equal(testUser.UserName, returnedUser.UserName);
-            await azureContext.DeleteAsync<Guid, RTSqlAzureUser>(returnedUser.Id);
-            returnedUser = await azureContext.SelectOneAsync<RTSqlAzureUser, Guid>(testUser.Id);
+            await azureContext.DeleteAsync<RTSqlAzureUser>(returnedUser.Id);
+            returnedUser = await azureContext.SelectOneAsync<RTSqlAzureUser>(testUser.Id);
             Assert.Null(returnedUser);
         }
 

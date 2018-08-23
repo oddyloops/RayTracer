@@ -79,22 +79,46 @@ namespace RTMeld.DataAccess
         /// Applies modification to record with the corresponding primary key
         /// </summary>
         /// <typeparam name="T">Record type</typeparam>
-        /// <typeparam name="K">Key TYPE</typeparam>
         /// <param name="key">Matching primary key</param>
         /// <param name="newData">New data object encapsulating modifications to be made</param>
+        /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Update<K,T>(K key,T newData) where T : class;
+        int Update<T>(object key,T newData,bool excludeNulls = false) where T : class;
 
 
         /// <summary>
         /// Applies modification to record with the corresponding primary key within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Record type</typeparam>
-        /// <typeparam name="K">Key type</typeparam>
         /// <param name="key">Matching primary key</param>
         /// <param name="newData">New data object encapsulating modifications to be made</param>
+        /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> UpdateAsync<K,T>(K key,T newData) where T : class;
+        Task<int> UpdateAsync<T>(object key,T newData, bool excludeNulls = false) where T : class;
+
+
+        /// <summary>
+        /// Applies the same modification to the provided list of records.
+        /// </summary>
+        /// <typeparam name="T">Record type</typeparam>
+        /// <param name="oldData">List of existing records</param>
+        /// <param name="newData">New data object encapsulating modifications to be made</param>
+        /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
+        /// <returns>A status code indicating the result of the operation</returns>
+        int UpdateAll<T>(IList<T> oldData, T newData, bool excludeNulls = false) where T : class;
+
+
+        /// <summary>
+        /// Applies the same modification to the provided list of records within a non-blocking context.
+        /// </summary>
+        /// <typeparam name="T">Record type</typeparam>
+        /// <param name="oldData">List of existing records</param>
+        /// <param name="newData">New data object encapsulating modifications to be made</param>
+        /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
+        /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
+        Task<int> UpdateAllAsync<T>(IList<T> oldData, T newData, bool excludeNulls = false) where T : class;
+
+
 
         /// <summary>
         /// Applies modification to record(s) matching the predicate
@@ -102,8 +126,9 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
+        /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
+        int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class;
 
         /// <summary>
         /// Applies modification to record(s) matching the predicate within a non-blocking context
@@ -111,27 +136,43 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="newData">New data object encapsulating modifications to be made</param>
         /// <param name="matcher">Predicate expression used for matching records meant to be updated</param>
+        /// <param name="excludeNulls">A flag determining if updates setting fields to null should be excluded</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher) where T : class;
+        Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false) where T : class;
 
         /// <summary>
         /// Removes the record from the data source
         /// </summary>
-        /// <typeparam name="K">Primary key type</typeparam>
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Delete<K, T>(K key) where T : class;
+        int Delete<T>(object key) where T : class;
 
         /// <summary>
         /// Removes the record from the data source within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Key type</typeparam>
-        /// <typeparam name="K">Primary key type</typeparam>
         /// <typeparam name="T">Record type</typeparam>
         /// <param name="key">Primary key of record to be deleted</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> DeleteAsync<K,T>(K key) where T : class;
+        Task<int> DeleteAsync<T>(object key) where T : class;
+
+
+        /// <summary>
+        /// Removes the list of records from the data source
+        /// </summary>
+        /// <typeparam name="T">Record type</typeparam>
+        /// <param name="records">List of recrods to be deleted</param>
+        /// <returns>A status code indicating the result of the operation</returns>
+        int DeleteAll<T>(IList<T> records) where T : class;
+
+        /// <summary>
+        /// Removes the list of records from the data source within a non-blocking context
+        /// </summary>
+        /// <typeparam name="T">Record type</typeparam>
+        /// <param name="records">List of recrods to be deleted</param>
+        /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
+        Task<int> DeleteAllAsync<T>(IList<T> records) where T : class;
 
         /// <summary>
         /// Removes the record(s) matching the predicate
@@ -160,19 +201,17 @@ namespace RTMeld.DataAccess
         /// Returns a single record with the corresponding primary key
         /// </summary>
         /// <typeparam name="T">Record type</typeparam>
-        /// <typeparam name="K">Key Type</typeparam>
         /// <param name="key">Matching Primary Key</param>
         /// <returns>Instance of matching record</returns>
-        T SelectOne<T, K>(K key) where T : class;
+        T SelectOne<T>(object key) where T : class;
 
         /// <summary>
         /// Returns a single record with the corresponding primary key within a non-blocking context
         /// </summary>
         /// <typeparam name="T">Record type</typeparam>
-        /// <typeparam name="K">Key Type</typeparam>
         /// <param name="key">Matching Primary Key</param>
         /// <returns>A callback that provides access to the instance of matching record</returns>
-        Task<T> SelectOneAsync<T, K>(K key) where T : class;
+        Task<T> SelectOneAsync<T>(object key) where T : class;
 
         /// <summary>
         /// Return record(s) matching the specified predicate
