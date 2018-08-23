@@ -34,7 +34,7 @@ namespace RTDataAccess
 
         private SqlConnection ConnectADO()
         {
-            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings[connStr].ToString());
+            SqlConnection conn = new SqlConnection(Context.GetConnectionString(connStr));
             return conn;
         }
 
@@ -172,43 +172,51 @@ namespace RTDataAccess
         public override IEnumerable<IDictionary<string, object>> Query(string query, IDictionary<string, object> paramMap)
         {
 
-            SqlConnection conn = ConnectADO();
-            var parameters = MapQueryParams(paramMap);
-            SqlCommand command = BuildADOCommand(query, parameters);
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            using (SqlConnection conn = ConnectADO())
             {
+                var parameters = MapQueryParams(paramMap);
+                SqlCommand command = BuildADOCommand(query, parameters);
+                command.Connection = conn;
 
-                IDictionary<string, object> row = new Dictionary<string, object>();
-                for (int i = 0; i < reader.FieldCount; i++)
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    row.Add(reader.GetName(i), reader.GetValue(i));
+
+                    IDictionary<string, object> row = new Dictionary<string, object>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        row.Add(reader.GetName(i), reader.GetValue(i));
+                    }
+                    yield return row;
                 }
-                yield return row;
+                reader.Close();
+                conn.Close();
             }
-            reader.Close();
-            conn.Close();
 
         }
 
         public override IEnumerable<T> Query<T>(string exec, IDictionary<string, object> paramMap)
         {
 
-            SqlConnection conn = ConnectADO();
-            var parameters = MapQueryParams(paramMap);
-            SqlCommand command = BuildADOCommand(exec, parameters);
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
+            using (SqlConnection conn = ConnectADO())
             {
-                T record = Activator.CreateInstance<T>();
-                for (int i = 0; i < reader.FieldCount; i++)
+                var parameters = MapQueryParams(paramMap);
+                SqlCommand command = BuildADOCommand(exec, parameters);
+                command.Connection = conn;
+                conn.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    Mapper.SetFieldValue(reader.GetName(i), reader.GetValue(i), record);
+                    T record = Activator.CreateInstance<T>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Mapper.SetFieldValue(reader.GetName(i), reader.GetValue(i), record);
+                    }
+                    yield return record;
                 }
-                yield return record;
+                reader.Close();
+                conn.Close();
             }
-            reader.Close();
-            conn.Close();
 
         }
 

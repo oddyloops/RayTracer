@@ -15,7 +15,7 @@ namespace RTMeld.DataTransport
         [Map("user_name,Username,username")]
         string UserName { get; set; }
 
-        [Map("password,pwd")]
+        [Map("password,pwd,Pwd")]
         byte[] Password { get; set; }
 
         [Map("email")]

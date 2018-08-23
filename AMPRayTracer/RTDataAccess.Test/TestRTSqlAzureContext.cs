@@ -101,6 +101,32 @@ namespace RTDataAccess.Test
         }
 
 
+        [Fact]
+        public void TestInsertSelectDeleteQueries()
+        {
+            string insert = "INSERT INTO RT_User(UserId,Username,Pwd,Email) VALUES(@P0,@P1,@P2,@P3)";
+            azureContext.Connect();
+            IDictionary<string, object> parameters = new Dictionary<string, object>();
+            Guid id = Guid.NewGuid();
+            parameters.Add("@P0", id);
+            parameters.Add("@P1", testUser.UserName);
+            parameters.Add("@P2", testUser.Password);
+            parameters.Add("@P3", testUser.Email);
+            azureContext.ExecuteNonQuery(insert, parameters);
+            string select = "SELECT * FROM RT_User WHERE UserId=@P0";
+            parameters.Clear();
+            parameters.Add("@P0", id);
+            var result = azureContext.Query<RTSqlAzureUser>(select, parameters);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result.ToList());
+            string delete = "DELETE FROM RT_User WHERE UserId=@P0";
+            azureContext.ExecuteNonQuery(delete, parameters);
+            result = azureContext.Query<RTSqlAzureUser>(select, parameters);
+            Assert.NotNull(result);
+            Assert.Empty(result.ToList());
+        }
+
+
         public void Dispose()
         {
             azureContext.Dispose();
