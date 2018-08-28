@@ -6,7 +6,7 @@ using RTMeld.DataAccess;
 
 namespace RTMeld.DataTransport
 {
-    public interface IRTUser
+    public interface IRTUser : IData
     {
         [Key]
         [Map("id,user_id,UserId")]

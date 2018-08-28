@@ -4,7 +4,7 @@ using RTMeld.Attributes;
 
 namespace RTMeld.DataTransport
 {
-    public interface IRTUserSession
+    public interface IRTUserSession : IData
     {
         [Key]
         [Map("id,ID")]

@@ -10,10 +10,10 @@ namespace RTDataAccess.DataObjects
 
         private string fullName;
 
-        [Newtonsoft.Json.JsonProperty(PropertyName ="id")]
-        public string Id { get => id; set => id = value; }
-        public string Ext { get => ext; set => ext = value; }
-        public string FullName { get => fullName; set => fullName = value; }
+     
+        public virtual string Id { get => id; set => id = value; }
+        public virtual string Ext { get => ext; set => ext = value; }
+        public virtual string FullName { get => fullName; set => fullName = value; }
 
         public override bool Equals(object obj)
         {
