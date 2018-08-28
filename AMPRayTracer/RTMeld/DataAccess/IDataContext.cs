@@ -47,7 +47,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Type of data to be added</typeparam>
         /// <param name="data">Bulk data to be inserted</param>
         /// <returns>A status code indicating the result of the operation</returns>
-        int Insert<T>(IList<T> data) where T : class;
+        int InsertAll<T>(IList<T> data) where T : class;
 
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace RTMeld.DataAccess
         /// <typeparam name="T">Type of data to be added</typeparam>
         /// <param name="data">Bulk data to be inserted</param>
         /// <returns>A callback handle that provides access to the status code indicating the result of the operation</returns>
-        Task<int> InsertAsync<T>(IList<T> data) where T : class;
+        Task<int> InsertAllAsync<T>(IList<T> data) where T : class;
 
         /// <summary>
         /// Adds new data entry to data source

@@ -46,7 +46,7 @@ namespace RTDataAccess
 
         public abstract int Insert<T>(T data) where T : class;
 
-        public virtual int Insert<T>(IList<T> data) where T : class
+        public virtual int InsertAll<T>(IList<T> data) where T : class
         {
             foreach(var item in data)
             {
@@ -55,9 +55,9 @@ namespace RTDataAccess
             return 0;
         }
 
-        public virtual Task<int> InsertAsync<T>(IList<T> data) where T : class
+        public virtual Task<int> InsertAllAsync<T>(IList<T> data) where T : class
         {
-            int result = Insert(data);
+            int result = InsertAll(data);
             return Task.FromResult(result);
         }
 

@@ -15,6 +15,12 @@ namespace RTDataAccess.Test
         IDataMapper mapper;
         IConnectionContext context;
         IRTUser testUser;
+        IList<RTSqlAzureUser> testUserList = new List<RTSqlAzureUser>()
+        {
+            new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user1@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user1"},
+                        new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user2@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user2"}
+
+        };
 
         public TestRTSqlAzureContext()
         {
@@ -126,6 +132,121 @@ namespace RTDataAccess.Test
             Assert.Empty(result.ToList());
         }
 
+
+        [Fact]
+        public void TestUpdate()
+        {
+            azureContext.Connect();
+            azureContext.Insert(testUser);
+            string oldUsername = testUser.UserName;
+            string newUsername = "Modified";
+            testUser.UserName = newUsername;
+            azureContext.Update(testUser.Id, (RTSqlAzureUser)testUser, true);
+            var user = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
+            Assert.NotNull(user);
+            Assert.Equal(newUsername, user.UserName);
+            testUser.UserName = oldUsername;
+            azureContext.Update(testUser.Id, (RTSqlAzureUser)testUser, true);
+            user = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
+            Assert.NotNull(user);
+            Assert.Equal(oldUsername, user.UserName);
+            azureContext.Delete<RTSqlAzureUser>(testUser.Id);
+          
+
+        }
+
+
+        [Fact]
+        public async void TestUpdateAsync()
+        {
+            azureContext.Connect();
+            azureContext.Insert(testUser);
+            string oldUsername = testUser.UserName;
+            string newUsername = "Modified";
+            testUser.UserName = newUsername;
+            await azureContext.UpdateAsync(testUser.Id, (RTSqlAzureUser)testUser, true);
+            var user = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
+            Assert.NotNull(user);
+            Assert.Equal(newUsername, user.UserName);
+            testUser.UserName = oldUsername;
+            await azureContext.UpdateAsync(testUser.Id, (RTSqlAzureUser)testUser, true);
+            user = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
+            Assert.NotNull(user);
+            Assert.Equal(oldUsername, user.UserName);
+            await azureContext.DeleteAsync<RTSqlAzureUser>(testUser.Id);
+
+        }
+
+        [Fact]
+        public void TestInsertAndDeleteAll()
+        {
+            azureContext.Connect();
+            azureContext.InsertAll(testUserList);
+            var resultList = azureContext.SelectMatching<RTSqlAzureUser>(x => x.UserName.StartsWith("user"));
+            Assert.NotNull(resultList);
+            Assert.NotEmpty(resultList);
+            Assert.Equal(testUserList.Count, resultList.Count());
+            azureContext.DeleteAll(testUserList);
+            resultList = azureContext.SelectMatching<RTSqlAzureUser>(x => x.UserName.StartsWith("user"));
+            Assert.NotNull(resultList);
+            Assert.Empty(resultList);
+        }
+
+
+        [Fact]
+        public async void TestInsertAndDeleteAllAsync()
+        {
+            azureContext.Connect();
+            await azureContext.InsertAllAsync(testUserList);
+            var resultList = azureContext.SelectMatching<RTSqlAzureUser>(x => x.UserName.StartsWith("user"));
+            Assert.NotNull(resultList);
+            Assert.NotEmpty(resultList);
+            Assert.Equal(testUserList.Count, resultList.Count());
+            await azureContext.DeleteAllAsync(testUserList);
+            resultList = azureContext.SelectMatching<RTSqlAzureUser>(x => x.UserName.StartsWith("user"));
+            Assert.NotNull(resultList);
+            Assert.Empty(resultList);
+        }
+
+
+        [Fact]
+        public void TestUpdateAll()
+        {
+            azureContext.Connect();
+            azureContext.InsertAll(testUserList);
+            string newEmail = "free2rhyme@me.com";
+            IRTUser newData = new RTSqlAzureUser()
+            {
+                Email = newEmail
+            };
+            azureContext.UpdateAll(testUserList, (RTSqlAzureUser)newData, true);
+            var resultList = azureContext.SelectMatching<RTSqlAzureUser>(x => x.Email.Equals(newEmail));
+            Assert.NotNull(resultList);
+            Assert.NotEmpty(resultList);
+            Assert.Equal(testUserList.Count, resultList.Count());
+            azureContext.DeleteAll(testUserList);
+
+        }
+
+
+        [Fact]
+        public async void TestUpdateAllAsync()
+        {
+            azureContext.Connect();
+            azureContext.InsertAll(testUserList);
+            string newEmail = "free2rhyme@me.com";
+            IRTUser newData = new RTSqlAzureUser()
+            {
+                Email = newEmail
+            };
+            await azureContext.UpdateAllAsync(testUserList, (RTSqlAzureUser)newData, true);
+            var resultList = azureContext.SelectMatching<RTSqlAzureUser>(x => x.Email.Equals(newEmail));
+            Assert.NotNull(resultList);
+            Assert.NotEmpty(resultList);
+            Assert.Equal(testUserList.Count, resultList.Count());
+            azureContext.DeleteAll(testUserList);
+
+        }
 
         public void Dispose()
         {

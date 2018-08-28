@@ -27,7 +27,7 @@ namespace RTMeld
 
         public static void DeepCopy(object obj1, object obj2, IList<string> exclusions)
         {
-            if (!obj1.GetType().Equals(obj2))
+            if (!obj1.GetType().Equals(obj2.GetType()))
             {
                 throw new InvalidOperationException("Cannot deep copy across objects of different types");
             }
@@ -62,7 +62,7 @@ namespace RTMeld
         /// <param name="exclusions">List of fields to exclude in the copy process</param>
         public static void DeepCopyNoNulls(object obj1, object obj2, IList<string> exclusions)
         {
-            if (!obj1.GetType().Equals(obj2))
+            if (!obj1.GetType().Equals(obj2.GetType()))
             {
                 throw new InvalidOperationException("Cannot deep copy across objects of different types");
             }

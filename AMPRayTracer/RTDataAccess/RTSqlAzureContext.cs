@@ -135,6 +135,7 @@ namespace RTDataAccess
 
         public override int UpdateAll<T>(IList<T> oldData, T newData, bool excludeNulls = false)
         {
+            
             IList<object> keys = (from record in oldData
                                   select
             Mapper.GetKeyValue(record)).ToList();
@@ -161,7 +162,7 @@ namespace RTDataAccess
         }
 
 
-        public override int Insert<T>(IList<T> data)
+        public override int InsertAll<T>(IList<T> data)
         {
             repository.AddRange(data);
             Commit();

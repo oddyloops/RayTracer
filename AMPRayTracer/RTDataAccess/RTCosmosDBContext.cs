@@ -121,7 +121,6 @@ namespace RTDataAccess
             var result = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))), data);
 
             ThrowOnHttpFailure(result.StatusCode);
-            SetKeyField(data, result.Resource.Id);
             return 0;
         }
 

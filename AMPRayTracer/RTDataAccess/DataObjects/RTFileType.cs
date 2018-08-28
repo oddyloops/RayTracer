@@ -10,6 +10,7 @@ namespace RTDataAccess.DataObjects
 
         private string fullName;
 
+        [Newtonsoft.Json.JsonProperty(PropertyName ="id")]
         public string Id { get => id; set => id = value; }
         public string Ext { get => ext; set => ext = value; }
         public string FullName { get => fullName; set => fullName = value; }

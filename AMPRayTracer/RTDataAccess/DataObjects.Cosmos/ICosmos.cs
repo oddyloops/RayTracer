@@ -1,7 +1,7 @@
 ﻿
 using RTMeld.Attributes;
 
-namespace RTMeld.DataTransport
+namespace RTDataAccess.DataObjects.Cosmos;
 {
     public interface ICosmos
     {
