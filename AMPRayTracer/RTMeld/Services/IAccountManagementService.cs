@@ -10,7 +10,7 @@ namespace RTMeld.Services
     /// <summary>
     /// Contracts that all account management services must satisfy
     /// </summary>
-    interface IAccountManagementService : IDataService
+    public interface IAccountManagementService : IDataService
     {
        
         
@@ -24,23 +24,23 @@ namespace RTMeld.Services
         /// <summary>
         /// Permanently closes a user account
         /// </summary>
-        /// <param name="accountId">ID of the user account to be closed</param>
+        /// <param name="user">User account details</param>
         /// <returns>Status code indicating the result of the operation</returns>
-        StatusCode CloseUserAccount(object accountId);
+        StatusCode CloseUserAccount(IRTUser user);
 
         /// <summary>
         /// Suspends user account until it is reopened
         /// </summary>
-        /// <param name="accountId">ID of the user account to be suspended</param>
+        /// <param name="user">User account details</param>
         /// <returns>Status code indicating the result of the operation</returns>
-        StatusCode SuspendUserAccount(object accountId);
+        StatusCode SuspendUserAccount(IRTUser user);
 
         /// <summary>
         /// Reopens a previously suspended user account
         /// </summary>
-        /// <param name="accountId">ID of the user account to be reopened</param>
+        /// <param name="user">User account details</param>
         /// <returns>Status code indicating the result of the operation</returns>
-        StatusCode ReopenUserAccount(object accountId);
+        StatusCode ReopenUserAccount(IRTUser user);
 
         /// <summary>
         /// Initiates password recovery by username

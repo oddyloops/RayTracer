@@ -11,7 +11,7 @@ using RTMeld.DataAccess;
 using RTMeld;
 
 
-namespace RTDataAccess
+namespace RTDataAccess.Cosmos
 {
     /// <summary>
     /// IDataContext compliant wrapper around the Azure Cosmos DB SQL API

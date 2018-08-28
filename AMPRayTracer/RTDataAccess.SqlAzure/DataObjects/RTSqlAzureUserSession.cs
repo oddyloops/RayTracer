@@ -1,9 +1,10 @@
-﻿using System;
+﻿using RTDataAccess.DataObjects;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace RTDataAccess.DataObjects.SqlAzure
+namespace RTDataAccess.SqlAzure.DataObjects
 {
     [Table("RT_User_Session")]
     public class RTSqlAzureUserSession : RTUserSession

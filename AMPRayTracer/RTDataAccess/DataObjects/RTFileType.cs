@@ -2,7 +2,7 @@
 
 namespace RTDataAccess.DataObjects
 {
-    public class RTFileType : IRTFileType
+    public abstract class RTFileType : IRTFileType
     {
         private string id;
 

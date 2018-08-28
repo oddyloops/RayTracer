@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RTDataAccess.DataObjects
 {
-    public class RTUserSession : IRTUserSession
+    public abstract class RTUserSession : IRTUserSession
     {
         private Guid id;
         private Guid userId;

@@ -1,10 +1,11 @@
-﻿using RTMeld.DataTransport;
+﻿using RTDataAccess.DataObjects;
+using RTMeld.DataTransport;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace RTDataAccess.DataObjects.SqlAzure
+namespace RTDataAccess.SqlAzure.DataObjects
 {
     [Table("RT_User")]
     public class RTSqlAzureUser : RTUser
@@ -17,6 +18,8 @@ namespace RTDataAccess.DataObjects.SqlAzure
         public override byte[] Password { get => base.Password; set => base.Password = value; }
         [Column("Email")]
         public override string Email { get => base.Email; set => base.Email = value; }
-        
+        [Column("Status")]
+        public override int Status { get => base.Status ; set => base.Status = value; }
+
     }
 }

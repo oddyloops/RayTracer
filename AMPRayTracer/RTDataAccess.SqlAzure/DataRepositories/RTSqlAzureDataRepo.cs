@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RTDataAccess.DataObjects;
-using RTDataAccess.DataObjects.SqlAzure;
+using RTDataAccess.SqlAzure.DataObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 
-namespace RTDataAccess.DataRepos
+namespace RTDataAccess.SqlAzure.DataRepos
 {
     /// <summary>
     /// An entityframework interface with the SQL Azure interface

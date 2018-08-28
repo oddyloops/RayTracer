@@ -1,4 +1,4 @@
-using RTDataAccess.DataObjects.SqlAzure;
+
 using RTMeld.DataAccess;
 using RTMeld.DataTransport;
 using Xunit;
@@ -6,6 +6,9 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using RTMeld.Enums;
+using RTDataAccess.SqlAzure.DataObjects;
+using RTDataAccess.SqlAzure;
 
 namespace RTDataAccess.Test
 {
@@ -17,8 +20,8 @@ namespace RTDataAccess.Test
         IRTUser testUser;
         IList<RTSqlAzureUser> testUserList = new List<RTSqlAzureUser>()
         {
-            new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user1@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user1"},
-                        new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user2@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user2"}
+            new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user1@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user1", Status = (int)AccountStatus.NeedsVerification},
+                        new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user2@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user2", Status = (int)AccountStatus.NeedsVerification}
 
         };
 
@@ -32,7 +35,8 @@ namespace RTDataAccess.Test
                  Id = Guid.NewGuid(),
                  Email = "rt@raytrace.com",
                  Password = System.Text.Encoding.Unicode.GetBytes("1234"),
-                 UserName="rt"
+                 UserName="rt",
+                 Status = (int)AccountStatus.NeedsVerification
 
             };
         }

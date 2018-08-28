@@ -1,7 +1,8 @@
-﻿using RTMeld.Attributes;
+﻿using RTDataAccess.DataObjects;
+using RTMeld.Attributes;
 
 
-namespace RTDataAccess.DataObjects.Cosmos
+namespace RTDataAccess.Cosmos.DataObjects
 {
     [Meta(AzureCosmosDocCollection ="rt_file_type")]
     public class RTCosmosFileType : RTFileType

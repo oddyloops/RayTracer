@@ -9,7 +9,7 @@ namespace RTMeld.Attributes
     /// primary key
     /// </summary>
     [AttributeUsage(AttributeTargets.Property ,
-                       AllowMultiple = false)]
+                       AllowMultiple = false, Inherited = true)]
     public class KeyAttribute : Attribute
     {
         

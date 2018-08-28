@@ -7,7 +7,7 @@ namespace RTMeld.Attributes
     /// <summary>
     /// An optional attribute used to store entity specific information
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = true)]
     public class MetaAttribute : Attribute
     {
         /// <summary>

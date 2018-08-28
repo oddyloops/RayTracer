@@ -1,4 +1,5 @@
-﻿using RTDataAccess.DataObjects.Cosmos;
+﻿using RTDataAccess.Cosmos;
+using RTDataAccess.Cosmos.DataObjects;
 using RTMeld.DataAccess;
 using RTMeld.DataTransport;
 using System;

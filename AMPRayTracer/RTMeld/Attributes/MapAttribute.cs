@@ -7,7 +7,7 @@ namespace RTMeld.Attributes
     /// <summary>
     /// Used for mapping field names to other strings
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class MapAttribute : Attribute
     {
         private IList<string> maps;
