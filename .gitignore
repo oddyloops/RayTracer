@@ -250,3 +250,7 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+
+
+#Config files
+RTDataAccess.Test.xunit.runner.json

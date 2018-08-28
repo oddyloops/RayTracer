@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
@@ -16,6 +17,12 @@
     <ProjectReference Include="..\RTDataAccess\RTDataAccess.csproj" />
     <ProjectReference Include="..\RTMapper\RTMapper.csproj" />
     <ProjectReference Include="..\RTMeld\RTMeld.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="RTDataAccess.Test.xunit.runner.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
