@@ -3,17 +3,22 @@ using RTMeld.DataAccess;
 using RTMeld.DataTransport;
 using RTMeld.Enums;
 using RTMeld.Services;
+using System.Composition;
 
 namespace RTServices
 {
+    [Export(typeof(IAccountManagementService))]
     public class RTAccountManagementService : IAccountManagementService
     {
-        private IDataContext dataContext;
-        public IDataContext DataContext { get => dataContext; set => dataContext = value; }
+        [Import]
+        public IDataContext DataContext { get; set; }
 
         public StatusCode CloseUserAccount(IRTUser user)
         {
-            throw new NotImplementedException();
+            user.Status = (int)AccountStatus.Closed;
+            int result = DataContext.Update(user.Id, user, true);
+            return (result == 0 ? StatusCode.Successful : StatusCode.NotFound);
+
         }
 
         public StatusCode CreateUserAccount(IRTUser user)

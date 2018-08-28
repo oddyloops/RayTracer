@@ -9,6 +9,7 @@ namespace RTMeld.Enums
         NotFound,
         Unverified,
         InvalidOp,
-        InvalidCredentials
+        InvalidCredentials,
+        SystemError
     }
 }

@@ -3,11 +3,13 @@ using RTMeld.DataTransport;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Composition;
 using System.Text;
 
 namespace RTDataAccess.SqlAzure.DataObjects
 {
     [Table("RT_User")]
+    [Export(typeof(IRTUser))]
     public class RTSqlAzureUser : RTUser
     {
        [Column("UserId")]

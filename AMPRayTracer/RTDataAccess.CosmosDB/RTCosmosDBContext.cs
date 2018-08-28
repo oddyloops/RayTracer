@@ -9,13 +9,14 @@ using Microsoft.Azure.Documents.Client;
 using System.Threading.Tasks;
 using RTMeld.DataAccess;
 using RTMeld;
-
+using System.Composition;
 
 namespace RTDataAccess.Cosmos
 {
     /// <summary>
     /// IDataContext compliant wrapper around the Azure Cosmos DB SQL API
     /// </summary>
+    [Export(typeof(IDataContext))]
     public class RTCosmoDBContext : DataContext
     {
 

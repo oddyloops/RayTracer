@@ -8,12 +8,14 @@ using System.Data.SqlClient;
 using RTMeld;
 using RTMeld.DataAccess;
 using RTDataAccess.SqlAzure.DataRepos;
+using System.Composition;
 
 namespace RTDataAccess.SqlAzure
 {
     /// <summary>
     /// Compliant IDataAcess wrapper around the SQL Azure EF interface
     /// </summary>
+    [Export(typeof(IDataContext))]
     public class RTSqlAzureContext : DataContext
     {
         RTSqlAzureDataRepo repository;
