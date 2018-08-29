@@ -10,22 +10,21 @@ using System.Threading.Tasks;
 using RTMeld.DataAccess;
 using RTMeld;
 using System.Composition;
+using RTMeld.Config;
 
 namespace RTDataAccess.Cosmos
 {
     /// <summary>
     /// IDataContext compliant wrapper around the Azure Cosmos DB SQL API
     /// </summary>
-    [Export(typeof(IDataContext))]
+    [Export("RTCosmoDBContext")]
     public class RTCosmoDBContext : DataContext
     {
 
         DocumentClient client;
         private string database;
 
-        private const string KEY = "AzureCosmosSQLKey";
-        private const string DB = "AzureCosmosSQLDB";
-
+        
         private IList<HttpStatusCode> successCodes = new
             List<HttpStatusCode>()
         {
@@ -34,6 +33,13 @@ namespace RTDataAccess.Cosmos
             HttpStatusCode.NoContent
 
         };
+
+
+        [Import]
+        public override IDataMapper Mapper { get; set; }
+
+        [Import("JsonConfig")]
+        public override IConnectionContext Context { get; set; }
 
         #region HelperMethods
 
@@ -58,12 +64,6 @@ namespace RTDataAccess.Cosmos
         }
         #endregion
 
-        public RTCosmoDBContext(IConnectionContext _context, IDataMapper _mapper) :
-            base(_context, _mapper)
-        {
-
-        }
-
         public override void Commit()
         {
             throw new NotImplementedException();
@@ -71,14 +71,14 @@ namespace RTDataAccess.Cosmos
 
         public override void Connect()
         {
-            Connect("DefaultCosmosDBConnection");
+            Connect(Config.DEFAULT_COSMOS_CONNECTION);
         }
 
         public override void Connect(string str)
         {
             base.Connect(str);
-            client = new DocumentClient(new Uri(Context.GetConnectionString(str)), Context.GetAppSetting(KEY));
-            database = Context.GetAppSetting(DB);
+            client = new DocumentClient(new Uri(Context.GetConnectionString(str)), Context.GetAppSetting(Config.DEFAULT_COSMOS_KEY));
+            database = Context.GetAppSetting(Config.DEFAULT_COSMOS_DB);
             client.CreateDatabaseIfNotExistsAsync(new Database { Id = database }).ContinueWith(result => ThrowOnHttpFailure(result.Result.StatusCode));
 
 

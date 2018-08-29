@@ -5,7 +5,7 @@ using System.Composition;
 
 namespace RTDataAccess.Cosmos.DataObjects
 {
-    [Export(typeof(IRTFileType))]
+    [Export("RTCosmosFileType")]
     [Meta(AzureCosmosDocCollection ="rt_file_type")]
     public class RTCosmosFileType : RTFileType
     {

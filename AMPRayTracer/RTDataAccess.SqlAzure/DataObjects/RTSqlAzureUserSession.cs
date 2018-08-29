@@ -9,7 +9,7 @@ using System.Text;
 namespace RTDataAccess.SqlAzure.DataObjects
 {
     [Table("RT_User_Session")]
-    [Export(typeof(IRTUserSession))]
+    [Export("RTSqlAzureUserSession")]
     public class RTSqlAzureUserSession : RTUserSession
     {
         

@@ -14,6 +14,11 @@ namespace RTMeld.DataAccess
         /// An instance of a data mapper
         /// </summary>
         IDataMapper Mapper { get; set; }
+
+        /// <summary>
+        /// An instance of a connection context
+        /// </summary>
+        IConnectionContext Context { get; set; }
         /// <summary>
         /// Connects data access object to its data source
         /// </summary>

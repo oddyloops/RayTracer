@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using RTMeld.DataAccess;
+using System.Composition;
 
 namespace RTDataAccess
 {
@@ -13,14 +14,15 @@ namespace RTDataAccess
     /// </summary>
     public abstract class DataContext : IDataContext
     {
-        private IDataMapper mapper;
-        private IConnectionContext context;
+      
 
         protected string connStr;
 
-        public virtual IDataMapper Mapper { get => mapper; set => mapper = value; }
+       
+        public virtual IDataMapper Mapper { get; set; }
 
-        public virtual IConnectionContext Context { get => context; set => context = value; }
+        
+        public virtual IConnectionContext Context { get; set; }
 
         public abstract void Connect();
         public virtual void Connect(string str)
@@ -28,11 +30,6 @@ namespace RTDataAccess
             this.connStr = str;
         }
 
-        public DataContext(IConnectionContext _context, IDataMapper _mapper)
-        {
-            context = _context;
-            mapper = _mapper;
-        }
 
         public abstract void Commit();
         public abstract void RollBack();

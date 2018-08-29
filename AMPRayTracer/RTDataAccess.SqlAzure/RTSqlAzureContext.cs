@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using System.Data.SqlClient;
 using RTMeld;
+using RTMeld.Config;
 using RTMeld.DataAccess;
 using RTDataAccess.SqlAzure.DataRepos;
 using System.Composition;
@@ -15,11 +16,16 @@ namespace RTDataAccess.SqlAzure
     /// <summary>
     /// Compliant IDataAcess wrapper around the SQL Azure EF interface
     /// </summary>
-    [Export(typeof(IDataContext))]
+    [Export("RTSqlAzureContext")]
     public class RTSqlAzureContext : DataContext
     {
         RTSqlAzureDataRepo repository;
 
+        [Import]
+        public override IDataMapper Mapper { get; set; }
+
+        [Import("JsonConfig")]
+        public override IConnectionContext Context { get; set; }
 
         #region HelperMethods
         private List<SqlParameter> MapQueryParams(IDictionary<string, object> paramMap)
@@ -68,16 +74,12 @@ namespace RTDataAccess.SqlAzure
 
         #endregion
 
-        public RTSqlAzureContext(IConnectionContext _context, IDataMapper _mapper) :
-            base(_context, _mapper)
-        {
-
-        }
+       
 
 
         public override void Connect()
         {
-            connStr = "DefaultSQLAzureConnection";
+            connStr = Config.DEFAULT_SQL_AZURE_CONNECTION;
             Connect(connStr);
         }
 

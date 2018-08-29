@@ -18,11 +18,15 @@ namespace RTDataAccess.DataObjects
 
         private int status;
 
+        private byte[] recoveryHash;
+
         public virtual Guid Id { get => id; set => id = value; }
         public virtual string UserName { get => userName; set => userName = value; }
         public virtual byte[] Password { get => password; set => password = value; }
         public virtual string Email { get => email; set => email = value; }
         public virtual int Status { get => status; set => status = value; }
+
+        public virtual byte[] RecoveryHash { get => recoveryHash; set => recoveryHash = value; }
 
 
 

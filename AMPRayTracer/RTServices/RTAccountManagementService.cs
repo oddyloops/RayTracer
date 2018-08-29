@@ -4,34 +4,73 @@ using RTMeld.DataTransport;
 using RTMeld.Enums;
 using RTMeld.Services;
 using System.Composition;
+using System.Threading.Tasks;
+using RTMeld.Config;
+using System.Text;
+using RTMeld;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace RTServices
 {
+   
     [Export(typeof(IAccountManagementService))]
     public class RTAccountManagementService : IAccountManagementService
     {
-        [Import]
+        [Import("RTSqlAzureContext")]
         public IDataContext DataContext { get; set; }
 
-        public StatusCode CloseUserAccount(IRTUser user)
+        [Import]
+        public ISecurityService SecurityService { get; set; }
+
+        [Import]
+        public ICommunicationService CommunicationService { get; set; }
+
+        public async Task<StatusCode> CloseUserAccountAsync(IRTUser user)
         {
             user.Status = (int)AccountStatus.Closed;
-            int result = DataContext.Update(user.Id, user, true);
+            int result =await DataContext.UpdateAsync(user.Id, user, true);
             return (result == 0 ? StatusCode.Successful : StatusCode.NotFound);
 
         }
 
-        public StatusCode CreateUserAccount(IRTUser user)
+        public async Task<StatusCode> CreateUserAccountAsync(IRTUser user)
         {
-            throw new NotImplementedException();
+            var existing = await DataContext.SelectMatchingAsync<IRTUser>(u => u.UserName.ToLower() == user.UserName.ToLower() || u.Email.ToLower() == user.Email.ToLower());
+            if(existing != null)
+            {
+                return StatusCode.Exists;
+            }
+            await DataContext.InsertAsync(user);
+            return StatusCode.Successful;
         }
 
-        public StatusCode PasswordRecoveryByEmail(string email)
+        public async Task<StatusCode> PasswordRecoveryByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            var users = await DataContext.SelectMatchingAsync<IRTUser>(u => u.Email.ToLower() == email.ToLower());
+            if (users == null || users.Count != 1)
+            {
+                return StatusCode.NotFound;
+            }
+            IRTUser user = users[0];
+            byte[] saltedId = SecurityService.Salt(user.Id.ToByteArray());
+            byte[] hash = SecurityService.Hash(saltedId);
+            user.RecoveryHash = hash;
+
+            await DataContext.UpdateAsync(user.Id, user, true);
+
+            string linkUrl = Config.DEFAULT_RECOVERY_LINK_PREFIX + Convert.ToBase64String(hash);
+            IDictionary<string, string> templatePair = new Dictionary<string, string>();
+            templatePair.Add("#{link}",linkUrl);
+
+            string emailBody = Util.BuildStringTemplateFromFile(DataContext.Context.GetAppSetting( Config.RECOVERY_MAIL_TEMPLATE_PATH),templatePair);
+            string emailSubject = DataContext.Context.GetAppSetting(Config.RECOVERY_MAIL_SUBJECT);
+            string emailSender = DataContext.Context.GetAppSetting(Config.RECOVERY_SENDER_ALIAS);
+
+            return await CommunicationService.SendEmailAsync(emailSender, user.Email, emailSubject, emailBody);      
         }
 
-        public StatusCode PasswordRecoveryByUsername(string username)
+        public async Task<StatusCode> PasswordRecoveryByUsername(string username)
         {
             throw new NotImplementedException();
         }

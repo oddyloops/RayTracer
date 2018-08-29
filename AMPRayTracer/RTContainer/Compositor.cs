@@ -22,7 +22,7 @@ namespace RTContainer
             var configuration = new ContainerConfiguration().WithAssemblies(assemblies);
             container = configuration.CreateContainer();
 
-            //
+            
         }
 
         public T GetInstance<T>()

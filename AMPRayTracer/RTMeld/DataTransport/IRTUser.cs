@@ -26,6 +26,9 @@ namespace RTMeld.DataTransport
         [Map("status")]
         int Status { get; set; }
         
+        [Map("Recovery_Hash,recovery_hash")]
+        byte[] RecoveryHash { get; set; }
+        
 
     }
 }

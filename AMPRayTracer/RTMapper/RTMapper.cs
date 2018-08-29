@@ -1,6 +1,7 @@
 ﻿using RTMeld.Attributes;
 using RTMeld.DataAccess;
 using System;
+using System.Composition;
 using System.Linq;
 using System.Reflection;
 
@@ -9,6 +10,7 @@ namespace RTMapper
     /// <summary>
     /// A concrete implementation of the IDataMapper interface
     /// </summary>
+    [Export(typeof(IDataMapper))]
     public class RTMapper : IDataMapper
     {
 

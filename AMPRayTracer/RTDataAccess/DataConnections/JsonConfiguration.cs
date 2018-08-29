@@ -2,10 +2,12 @@
 using RTMeld.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Text;
 
 namespace RTDataAccess.DataConnections
 {
+    [Export("JsonConfig")]
     public class JsonConfiguration : IConnectionContext
     {
 
