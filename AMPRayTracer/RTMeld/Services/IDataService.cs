@@ -11,8 +11,13 @@ namespace RTMeld.Services
     public interface IDataService : IService
     {
         /// <summary>
-        /// Accessor for data context
+        /// Accessor for sql azure data context
         /// </summary>
-        IDataContext DataContext { get; set; }
+        IDataContext SqlAzureDataContext { get; set; }
+
+        /// <summary>
+        /// Accessor for cosmos DB data context
+        /// </summary>
+        IDataContext CosmosDataContext { get; set; }
     }
 }

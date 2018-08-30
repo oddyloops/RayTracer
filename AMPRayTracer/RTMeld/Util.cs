@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RTMeld.DependencyManagement;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,11 @@ namespace RTMeld
 {
     public static class Util
     {
+        /// <summary>
+        /// A singleton instance of the MEF container 
+        /// </summary>
+        public static ICompositor Container { get; set; }
+
         /// <summary>
         /// Copies the property values of the first parameter into the second provided they are of the same type
         /// </summary>

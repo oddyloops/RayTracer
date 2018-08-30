@@ -14,12 +14,23 @@ namespace RTMeld.Config
 
         public static string DEFAULT_COSMOS_DB = "AzureCosmosSQLDB";
 
-        public static string DEFAULT_RECOVERY_LINK_PREFIX = "";
+        public static string RECOVERY_LINK_PREFIX = "RecoveryLinkPrefix";
 
-        public static string RECOVERY_MAIL_TEMPLATE_PATH = "";
+        public static string RECOVERY_MAIL_TEMPLATE_PATH = "RecoveryMailTemplatePath";
 
         public static string RECOVERY_MAIL_SUBJECT = "RecoveryMailSubject";
 
         public static string RECOVERY_SENDER_ALIAS = "RecoverySenderAlias";
+
+        public static string MAIL_HOST = "MailHost";
+
+        public static string MAIL_PORT = "MailPort";
+
+        public static string SYMMETRIC_KEY_INDEX = "SymmetricKeyIndex";
+
+        public static string MAIL_CREDENTIAL_FILE = "MailCredentialFile";
+
+        public const int ENCRYPTION_BLOCK_SIZE_BYTES = 64;
+
     }
 }
