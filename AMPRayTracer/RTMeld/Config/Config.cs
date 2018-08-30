@@ -30,7 +30,7 @@ namespace RTMeld.Config
 
         public static string MAIL_CREDENTIAL_FILE = "MailCredentialFile";
 
-        public const int ENCRYPTION_BLOCK_SIZE_BYTES = 64;
+        public const string ENCRYPTION_BLOCK_SIZE_BYTES = "EncryptionBlockSizeBytes";
 
     }
 }
