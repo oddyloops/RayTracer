@@ -6,31 +6,33 @@ namespace RTMeld.Config
 {
     public static class Config
     {
-        public static string DEFAULT_SQL_AZURE_CONNECTION = "DefaultSQLAzureConnection";
+        public const string DEFAULT_SQL_AZURE_CONNECTION = "DefaultSQLAzureConnection";
 
-        public static string DEFAULT_COSMOS_CONNECTION = "DefaultCosmosDBConnection";
+        public const string DEFAULT_COSMOS_CONNECTION = "DefaultCosmosDBConnection";
 
-        public static string DEFAULT_COSMOS_KEY = "AzureCosmosSQLKey";
+        public const string DEFAULT_COSMOS_KEY = "AzureCosmosSQLKey";
 
-        public static string DEFAULT_COSMOS_DB = "AzureCosmosSQLDB";
+        public const string DEFAULT_COSMOS_DB = "AzureCosmosSQLDB";
 
-        public static string RECOVERY_LINK_PREFIX = "RecoveryLinkPrefix";
+        public const string RECOVERY_LINK_PREFIX = "RecoveryLinkPrefix";
 
-        public static string RECOVERY_MAIL_TEMPLATE_PATH = "RecoveryMailTemplatePath";
+        public const string RECOVERY_MAIL_TEMPLATE_PATH = "RecoveryMailTemplatePath";
 
-        public static string RECOVERY_MAIL_SUBJECT = "RecoveryMailSubject";
+        public const string RECOVERY_MAIL_SUBJECT = "RecoveryMailSubject";
 
-        public static string RECOVERY_SENDER_ALIAS = "RecoverySenderAlias";
+        public const string RECOVERY_SENDER_ALIAS = "RecoverySenderAlias";
 
-        public static string MAIL_HOST = "MailHost";
+        public const string MAIL_HOST = "MailHost";
 
-        public static string MAIL_PORT = "MailPort";
+        public const string MAIL_PORT = "MailPort";
 
-        public static string SYMMETRIC_KEY_INDEX = "SymmetricKeyIndex";
+        public const string SYMMETRIC_KEY_INDEX = "SymmetricKeyIndex";
 
-        public static string MAIL_CREDENTIAL_FILE = "MailCredentialFile";
+        public const string MAIL_CREDENTIAL_FILE = "MailCredentialFile";
 
         public const string ENCRYPTION_BLOCK_SIZE_BYTES = "EncryptionBlockSizeBytes";
+
+        public const string KEY_STORE_PATH = "KeyStorePath";
 
     }
 }

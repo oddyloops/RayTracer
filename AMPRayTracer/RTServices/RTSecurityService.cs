@@ -14,6 +14,9 @@ namespace RTServices
     [Export(typeof(ISecurityService))]
     public class RTSecurityService : ISecurityService
     {
+
+        private const int DEFAULT_SALT_LEN = 20;
+
         [Import("JsonConfiguration")]
 
         IConnectionContext ConfigContext { get; set; }
@@ -110,10 +113,6 @@ namespace RTServices
             return Encrypt(credentialsBuffer, key, iv);
         }
 
-        public byte[] GetKeyFromStore(string index)
-        {
-            throw new NotImplementedException();
-        }
 
         public byte[] Hash(byte[] message)
         {
@@ -126,11 +125,27 @@ namespace RTServices
             return Hash(Encoding.UTF8.GetBytes(message));
         }
 
-        public byte[] Salt(byte[] message)
+        public byte[] Salt(byte[] message, out byte[] salt)
         {
-            throw new NotImplementedException();
+           return Salt(message, out salt, DEFAULT_SALT_LEN);
         }
 
-       
+
+
+        public byte[] Salt(byte[] message, out byte[] salt, int saltLength)
+        {
+            salt = new byte[saltLength];
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+            byte[] saltedMessage = new byte[message.Length + salt.Length];
+            Array.Copy(message, saltedMessage, message.Length);
+            Array.Copy(salt, 0, saltedMessage, message.Length, salt.Length);
+            return saltedMessage;
+        }
+
+
     }
 }

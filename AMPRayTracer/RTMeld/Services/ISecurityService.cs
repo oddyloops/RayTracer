@@ -1,5 +1,6 @@
 ﻿
 
+using RTMeld.Enums;
 using System;
 
 namespace RTMeld.Services
@@ -29,15 +30,19 @@ namespace RTMeld.Services
         /// Adds a salt to message 
         /// </summary>
         /// <param name="message">Message byte buffer</param>
+        /// <param name="salt">Generated salt</param>
         /// <returns>Salted message</returns>
-        byte[] Salt(byte[] message);
+        byte[] Salt(byte[] message,out byte[] salt);
 
         /// <summary>
-        /// Retrieves encryption from windows key store
+        /// Adds a salt to message 
         /// </summary>
-        /// <param name="index">index used identify the key</param>
-        /// <returns>Encryption key</returns>
-        byte[] GetKeyFromStore(string index);
+        /// <param name="message">Message byte buffer</param>
+        /// <param name="salt">Generated salt</param>
+        /// <param name="saltLength">Length of salt</param>
+        /// <returns>Salted message</returns>
+        byte[] Salt(byte[] message, out byte[] salt, int saltLength);
+
 
         /// <summary>
         /// Encrypts a message 

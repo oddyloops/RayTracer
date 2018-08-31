@@ -14,6 +14,8 @@ namespace RTDataAccess.DataObjects
 
         private byte[] password;
 
+        private byte[] salt;
+
         private string email;
 
         private int status;
@@ -23,6 +25,7 @@ namespace RTDataAccess.DataObjects
         public virtual Guid Id { get => id; set => id = value; }
         public virtual string UserName { get => userName; set => userName = value; }
         public virtual byte[] Password { get => password; set => password = value; }
+        public virtual byte[] Salt { get => salt; set => salt = value; }
         public virtual string Email { get => email; set => email = value; }
         public virtual int Status { get => status; set => status = value; }
 

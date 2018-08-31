@@ -19,6 +19,9 @@ namespace RTMeld.DataTransport
         [Map("password,pwd,Pwd")]
         byte[] Password { get; set; }
 
+        [Map("salt")]
+        byte[] Salt { get; set; }
+
         [Unique]
         [Map("email")]
         string Email { get; set; }

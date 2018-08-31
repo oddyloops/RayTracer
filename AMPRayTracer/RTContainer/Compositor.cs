@@ -1,6 +1,7 @@
 ﻿using RTMeld.DataTransport;
 using RTMeld.DependencyManagement;
 using System.Collections.Generic;
+using System.Composition;
 using System.Composition.Hosting;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Runtime.Loader;
 
 namespace RTContainer
 {
+    [Export(typeof(ICompositor))]
     public class Compositor : ICompositor
     {
         private CompositionHost container;

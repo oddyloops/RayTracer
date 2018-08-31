@@ -18,6 +18,8 @@ namespace RTDataAccess.SqlAzure.DataObjects
         public override string UserName { get => base.UserName; set => base.UserName = value; }
         [Column("Pwd")]
         public override byte[] Password { get => base.Password; set => base.Password = value; }
+        [Column("Salt")]
+        public override byte[] Salt { get => base.Salt; set => base.Salt = value; }
         [Column("Email")]
         public override string Email { get => base.Email; set => base.Email = value; }
         [Column("Status")]

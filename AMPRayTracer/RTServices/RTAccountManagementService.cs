@@ -33,8 +33,8 @@ namespace RTServices
         #region Helpers
         private async Task<StatusCode> RecoveryHelperAsync(IRTUser user)
         {
-            byte[] saltedId = SecurityService.Salt(user.Id.ToByteArray());
-            byte[] hash = SecurityService.Hash(saltedId);
+           
+            byte[] hash = SecurityService.Hash(user.Id.ToByteArray());
             user.RecoveryHash = hash;
 
             await SqlAzureDataContext.UpdateAsync(user.Id, user, true);
@@ -67,13 +67,21 @@ namespace RTServices
             {
                 return StatusCode.Exists;
             }
-            user.Password = SecurityService.Hash(user.Password); //hash password before storage
+            user.Status = (int)StatusCode.Unverified; //email needs to be verified
+
+
+            byte[] salt = null;
+            byte[] saltedPwd = SecurityService.Salt(user.Password, out salt);
+            byte[] unsaltedHash = SecurityService.Hash(user.Password);
+            byte[] hash = SecurityService.Hash(saltedPwd);
+            user.Password = hash; //hash password before storage
+            user.Salt = salt;
             await SqlAzureDataContext.InsertAsync(user);
             
             IRTUserLog newLog = Util.Container.GetInstance<IRTUserLog>();
             newLog.UserId = user.Id.ToString();
             newLog.Id = Guid.NewGuid().ToString();
-            newLog.PastPwds = new List<string>() { Convert.ToBase64String(user.Password) };
+            newLog.PastPwds = new List<string>() { Convert.ToBase64String(unsaltedHash) };
             await CosmosDataContext.InsertAsync(newLog);
             return StatusCode.Successful;
         }
@@ -115,22 +123,26 @@ namespace RTServices
 
         public async Task<StatusCode> ResetPasswordAsync(IRTUser user)
         {
-            byte[] saltedPwd = SecurityService.Salt(user.Password);
+            byte[] salt = null;
+            byte[] saltedPwd = SecurityService.Salt(user.Password,out salt);
             byte[] hash = SecurityService.Hash(saltedPwd);
-            string hashString = Convert.ToBase64String(hash);
-            IDictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters.Add("@P0", user.Id.ToString());
+            byte[] unsaltedHash = SecurityService.Hash(user.Password);
+            string unsaltedHashStr = Convert.ToBase64String(unsaltedHash);
+            IDictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                { "@P0", user.Id.ToString() }
+            };
             var userLogs = (await CosmosDataContext.QueryAsync<IRTUserLog>("SELECT * FROM rt_user_log U WHERE U.UserId = @P0", parameters)).ToList();
             if (userLogs.Count > 0)
             {
                 IRTUserLog storedLog = userLogs[0];
-                if (storedLog.PastPwds.Contains(hashString))
+                if (storedLog.PastPwds.Contains(unsaltedHashStr))
                 {
                     return StatusCode.Exists;
                 }
                 else
                 {
-                    storedLog.PastPwds.Add(hashString);
+                    storedLog.PastPwds.Add(unsaltedHashStr);
                     await CosmosDataContext.UpdateAsync(storedLog.Id, storedLog, true);
                 }
             }
@@ -139,11 +151,12 @@ namespace RTServices
                 IRTUserLog newUserLog = Util.Container.GetInstance<IRTUserLog>();
                 newUserLog.Id = Guid.NewGuid().ToString();
                 newUserLog.UserId = user.Id.ToString();
-                newUserLog.PastPwds = new List<string>() { hashString };
+                newUserLog.PastPwds = new List<string>() { unsaltedHashStr };
                 await CosmosDataContext.InsertAsync(newUserLog);
             }
 
             user.Password = hash;
+            user.Salt = salt;
             int result = await SqlAzureDataContext.UpdateAsync(user.Id, user, true);
             return (result == 0 ? StatusCode.Successful : StatusCode.NotFound);
 

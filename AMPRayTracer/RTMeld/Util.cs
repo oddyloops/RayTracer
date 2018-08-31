@@ -10,6 +10,7 @@ namespace RTMeld
         /// <summary>
         /// A singleton instance of the MEF container 
         /// </summary>
+
         public static ICompositor Container { get; set; }
 
         /// <summary>
