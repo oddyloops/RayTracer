@@ -67,7 +67,14 @@ namespace RTServices
             {
                 return StatusCode.Exists;
             }
+            user.Password = SecurityService.Hash(user.Password); //hash password before storage
             await SqlAzureDataContext.InsertAsync(user);
+            
+            IRTUserLog newLog = Util.Container.GetInstance<IRTUserLog>();
+            newLog.UserId = user.Id.ToString();
+            newLog.Id = Guid.NewGuid().ToString();
+            newLog.PastPwds = new List<string>() { Convert.ToBase64String(user.Password) };
+            await CosmosDataContext.InsertAsync(newLog);
             return StatusCode.Successful;
         }
 
