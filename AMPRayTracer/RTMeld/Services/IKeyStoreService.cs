@@ -29,6 +29,10 @@ namespace RTMeld.Services
         /// <param name="index">Index for identifying the key</param>
         void DeleteKey(string index);
 
+        /// <summary>
+        /// Flushes the entire key store along with all resources it uses
+        /// </summary>
+        void Clear();
 
     }
 }

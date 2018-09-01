@@ -27,10 +27,10 @@ namespace RTServices
         {
             Aes aes = new AesCryptoServiceProvider
             {
-                KeySize = key.Length,
+                KeySize = key.Length  * 8,
                 Key = key,
-                Mode = CipherMode.CTS,
-                BlockSize = blockSize
+                Mode = CipherMode.CFB,
+                BlockSize = blockSize * 8
             };
             if (iv != null)
             {
