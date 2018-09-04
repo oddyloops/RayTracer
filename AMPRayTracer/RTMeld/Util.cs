@@ -117,5 +117,42 @@ namespace RTMeld
             return str;
         }
 
+
+        /// <summary>
+        /// Runs a deep comparison for two arrays
+        /// </summary>
+        /// <param name="a">First array</param>
+        /// <param name="b">Second array</param>
+        /// <returns>A flag indicating if both arrays contain the same element</returns>
+        public static bool ArrayEquals(Array a, Array b)
+        {
+            if((a == null && b != null) || (b == null && a != null))
+            {
+                return false;
+            }
+
+            if(a == null && b == null)
+            {
+                return true;
+            }
+
+            if(a.Length != b.Length)
+            {
+                return false;
+            }
+            
+
+
+            for(int i = 0; i < a.Length; i++)
+            {
+                if(!a.GetValue(i).Equals(b.GetValue(i)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+     
+        }
     }
 }
