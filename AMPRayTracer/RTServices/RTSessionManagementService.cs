@@ -49,6 +49,7 @@ namespace RTServices
                             session.LogInTime = DateTime.UtcNow;
                             session.SessionId = SecurityService.Hash(session.Id.ToByteArray());
                             session.UserId = returnedUser.Id;
+                            await SqlAzureDataContext.InsertAsync(session);
                             return session;
 
                     }
@@ -57,9 +58,10 @@ namespace RTServices
             return null;
         }
 
-        public Task<StatusCode> LogOutAsync(IRTUserSession userSession)
+        public async Task<StatusCode> LogOutAsync(IRTUserSession userSession)
         {
-            
+            await SqlAzureDataContext.DeleteAsync<IRTUserSession>(userSession.Id);
+            return StatusCode.Successful;
         }
     }
 }
