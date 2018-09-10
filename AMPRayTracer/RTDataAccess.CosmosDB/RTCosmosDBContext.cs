@@ -119,7 +119,7 @@ namespace RTDataAccess.Cosmos
 
         public override async Task<int> InsertAsync<T>(T data)
         {
-            var result = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(typeof(T))), data);
+            var result = await client.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(database, Mapper.GetAzureDocumentCollection(data.GetType())), data);
 
             ThrowOnHttpFailure(result.StatusCode);
             return 0;

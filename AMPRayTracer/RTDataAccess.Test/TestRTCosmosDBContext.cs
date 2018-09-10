@@ -25,7 +25,9 @@ namespace RTDataAccess.Test
         {
             mapper = new RTMapper.RTMapper();
             context = new TestConnectionContext();
-            cosmosContext = new RTCosmoDBContext(context, mapper);
+            cosmosContext = new RTCosmoDBContext();
+            cosmosContext.Context = context;
+            cosmosContext.Mapper = mapper;
 
             testFileType = new RTCosmosFileType()
             {

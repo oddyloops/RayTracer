@@ -167,7 +167,10 @@ namespace RTMapper
             PropertyInfo field = GetFieldByName(fieldName, obj.GetType());
             if (field != null)
             {
-                field.SetValue(obj, value);
+                if (value.GetType().Equals(field.PropertyType))
+                {
+                    field.SetValue(obj, value);
+                }
             }
             else
             {

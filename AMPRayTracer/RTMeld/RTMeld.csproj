@@ -8,8 +8,6 @@
     <Compile Remove="DataTransport\ICosmos.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="Enums\StatusCode.cs" />
-  </ItemGroup>
+  
 
 </Project>

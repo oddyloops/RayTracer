@@ -20,8 +20,8 @@ namespace RTDataAccess.Test
         IRTUser testUser;
         IList<RTSqlAzureUser> testUserList = new List<RTSqlAzureUser>()
         {
-            new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user1@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user1", Status = (int)AccountStatus.NeedsVerification},
-                        new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user2@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user2", Status = (int)AccountStatus.NeedsVerification}
+            new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user1@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user1", Status = (int)AccountStatus.NeedsVerification, Salt = new byte[] { 0}},
+                        new RTSqlAzureUser(){ Id = Guid.NewGuid(), Email ="user2@me.com", Password = System.Text.Encoding.Unicode.GetBytes("1234"), UserName ="user2", Status = (int)AccountStatus.NeedsVerification, Salt = new byte[] { 0}}
 
         };
 
@@ -29,14 +29,18 @@ namespace RTDataAccess.Test
         {
             mapper = new RTMapper.RTMapper();
             context = new TestConnectionContext();
-            azureContext = new RTSqlAzureContext(context,mapper);
+            azureContext = new RTSqlAzureContext();
+            azureContext.Context = context;
+            azureContext.Mapper = mapper;
+
             testUser = new RTSqlAzureUser()
             { 
                  Id = Guid.NewGuid(),
                  Email = "rt@raytrace.com",
                  Password = System.Text.Encoding.Unicode.GetBytes("1234"),
                  UserName="rt",
-                 Status = (int)AccountStatus.NeedsVerification
+                 Status = (int)AccountStatus.NeedsVerification,
+                 Salt = new byte[] { 1,2,3,4}
 
             };
         }
@@ -114,7 +118,7 @@ namespace RTDataAccess.Test
         [Fact]
         public void TestInsertSelectDeleteQueries()
         {
-            string insert = "INSERT INTO RT_User(UserId,Username,Pwd,Email) VALUES(@P0,@P1,@P2,@P3)";
+            string insert = "INSERT INTO RT_User(UserId,Username,Pwd,Email,Salt,Status) VALUES(@P0,@P1,@P2,@P3,@P4,@P5)";
             azureContext.Connect();
             IDictionary<string, object> parameters = new Dictionary<string, object>();
             Guid id = Guid.NewGuid();
@@ -122,6 +126,8 @@ namespace RTDataAccess.Test
             parameters.Add("@P1", testUser.UserName);
             parameters.Add("@P2", testUser.Password);
             parameters.Add("@P3", testUser.Email);
+            parameters.Add("@P4", testUser.Salt);
+            parameters.Add("@P5", testUser.Status);
             azureContext.ExecuteNonQuery(insert, parameters);
             string select = "SELECT * FROM RT_User WHERE UserId=@P0";
             parameters.Clear();
