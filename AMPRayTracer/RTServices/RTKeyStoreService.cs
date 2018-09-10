@@ -42,6 +42,8 @@ namespace RTServices
             return Index.GetHashCode();
         }
     }
+
+    [Export(typeof(IKeyStoreService))]
     public class RTKeyStoreService : IKeyStoreService
     {
 

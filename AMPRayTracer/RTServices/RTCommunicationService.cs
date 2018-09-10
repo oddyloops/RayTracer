@@ -23,6 +23,9 @@ namespace RTServices
         [Import]
         public ISecurityService SecurityService { get; set; }
 
+        [Import]
+        public IKeyStoreService KeyStoreService { get; set; }
+
         public async Task<StatusCode> SendEmailAsync(string sender, string recipient, string subject, string body)
         {
             return await SendEmailAsync(sender, new List<string>() { recipient }, null, null, subject, body);
@@ -34,7 +37,7 @@ namespace RTServices
             int port = int.Parse(ConfigContext.GetAppSetting(Config.MAIL_PORT));
             SmtpClient smtp = new SmtpClient(host,port);
             byte[] encryptedCredentials = File.ReadAllBytes(ConfigContext.GetAppSetting(Config.MAIL_CREDENTIAL_FILE));
-            byte[] symmKey = SecurityService.GetKeyFromStore(ConfigContext.GetAppSetting(Config.SYMMETRIC_KEY_INDEX));
+            byte[] symmKey = KeyStoreService.GetKey(ConfigContext.GetAppSetting(Config.SYMMETRIC_KEY_INDEX));
             Tuple<string,string> decryptedCredentials = SecurityService.DecryptCredentials(encryptedCredentials, symmKey);
             string username = decryptedCredentials.Item1;
             string password = decryptedCredentials.Item2;
