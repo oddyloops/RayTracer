@@ -5,7 +5,7 @@ using System.Text;
 
 namespace RTDataAccess.DataObjects
 {
-    public class RTUserLog : IRTUserLog
+    public abstract class RTUserLog : IRTUserLog
     {
         private string id;
 
