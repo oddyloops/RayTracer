@@ -65,6 +65,10 @@ namespace RTServices
                 }
             }
             string json = File.ReadAllText(storageFile);
+            if(string.IsNullOrEmpty(json))
+            {
+                return;
+            }
             JArray keys = JArray.Parse(json);
             keyCache.Clear();
             foreach (var key in keys)
@@ -164,7 +168,7 @@ namespace RTServices
                 UpdateCache();
             }
 
-            if (keyCache.Remove(new KeyData() { Key = index }))
+            if (keyCache.Remove(new KeyData() { Index = index }))
             {
                 FlushCacheToDisk();
             }
@@ -181,7 +185,7 @@ namespace RTServices
 
             if(result != null && result.Count() > 0)
             {
-                return Convert.FromBase64String(result.First());
+                return DecryptSymmKey( Convert.FromBase64String( result.First()));
             }
             return null;
         }

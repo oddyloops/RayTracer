@@ -13,6 +13,8 @@ namespace RTServices
     [Export(typeof(ICrudService))]
     public class RTCrudService : ICrudService
     {
+        public IConnectionContext ConfigContext { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public async Task<StatusCode> CreateAsync(IDataContext context, IData data)
         {
             await context.InsertAsync(data);
@@ -32,7 +34,7 @@ namespace RTServices
 
         public async Task<StatusCode> UpdateAsync(IDataContext context, object id, IData newData, bool excludeNulls = false)
         {
-            int result = await context.UpdateAsync<IData>(id, newData, true);
+            int result = await context.UpdateAsync<IData>(id, newData, excludeNulls);
             return (result == 0 ? StatusCode.Successful : StatusCode.NotFound);
         }
     }

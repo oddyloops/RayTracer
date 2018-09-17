@@ -29,6 +29,7 @@ namespace RTServices
 
         [Import]
         public ICommunicationService CommunicationService { get; set; }
+        public IConnectionContext ConfigContext { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         #region Helpers
         private async Task<StatusCode> RecoveryHelperAsync(IRTUser user)

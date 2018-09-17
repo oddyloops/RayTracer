@@ -19,23 +19,26 @@ namespace RTServices
 
         [Import("JsonConfiguration")]
 
-        IConnectionContext ConfigContext { get; set; }
+        public IConnectionContext ConfigContext { get; set; }
 
 
         #region HelperMethods
         private static Aes CreateAes(byte[] key, byte[] iv, int blockSize)
         {
-            Aes aes = new AesCryptoServiceProvider
-            {
-                KeySize = key.Length  * 8,
-                Key = key,
-                Mode = CipherMode.CFB,
-                BlockSize = blockSize * 8
-            };
+            Aes aes = new AesCryptoServiceProvider();
+
+            aes.KeySize = key.Length * 8;
+            aes.BlockSize = blockSize * 8;
+            aes.Key = key;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
+
+
             if (iv != null)
             {
                 aes.IV = iv;
             }
+
 
             return aes;
         }
@@ -44,17 +47,27 @@ namespace RTServices
         {
             int blockSize = int.Parse(ConfigContext.GetAppSetting(Config.ENCRYPTION_BLOCK_SIZE_BYTES));
             Aes aes = CreateAes(key, iv, blockSize);
-            byte[] decrypted = new byte[encryptedMessage.Length];
+            byte[] decrypted = new byte[encryptedMessage.Length - 1]; //-1 to exclude pad length info
             using (ICryptoTransform crypto = aes.CreateDecryptor())
             {
-                int iterations = encryptedMessage.Length / blockSize;
+               
+                int iterations = (encryptedMessage.Length -1 ) / blockSize;
+                int b =crypto.TransformBlock(encryptedMessage, 0, blockSize, decrypted, 0);
                 for (int i = 0; i < iterations; i++)
                 {
-                    crypto.TransformBlock(encryptedMessage, i * blockSize, blockSize, decrypted, i * blockSize);
+                    int a =crypto.TransformBlock(encryptedMessage, i * blockSize, blockSize, decrypted, i * blockSize);
                 }
-                crypto.TransformFinalBlock(encryptedMessage, iterations * blockSize, encryptedMessage.Length % (iterations * blockSize));
+
+                int offset = iterations * blockSize;
+                int length = encryptedMessage.Length - offset - 1;
+                byte[] finalBlock = crypto.TransformFinalBlock(encryptedMessage, offset, length);
+                
             }
-            return decrypted;
+            byte padLength = encryptedMessage[encryptedMessage.Length - 1]; //retrieve pad length
+            byte[] message = new byte[decrypted.Length - padLength];
+            Array.Copy(decrypted, message, message.Length);
+            return message;
+          
         }
 
         public Tuple<string, string> DecryptCredentials(byte[] encryptedCredentials, byte[] key, byte[] iv = null)
@@ -76,29 +89,37 @@ namespace RTServices
         {
             int blockSize = int.Parse(ConfigContext.GetAppSetting(Config.ENCRYPTION_BLOCK_SIZE_BYTES));
             Aes aes = CreateAes(key, iv, blockSize);
-            byte[] encrypted = new byte[message.Length];
+            byte padLength = (byte)(message.Length < blockSize ? blockSize - message.Length : message.Length % blockSize);
+            byte[] encrypted = new byte[message.Length + padLength + 1]; //for padding (extra byte to store pad length
             using (ICryptoTransform crypto = aes.CreateEncryptor())
             {
-                int iterations = message.Length / blockSize;
+                int iterations = message.Length/ blockSize;
                 for (int i = 0; i < iterations; i++)
                 {
-                    crypto.TransformBlock(message, i * blockSize, blockSize, encrypted, i * blockSize);
+                   crypto.TransformBlock(message, i * blockSize, blockSize, encrypted, i * blockSize);
                 }
-                crypto.TransformFinalBlock(message, iterations * blockSize, message.Length % (iterations * blockSize));
+
+                int offset = iterations * blockSize;
+                int length = message.Length - offset;
+                byte[] finalBlock = crypto.TransformFinalBlock(message, offset,
+                    length);
+                Array.Copy(finalBlock, 0, encrypted, offset, finalBlock.Length);
+                encrypted[encrypted.Length - 1] = padLength; //store pad length
+
             }
             return encrypted;
         }
 
-      
+
 
         public byte[] EncryptCredentials(string username, string password, byte[] key, byte[] iv = null)
         {
-            if(username.Length > byte.MaxValue)
+            if (username.Length > byte.MaxValue)
             {
-                throw new RTException("Username exceeds 255 characters",StatusCode.InvalidOp);
+                throw new RTException("Username exceeds 255 characters", StatusCode.InvalidOp);
             }
 
-            if(password.Length > byte.MaxValue)
+            if (password.Length > byte.MaxValue)
             {
                 throw new RTException("Password exceeds 255 characters", StatusCode.InvalidOp);
             }
@@ -127,7 +148,7 @@ namespace RTServices
 
         public byte[] Salt(byte[] message, out byte[] salt)
         {
-           return Salt(message, out salt, DEFAULT_SALT_LEN);
+            return Salt(message, out salt, DEFAULT_SALT_LEN);
         }
 
 

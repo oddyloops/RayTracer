@@ -1,0 +1,6 @@
+﻿{
+  "KeyStorePath": "keys.json",
+  "AsymKeyPath": "RT_RSA",
+  "AsymKeySizeBits": "2048",
+  "EncryptionBlockSizeBytes": "16"
+}

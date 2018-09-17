@@ -1,5 +1,7 @@
 ﻿
 
+using RTMeld.DataAccess;
+
 namespace RTMeld.Services
 {
     /// <summary>
@@ -7,5 +9,9 @@ namespace RTMeld.Services
     /// </summary>
     public interface IService
     {
+        /// <summary>
+        /// Provides access to system configuration entries
+        /// </summary>
+        IConnectionContext ConfigContext { get; set; }
     }
 }

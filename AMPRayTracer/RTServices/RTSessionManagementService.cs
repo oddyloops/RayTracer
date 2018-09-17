@@ -17,11 +17,12 @@ namespace RTServices
         [Import("RTSqlAzureContext")]
         public IDataContext SqlAzureDataContext { get; set; }
 
-        [Import("RTCosmosDBContext")]
-        public IDataContext CosmosDataContext { get; set; }
+
+        public IDataContext CosmosDataContext { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         [Import]
         public ISecurityService SecurityService { get; set; }
+        public IConnectionContext ConfigContext { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public async Task<IRTUserSession> LogInAsync(IRTUser user)
         {
