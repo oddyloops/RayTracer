@@ -6,6 +6,7 @@ using RTMeld.Services;
 using System;
 using System.Collections.Generic;
 using System.Composition;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -23,7 +24,7 @@ namespace RTServices
 
 
         #region HelperMethods
-        private static Aes CreateAes(byte[] key, byte[] iv, int blockSize)
+        private static Aes CreateAes(byte[] key, int blockSize)
         {
             Aes aes = new AesCryptoServiceProvider();
 
@@ -32,47 +33,45 @@ namespace RTServices
             aes.Key = key;
             aes.Mode = CipherMode.CBC;
             aes.Padding = PaddingMode.PKCS7;
-
-
-            if (iv != null)
-            {
-                aes.IV = iv;
-            }
+            aes.GenerateIV();
 
 
             return aes;
         }
         #endregion
-        public byte[] Decrypt(byte[] encryptedMessage, byte[] key, byte[] iv = null)
+        public byte[] Decrypt(byte[] encryptedMessage, byte[] key)
         {
             int blockSize = int.Parse(ConfigContext.GetAppSetting(Config.ENCRYPTION_BLOCK_SIZE_BYTES));
-            Aes aes = CreateAes(key, iv, blockSize);
-            byte[] decrypted = new byte[encryptedMessage.Length - 1]; //-1 to exclude pad length info
+            Aes aes = CreateAes(key, blockSize);
+            byte[] decrypted = null;
+            //read iv out of cipher buffer
+            byte[] iv = new byte[encryptedMessage[0]]; //1st byte for iv length
+            for(int i = 1; i <= iv.Length; i++)
+            {
+                iv[i - 1] = encryptedMessage[i];
+            }
+            aes.IV = iv;
             using (ICryptoTransform crypto = aes.CreateDecryptor())
             {
-               
-                int iterations = (encryptedMessage.Length -1 ) / blockSize;
-                int b =crypto.TransformBlock(encryptedMessage, 0, blockSize, decrypted, 0);
-                for (int i = 0; i < iterations; i++)
+                //decrypt message
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    int a =crypto.TransformBlock(encryptedMessage, i * blockSize, blockSize, decrypted, i * blockSize);
+                    using (var cs = new CryptoStream(ms, crypto, CryptoStreamMode.Write))
+                    {
+                        cs.Write(encryptedMessage, iv.Length + 1, encryptedMessage.Length - iv.Length - 1);
+                    }
+                    decrypted = ms.ToArray();
                 }
-
-                int offset = iterations * blockSize;
-                int length = encryptedMessage.Length - offset - 1;
-                byte[] finalBlock = crypto.TransformFinalBlock(encryptedMessage, offset, length);
                 
             }
-            byte padLength = encryptedMessage[encryptedMessage.Length - 1]; //retrieve pad length
-            byte[] message = new byte[decrypted.Length - padLength];
-            Array.Copy(decrypted, message, message.Length);
-            return message;
+            aes.Clear();
+            return decrypted;
           
         }
 
-        public Tuple<string, string> DecryptCredentials(byte[] encryptedCredentials, byte[] key, byte[] iv = null)
+        public Tuple<string, string> DecryptCredentials(byte[] encryptedCredentials, byte[] key)
         {
-            byte[] decryptedCredentials = Decrypt(encryptedCredentials, key, iv);
+            byte[] decryptedCredentials = Decrypt(encryptedCredentials, key);
             int userLength = decryptedCredentials[0];
             int pwdLength = decryptedCredentials[userLength + 1];
 
@@ -85,34 +84,36 @@ namespace RTServices
                 Encoding.UTF8.GetString(pwdBuffer));
         }
 
-        public byte[] Encrypt(byte[] message, byte[] key, byte[] iv = null)
+        public byte[] Encrypt(byte[] message, byte[] key)
         {
             int blockSize = int.Parse(ConfigContext.GetAppSetting(Config.ENCRYPTION_BLOCK_SIZE_BYTES));
-            Aes aes = CreateAes(key, iv, blockSize);
+            Aes aes = CreateAes(key,  blockSize);
             byte padLength = (byte)(message.Length < blockSize ? blockSize - message.Length : message.Length % blockSize);
-            byte[] encrypted = new byte[message.Length + padLength + 1]; //for padding (extra byte to store pad length
+            byte[] encrypted = null;
             using (ICryptoTransform crypto = aes.CreateEncryptor())
             {
-                int iterations = message.Length/ blockSize;
-                for (int i = 0; i < iterations; i++)
+                using (MemoryStream ms = new MemoryStream())
                 {
-                   crypto.TransformBlock(message, i * blockSize, blockSize, encrypted, i * blockSize);
+
+                    //encrypt
+                    using (var cs = new CryptoStream(ms, crypto, CryptoStreamMode.Write))
+                    {
+                        //add iv length and iv to buffer unencrypted
+                        ms.Write(new byte[] { (byte)aes.IV.Length }, 0, 1);
+                        ms.Write(aes.IV, 0, aes.IV.Length);
+                        cs.Write(message, 0, message.Length);
+                    }
+                    encrypted = ms.ToArray();
                 }
 
-                int offset = iterations * blockSize;
-                int length = message.Length - offset;
-                byte[] finalBlock = crypto.TransformFinalBlock(message, offset,
-                    length);
-                Array.Copy(finalBlock, 0, encrypted, offset, finalBlock.Length);
-                encrypted[encrypted.Length - 1] = padLength; //store pad length
-
             }
+            aes.Clear();
             return encrypted;
         }
 
 
 
-        public byte[] EncryptCredentials(string username, string password, byte[] key, byte[] iv = null)
+        public byte[] EncryptCredentials(string username, string password, byte[] key)
         {
             if (username.Length > byte.MaxValue)
             {
@@ -131,7 +132,7 @@ namespace RTServices
             credentialsBuffer[userLength + 1] = pwdLength;
             Array.Copy(Encoding.UTF8.GetBytes(password), 0, credentialsBuffer, userLength + 2, pwdLength);
             //forms structure ULength : username : PLength : Password
-            return Encrypt(credentialsBuffer, key, iv);
+            return Encrypt(credentialsBuffer, key);
         }
 
 
