@@ -16,7 +16,7 @@ namespace RTDataAccess.SqlAzure
     /// <summary>
     /// Compliant IDataAcess wrapper around the SQL Azure EF interface
     /// </summary>
-    [Export("RTSqlAzureContext")]
+    [Export("RTSqlAzureContext",typeof(IDataContext))]
     public class RTSqlAzureContext : DataContext
     {
         RTSqlAzureDataRepo repository;

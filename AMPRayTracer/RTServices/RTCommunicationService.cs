@@ -11,13 +11,15 @@ using RTMeld.Config;
 using System.Net;
 using System.IO;
 using System.Linq;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace RTServices
 {
     [Export(typeof(ICommunicationService))]
     public class RTCommunicationService : ICommunicationService
     {
-        [Import("JsonConfiguration")]
+        [Import("JsonConfig")]
         public IConnectionContext ConfigContext { get; set; }
 
         [Import]
@@ -31,51 +33,33 @@ namespace RTServices
             return await SendEmailAsync(sender, new List<string>() { recipient }, null, null, subject, body);
         }
 
-        public Task<StatusCode> SendEmailAsync(string sender, IList<string> recipients, IList<string> ccs, IList<string> bccs, string subject, string body)
+        public async Task<StatusCode> SendEmailAsync(string sender, IList<string> recipients, IList<string> ccs, IList<string> bccs, string subject, string body)
         {
-            string host = ConfigContext.GetAppSetting(Config.MAIL_HOST);
-            int port = int.Parse(ConfigContext.GetAppSetting(Config.MAIL_PORT));
-            SmtpClient smtp = new SmtpClient(host,port);
-            byte[] encryptedCredentials = File.ReadAllBytes(ConfigContext.GetAppSetting(Config.MAIL_CREDENTIAL_FILE));
+            
+            byte[] encryptedCredentials = File.ReadAllBytes(ConfigContext.GetAppSetting(Config.SEND_GRID_ENCRYPTED));
             byte[] symmKey = KeyStoreService.GetKey(ConfigContext.GetAppSetting(Config.SYMMETRIC_KEY_INDEX));
-            Tuple<string,string> decryptedCredentials = SecurityService.DecryptCredentials(encryptedCredentials, symmKey);
-            string username = decryptedCredentials.Item1;
-            string password = decryptedCredentials.Item2;
-            smtp.Credentials = new NetworkCredential(username,password);
-            IList<MailAddress> receivers = (from r in recipients select new MailAddress(r)).ToList();
+            string apiKey = Encoding.UTF8.GetString(SecurityService.Decrypt(encryptedCredentials, symmKey));
+           
+            List<EmailAddress> receivers = (from r in recipients select new EmailAddress(r)).ToList();
 
-            IList<MailAddress> copies = (ccs == null ? new List<MailAddress>() :
-                (from c in ccs select new MailAddress(c)).ToList());
-            IList<MailAddress> blindCopies = (bccs == null ? new List<MailAddress>() :
-                (from b in bccs select new MailAddress(b)).ToList());
+            List<EmailAddress> copies = (ccs == null ? new List<EmailAddress>() :
+                (from c in ccs select new EmailAddress(c)).ToList());
+            List<EmailAddress> blindCopies = (bccs == null ? new List<EmailAddress>() :
+                (from b in bccs select new EmailAddress(b)).ToList());
 
-            MailAddress senderAddress = new MailAddress(username, sender);
+            EmailAddress senderAddress = new EmailAddress(sender);
 
-            MailMessage message = new MailMessage();
+            SendGridMessage message = new SendGridMessage();
             message.Subject = subject;
-            message.Sender = senderAddress;
-
-            foreach(var address in receivers)
-            {
-                message.To.Add(address);
-            }
-
-            foreach(var address in copies)
-            {
-                message.CC.Add(address);
-            }
-
-            foreach(var address in blindCopies)
-            {
-                message.Bcc.Add(address);
-            }
-
-            message.IsBodyHtml = true;
-            message.Body = body;
-
-            smtp.Send(message);
-
-            return Task.FromResult(StatusCode.Successful);
+            message.SetFrom(senderAddress);
+            message.AddTos(receivers);
+            message.AddCcs(copies);
+            message.AddBccs(blindCopies);
+            message.AddContent(MimeType.Html, body);
+            
+            SendGridClient client = new SendGridClient(apiKey);
+            await client.SendEmailAsync(message);
+            return StatusCode.Successful;
 
         }
     }

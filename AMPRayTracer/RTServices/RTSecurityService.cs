@@ -18,7 +18,7 @@ namespace RTServices
 
         private const int DEFAULT_SALT_LEN = 20;
 
-        [Import("JsonConfiguration")]
+        [Import("JsonConfig")]
 
         public IConnectionContext ConfigContext { get; set; }
 

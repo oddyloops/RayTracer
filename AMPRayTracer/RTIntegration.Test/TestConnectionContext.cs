@@ -6,9 +6,9 @@ using System.Composition;
 using System.Configuration;
 using System.Text;
 
-namespace RTServices.Test
+namespace RTIntegration.Test
 {
-    [Export("JsonConfig")]
+    [Export("JsonConfig",typeof(IConnectionContext))]
     public class TestConnectionContext : IConnectionContext
     {
 

@@ -254,3 +254,5 @@ paket-files/
 
 #Config files
 RTDataAccess.Test.xunit.runner.json
+RTServices.Test.xunit.runner.json
+AMPRayTracer/RTServices.Test/RTServices.Test.xunit.runner.json

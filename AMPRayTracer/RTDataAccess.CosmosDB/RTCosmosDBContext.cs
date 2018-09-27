@@ -17,7 +17,7 @@ namespace RTDataAccess.Cosmos
     /// <summary>
     /// IDataContext compliant wrapper around the Azure Cosmos DB SQL API
     /// </summary>
-    [Export("RTCosmoDBContext")]
+    [Export("RTCosmoDBContext",typeof(IDataContext))]
     public class RTCosmoDBContext : DataContext
     {
 

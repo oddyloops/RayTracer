@@ -29,7 +29,9 @@ namespace RTServices
 
         [Import]
         public ICommunicationService CommunicationService { get; set; }
-        public IConnectionContext ConfigContext { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        [Import("JsonConfig")]
+        public IConnectionContext ConfigContext { get; set; }
 
         #region Helpers
         private async Task<StatusCode> RecoveryHelperAsync(IRTUser user)
@@ -45,8 +47,8 @@ namespace RTServices
             templatePair.Add("#{link}", linkUrl);
 
             string emailBody = Util.BuildStringTemplateFromFile(SqlAzureDataContext.Context.GetAppSetting(Config.RECOVERY_MAIL_TEMPLATE_PATH), templatePair);
-            string emailSubject = SqlAzureDataContext.Context.GetAppSetting(Config.RECOVERY_MAIL_SUBJECT);
-            string emailSender = SqlAzureDataContext.Context.GetAppSetting(Config.RECOVERY_SENDER_ALIAS);
+            string emailSubject = ConfigContext.GetAppSetting(Config.RECOVERY_MAIL_SUBJECT);
+            string emailSender = ConfigContext.GetAppSetting(Config.RECOVERY_SENDER_ALIAS);
 
             return await CommunicationService.SendEmailAsync(emailSender, user.Email, emailSubject, emailBody);
         }

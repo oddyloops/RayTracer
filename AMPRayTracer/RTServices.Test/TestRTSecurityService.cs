@@ -61,7 +61,7 @@ namespace RTServices.Test
 
 
         [Fact]
-        public void TestEncryptAndDecryptCredentialds()
+        public void TestEncryptAndDecryptCredentials()
         {
             byte[] encryptedCred = service.EncryptCredentials(testUsername, testPwd, key);
             var decryptedCred = service.DecryptCredentials(encryptedCred, key);

@@ -34,7 +34,7 @@ namespace RTMeld.Config
         //CRYPTO
         public const string SYMMETRIC_KEY_INDEX = "SymmetricKeyIndex";
 
-        public const string MAIL_CREDENTIAL_FILE = "MailCredentialFile";
+        public const string SEND_GRID_ENCRYPTED = "SendGridEncrypted";
 
         public const string ENCRYPTION_BLOCK_SIZE_BYTES = "EncryptionBlockSizeBytes";
 
