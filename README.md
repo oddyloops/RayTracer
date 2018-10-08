@@ -16,7 +16,7 @@ to know why they are slow in the first place.
 "Level of details". Ray-Tracers are built to emulate real life optics and how they are related to our visibility. It is an 
 abstraction of the world around you from the perspective of how light sends information to the human eye. This makes them more intuitive, extendable, realistic, and more fun to play with.
 However, complex calculations beyond elementary math are required. Fortunately, the CPU cores are Phd level smart (unlike their GPU counterparts) with an almost 
-infinite IQ (technically, only qunatum processors can have near infinite IQ). Unfortunately, just like Phd employees,it cost a lot to hire them literally. 
+infinite IQ (technically, only quantum processors can have near infinite IQ). Unfortunately, just like Phd employees,it cost a lot to hire them literally. 
 A CPU core can buy hundreds of GPU cores. Secondly, they like to multitask and hate taking orders. 
 
 They execute code in their own time because they feel they are smarter than the actual programmers who wrote the codes in the first place. We could speed things up a bit by throwing  multiple cores because image rendering
