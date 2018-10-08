@@ -43,9 +43,19 @@ namespace RTContainer
         }
 
 
+        public T GetInstance<T>(string contractName)
+        {
+            return container.GetExport<T>(contractName);
+        }
+
         public IEnumerable<T> GetInstances<T>()
         {
             return container.GetExports<T>();
+        }
+
+        public IEnumerable<T> GetInstances<T>(string contractName)
+        {
+            return container.GetExports<T>(contractName);
         }
 
 

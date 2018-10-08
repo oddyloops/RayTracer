@@ -135,7 +135,7 @@ namespace RTServices
             {
                 { "@P0", user.Id.ToString() }
             };
-            var userLogs = (await CosmosDataContext.QueryAsync<IRTUserLog>("SELECT * FROM rt_user_log U WHERE U.UserId = @P0", parameters)).ToList();
+            var userLogs = (await CosmosDataContext.QueryAsync<IRTUserLog>("SELECT * FROM rt_user_log U WHERE U.UserId = @P0", parameters));
             if (userLogs.Count > 0)
             {
                 IRTUserLog storedLog = userLogs[0];

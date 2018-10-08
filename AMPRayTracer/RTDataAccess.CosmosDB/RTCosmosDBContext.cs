@@ -17,8 +17,8 @@ namespace RTDataAccess.Cosmos
     /// <summary>
     /// IDataContext compliant wrapper around the Azure Cosmos DB SQL API
     /// </summary>
-    [Export("RTCosmoDBContext",typeof(IDataContext))]
-    public class RTCosmoDBContext : DataContext
+    [Export("RTCosmosDBContext",typeof(IDataContext))]
+    public class RTCosmosDBContext : DataContext
     {
 
         DocumentClient client;
@@ -38,7 +38,7 @@ namespace RTDataAccess.Cosmos
         [Import]
         public override IDataMapper Mapper { get; set; }
 
-        [Import("JsonConfig")]
+        
         public override IConnectionContext Context { get; set; }
 
         #region HelperMethods
@@ -63,6 +63,13 @@ namespace RTDataAccess.Cosmos
             }
         }
         #endregion
+
+        [ImportingConstructor]
+        public RTCosmosDBContext([Import("JsonConfig")]IConnectionContext context)
+        {
+            Context = context;
+            Connect();
+        }
 
         public override void Commit()
         {

@@ -29,7 +29,7 @@ namespace RTDataAccess.Test
         {
             mapper = new RTMapper.RTMapper();
             context = new TestConnectionContext();
-            azureContext = new RTSqlAzureContext();
+            azureContext = new RTSqlAzureContext(context);
             azureContext.Context = context;
             azureContext.Mapper = mapper;
 

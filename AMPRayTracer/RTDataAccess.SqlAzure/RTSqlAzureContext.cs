@@ -24,7 +24,7 @@ namespace RTDataAccess.SqlAzure
         [Import]
         public override IDataMapper Mapper { get; set; }
 
-        [Import("JsonConfig")]
+       
         public override IConnectionContext Context { get; set; }
 
         #region HelperMethods
@@ -75,7 +75,12 @@ namespace RTDataAccess.SqlAzure
         #endregion
 
        
-
+        [ImportingConstructor]
+        public RTSqlAzureContext([Import("JsonConfig")]IConnectionContext context)
+        {
+            Context = context;
+            Connect();
+        }
 
         public override void Connect()
         {
@@ -92,6 +97,7 @@ namespace RTDataAccess.SqlAzure
         }
 
 
+       
         public override void Commit()
         {
             repository.SaveChanges();
