@@ -28,6 +28,11 @@ namespace RTDataAccess.SqlAzure
         public override IConnectionContext Context { get; set; }
 
         #region HelperMethods
+        /// <summary>
+        /// Transforms a loosely typed mapping of parameters to their sql equivalent
+        /// </summary>
+        /// <param name="paramMap">Loosely typed parameters</param>
+        /// <returns>List of equivalent SQL parameters</returns>
         private List<SqlParameter> MapQueryParams(IDictionary<string, object> paramMap)
         {
             if (paramMap == null)
@@ -40,12 +45,24 @@ namespace RTDataAccess.SqlAzure
             return paramList;
         }
 
+
+        /// <summary>
+        /// Creates a new sql connection object
+        /// </summary>
+        /// <returns></returns>
         private SqlConnection ConnectADO()
         {
             SqlConnection conn = new SqlConnection(Context.GetConnectionString(connStr));
             return conn;
         }
 
+
+        /// <summary>
+        /// Constructs an SqlCommand object with the specified parameters
+        /// </summary>
+        /// <param name="cmd">SQL command</param>
+        /// <param name="parameters">Command parameters</param>
+        /// <returns>Parameterized SQL Command object</returns>
         private SqlCommand BuildADOCommand(string cmd, IList<SqlParameter> parameters)
         {
             SqlCommand command = new SqlCommand(cmd);
@@ -60,6 +77,10 @@ namespace RTDataAccess.SqlAzure
         }
 
 
+        /// <summary>
+        /// Clears the entries of entity framework change tracker
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         private void ClearTracks<T>() where T : class
         {
             var entries = repository.ChangeTracker.Entries<T>();
@@ -70,6 +91,29 @@ namespace RTDataAccess.SqlAzure
                     entity.State = EntityState.Detached;
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns DBSet for generic interface type
+        /// </summary>
+        /// <returns></returns>
+        private object GetDBSetForType<T>()
+        {
+            Type efRepoType = repository.GetType();
+            var properties = efRepoType.GetProperties();
+            foreach (var property in properties)
+            {
+                if(property.PropertyType.IsGenericType &&
+                    property.PropertyType.Equals(typeof(DbSet<>)))
+                {
+                    Type entityType = property.PropertyType.GetGenericArguments()[0];
+                    if(entityType.GetInterfaces().Contains(typeof(T)))
+                    {
+                        return property;
+                    }
+                }
+            }
+            throw new Exception("Interface type not present in dbsets");
         }
 
         #endregion
@@ -233,11 +277,15 @@ namespace RTDataAccess.SqlAzure
 
         public override IEnumerable<T> SelectAll<T>()
         {
-            return this.repository.Set<T>().AsEnumerable();
+
+            var dbset = (IEnumerable)GetDBSetForType<T>();
+            
+            return from x in dbset select (T)x;
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
         {
+            
             return from x in this.repository.Set<T>() where matcher.Compile()(x) select x;
         }
 

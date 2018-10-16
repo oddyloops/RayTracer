@@ -224,7 +224,7 @@ namespace RTDataAccess.Cosmos
 
 
 
-        public async override Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
+        public override Task<int> UpdateMatchingAsync<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
         {
             throw new NotImplementedException();
         }
