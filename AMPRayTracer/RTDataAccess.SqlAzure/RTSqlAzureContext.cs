@@ -10,13 +10,15 @@ using RTMeld.Config;
 using RTMeld.DataAccess;
 using RTDataAccess.SqlAzure.DataRepos;
 using System.Composition;
+using RTMeld.DataTransport;
+using RTDataAccess.SqlAzure.DataObjects;
 
 namespace RTDataAccess.SqlAzure
 {
     /// <summary>
     /// Compliant IDataAcess wrapper around the SQL Azure EF interface
     /// </summary>
-    [Export("RTSqlAzureContext",typeof(IDataContext))]
+    [Export("RTSqlAzureContext", typeof(IDataContext))]
     public class RTSqlAzureContext : DataContext
     {
         RTSqlAzureDataRepo repository;
@@ -24,7 +26,7 @@ namespace RTDataAccess.SqlAzure
         [Import]
         public override IDataMapper Mapper { get; set; }
 
-       
+
         public override IConnectionContext Context { get; set; }
 
         #region HelperMethods
@@ -80,10 +82,10 @@ namespace RTDataAccess.SqlAzure
         /// <summary>
         /// Clears the entries of entity framework change tracker
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        private void ClearTracks<T>() where T : class
+        private void ClearTracks()
         {
-            var entries = repository.ChangeTracker.Entries<T>();
+
+            var entries = repository.ChangeTracker.Entries();
             if (entries.Count() > 0)
             {
                 foreach (var entity in entries.ToList())
@@ -93,32 +95,27 @@ namespace RTDataAccess.SqlAzure
             }
         }
 
-        /// <summary>
-        /// Returns DBSet for generic interface type
-        /// </summary>
-        /// <returns></returns>
-        private object GetDBSetForType<T>()
+
+        private object CreateEntityInstance<T>()
         {
-            Type efRepoType = repository.GetType();
-            var properties = efRepoType.GetProperties();
-            foreach (var property in properties)
+           
+            var type = (from p in repository.GetType().GetProperties()
+                            where p.PropertyType.IsGenericType
+                            && (p.PropertyType.GetGenericArguments()[0].GetInterface(typeof(T).Name) != null
+                            || p.PropertyType.GetGenericArguments()[0] == typeof(T))
+                        select p.PropertyType.GetGenericArguments()[0]).First();
+
+            if(type != null)
             {
-                if(property.PropertyType.IsGenericType &&
-                    property.PropertyType.Equals(typeof(DbSet<>)))
-                {
-                    Type entityType = property.PropertyType.GetGenericArguments()[0];
-                    if(entityType.GetInterfaces().Contains(typeof(T)))
-                    {
-                        return property;
-                    }
-                }
+                return Activator.CreateInstance(type);
             }
-            throw new Exception("Interface type not present in dbsets");
+
+            return null;
         }
 
         #endregion
 
-       
+
         [ImportingConstructor]
         public RTSqlAzureContext([Import("JsonConfig")]IConnectionContext context)
         {
@@ -141,7 +138,7 @@ namespace RTDataAccess.SqlAzure
         }
 
 
-       
+
         public override void Commit()
         {
             repository.SaveChanges();
@@ -157,11 +154,12 @@ namespace RTDataAccess.SqlAzure
 
         public override int Delete<T>(object key)
         {
-            T entity = Activator.CreateInstance<T>();
+            object entity = CreateEntityInstance<T>();
             SetKeyField(entity, key);
-            ClearTracks<T>();
+            ClearTracks();
             repository.Attach(entity);
             repository.Remove(entity);
+
             Commit();
             return 0;
         }
@@ -169,7 +167,7 @@ namespace RTDataAccess.SqlAzure
         public override int DeleteMatching<T>(Expression<Func<T, bool>> matcher)
         {
             List<T> matches = SelectMatching(matcher).ToList();
-
+            ClearTracks();
             if (matches != null)
             {
                 repository.RemoveRange(matches);
@@ -189,7 +187,7 @@ namespace RTDataAccess.SqlAzure
 
         public override int UpdateAll<T>(IList<T> oldData, T newData, bool excludeNulls = false)
         {
-            
+
             IList<object> keys = (from record in oldData
                                   select
             Mapper.GetKeyValue(record)).ToList();
@@ -278,15 +276,20 @@ namespace RTDataAccess.SqlAzure
         public override IEnumerable<T> SelectAll<T>()
         {
 
-            var dbset = (IEnumerable)GetDBSetForType<T>();
-            
-            return from x in dbset select (T)x;
+            if (typeof(T).Equals(typeof(IRTUser)) || typeof(T).GetInterface(typeof(IRTUser).Name) != null)
+            {
+                return from x in repository.Users.AsNoTracking() select x as T;
+            }
+            else if (typeof(T).Equals(typeof(IRTUserSession)) || typeof(T).GetInterface(typeof(IRTUserSession).Name) != null)
+            {
+                return from x in repository.UserSessions.AsNoTracking() select x as T;
+            }
+            throw new Exception("Type " + typeof(T) + " not present in the database");
         }
 
         public override IEnumerable<T> SelectMatching<T>(Expression<Func<T, bool>> matcher)
         {
-            
-            return from x in this.repository.Set<T>() where matcher.Compile()(x) select x;
+            return from x in SelectAll<T>() where matcher.Compile()(x) select x;
         }
 
 
@@ -310,6 +313,7 @@ namespace RTDataAccess.SqlAzure
         {
             ValidateKeyType(key.GetType(), typeof(T));
             T oldData = SelectOne<T>(key);
+            ClearTracks();
             if (excludeNulls)
             {
                 Util.DeepCopyNoNulls(newData, oldData);
@@ -326,13 +330,14 @@ namespace RTDataAccess.SqlAzure
 
         public override int UpdateMatching<T>(T newData, Expression<Func<T, bool>> matcher, bool excludeNulls = false)
         {
-            IEnumerable<T> matches = SelectMatching<T>(matcher);
+            IList<T> matches = SelectMatching<T>(matcher).ToList();
             if (matches != null)
             {
                 string keyName = Mapper.GetKeyName(typeof(T));
+                ClearTracks();
                 foreach (T match in matches)
                 {
-
+                    
                     if (excludeNulls)
                     {
                         Util.DeepCopyNoNulls(newData, match, new List<string>() { keyName });
@@ -343,7 +348,7 @@ namespace RTDataAccess.SqlAzure
                     }
 
                 }
-                this.repository.UpdateRange(matches);
+                repository.UpdateRange(matches);
                 Commit();
             }
             return 0;

@@ -56,10 +56,10 @@ namespace RTDataAccess.Test
         {
             azureContext.Connect();
             azureContext.Insert(testUser);
-            var returnedUser = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
+            var returnedUser = azureContext.SelectOne<IRTUser>(testUser.Id);
             Assert.Equal(testUser.UserName, returnedUser.UserName);
-            azureContext.Delete<RTSqlAzureUser>(returnedUser.Id);
-            returnedUser = azureContext.SelectOne<RTSqlAzureUser>(testUser.Id);
+            azureContext.Delete<IRTUser>(returnedUser.Id);
+            returnedUser = azureContext.SelectOne<IRTUser>(testUser.Id);
             Assert.Null(returnedUser);
         }
 
@@ -144,6 +144,7 @@ namespace RTDataAccess.Test
 
 
         [Fact]
+
         public void TestUpdate()
         {
             azureContext.Connect();
